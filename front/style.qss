@@ -121,6 +121,66 @@
         font-weight: bold;
     }
 
+    #pageTranslator QLabel {
+        color: #fff;
+    }
+
+    #pageIncome QLabel {
+        color: #fff;
+    }
+
+    #widget_14 QLabel {
+        color: #fff;
+    }
+
+    #verticalLayout_14 QLabel {
+        color: #fff;
+    }
+
+    #verticalLayout_16 QLabel {
+        color: #fff;
+    }
+
+    #pageSocialNetwork QLabel {
+        color: #fff;
+    }
+
+    #verticalLayout_17 QLabel {
+        color: #fff;
+    }
+
+    #verticalLayout_18 QLabel {
+        color: #fff;
+    }
+
+    #pageFileSharing QLabel {
+        color: #fff;
+    }
+
+    #pageAccount QLabel {
+        color: #fff;
+    }
+
+    #verticalLayout_19 QLabel {
+        color: #fff;
+    }
+
+    #verticalLayout_25 QLabel {
+        color: #fff;
+    }
+
+    #widget_36 QLabel {
+        color: #fff;
+    }
+
+    #widget_37 QLabel {
+        color: #fff;
+    }
+
+    #pageReceiveFile QLabel {
+        color: #fff;
+    }
+
     #SearchBtn {
         border: none;
         width: 30px;

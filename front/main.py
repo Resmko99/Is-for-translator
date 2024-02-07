@@ -55,13 +55,13 @@ class MainWindow(QMainWindow):
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton and self.ui.widget_2.rect().contains(
-                self.ui.widget_2.mapFromGlobal(event.globalPos())):
-            self.drag_position = event.globalPos() - self.frameGeometry().topLeft()
+                self.ui.widget_2.mapFromGlobal(event.globalPosition().toPoint())):
+            self.drag_position = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
             event.accept()
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton and self.drag_position is not None:
-            self.move(event.globalPos() - self.drag_position)
+            self.move(event.globalPosition().toPoint() - self.drag_position)
             event.accept()
 
     def mouseReleaseEvent(self, event):
