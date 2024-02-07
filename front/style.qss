@@ -1,0 +1,204 @@
+    #MainWindow {
+        background-color: #24282E;
+    }
+
+    #openMenuBtn {
+        padding: 5px;
+        border: none;
+        width: 30px;
+        height: 30px;
+    }
+
+    #widget_2 {
+        background-color: #45464F;
+    }
+
+    #minimazeBtn {
+        background-color: transparent;
+        border-radius: 10px;
+    }
+
+    #minimazeBtn:hover {
+        background-color: #2B2525;
+        border-radius: 5px;
+    }
+
+    #expandBtn {
+        background-color: transparent;
+        border-radius: 5px;
+    }
+
+    #expandBtn:hover {
+        background-color: #2B2525;
+        border-radius: 5px;
+    }
+
+    #closeBtn {
+        background-color: transparent;
+        border-radius: 5px;
+    }
+
+    #closeBtn:hover {
+        background-color: #c94f4f;
+        border-radius: 5px;
+    }
+
+    #openMenuBtn:hover {
+        background-color: #45464F;
+        border-radius: 10px;
+    }
+
+    #header_widget {
+        background-color: #f9fafd;
+    }
+
+    #icon QLabel {
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    #icon QPushButton {
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    #icon QPushButton:hover {
+        background-color: #23282b;
+    }
+
+    #icon QPushButton:checked {
+        background-color: #23282b;
+    }
+
+    #icon {
+        background-color: #45464F;
+        width: 50px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        transform: translate(100px, 100px);
+    }
+
+    #label {
+        padding: 5px;
+    }
+
+    #fullMenu {
+        background-color: #45464F;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    #fullMenu QPushButton {
+        border: none;
+        border-radius: 10px;
+        text-align: left;
+        font: 13pt "Inter";
+        padding: 8px 0 8px 15px;
+        color: #fff;
+        width: 200px;
+        margin-top: 12px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #fullMenu QPushButton:hover {
+        background-color: #23282b;
+    }
+
+    #fullMenu QPushButton:checked {
+        background-color: #23282b;
+    }
+
+    #label_2 {
+        padding: 5px;
+        color: #fff;
+    }
+
+    #label_3 {
+        padding-right: 10px;
+        color: #fff;
+        font: 12pt "Inter";
+        font-weight: bold;
+    }
+
+    #SearchBtn {
+        border: none;
+        width: 30px;
+        height: 30px;
+    }
+
+    #SearchBtn:hover {
+        background-color: #45464F;
+        border-radius: 10px;
+
+    }
+
+    #SearchEdit {
+        background-color :#3D434B;
+        border-radius: 10px;
+        padding: 5px 10px;
+        border: 1px solid #FFCC33;
+        placeholder-text-color: #FFFFFF;
+        text: #FFFFFF;
+        color: #FFFFFF;
+    }
+
+
+    #openMenuBtn {
+        border: none;
+    }
+
+    #pushButton {
+        border: none;
+        width: 30px;
+        height: 30px;
+    }
+
+    #pushButton:hover {
+    background-color: #45464F;
+    border-radius: 10px;
+    }
+
+    #pushButton_2 {
+        background-color :#3D434B;
+        border-radius: 10px;
+        border: 1px solid #FFFFFF;
+        padding: 5px 10px;
+        color: #FFFFFF;
+        margin-top: 10 px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #pushButton_3 {
+        background-color :#3D434B;
+        border-radius: 10px;
+        border: 1px solid #FFFFFF;
+        padding: 5px 10px;
+        margin-top: 7 px;
+        color: #FFFFFF;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #pushButton_4 {
+        background-color :#3D434B;
+        border-radius: 10px;
+        border: 1px solid #FFFFFF;
+        padding: 5px 10px;
+        margin-top: 7 px;
+        color: #FFFFFF;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #widget_4 QPushButton {
+        background-color: #0D1117;
+        font: "Inter";
+    }
+
+    #widget_4 {
+        background-color: #0D1117;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
