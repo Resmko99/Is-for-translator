@@ -8,6 +8,8 @@ from ui import Ui_MainWindow
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.resize_direction = None
+        self.resize_position = None
         self.drag_position = None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -37,6 +39,39 @@ class MainWindow(QMainWindow):
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.screen_expanded = False
 
+    def enterEvent(self, event):
+        if not self.screen_expanded:
+            pos = event.globalPosition().toPoint()
+            frame_geometry = self.frameGeometry()
+            left_edge = abs(pos.x() - frame_geometry.left()) <= 5
+            right_edge = abs(pos.x() - frame_geometry.right()) <= 5
+            top_edge = abs(pos.y() - frame_geometry.top()) <= 5
+            bottom_edge = abs(pos.y() - frame_geometry.bottom()) <= 5
+
+            if left_edge or right_edge or top_edge or bottom_edge:
+                if left_edge:
+                    if top_edge:
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    elif bottom_edge:
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    else:
+                        self.setCursor(Qt.SizeHorCursor)
+                elif right_edge:
+                    if top_edge:
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    elif bottom_edge:
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    else:
+                        self.setCursor(Qt.SizeHorCursor)
+                elif top_edge or bottom_edge:
+                    self.setCursor(Qt.SizeVerCursor)
+                elif self.ui.widget_2.rect().contains(self.ui.widget_2.mapFromGlobal(pos)):
+                    self.setCursor(Qt.OpenHandCursor)
+
+    def leaveEvent(self, event):
+        if not self.screen_expanded:
+            self.setCursor(Qt.ArrowCursor)
+
     def closeApp(self):
         self.close()
 
@@ -45,28 +80,97 @@ class MainWindow(QMainWindow):
 
     def toggle_screen_state(self):
         if self.screen_expanded:
-            # Вернуть экран в исходное состояние
             self.showNormal()
         else:
-            # Развернуть экран
             self.showMaximized()
-        # Инвертировать переменную состояния
         self.screen_expanded = not self.screen_expanded
 
     def mousePressEvent(self, event):
-        if event.buttons() == Qt.LeftButton and self.ui.widget_2.rect().contains(
-                self.ui.widget_2.mapFromGlobal(event.globalPosition().toPoint())):
-            self.drag_position = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
-            event.accept()
+        if event.buttons() == Qt.LeftButton:
+            pos = event.globalPosition().toPoint()
+            frame_geometry = self.frameGeometry()
+
+            if (
+                    abs(pos.x() - frame_geometry.left()) <= 5
+                    or abs(pos.x() - frame_geometry.right()) <= 5
+                    or abs(pos.y() - frame_geometry.top()) <= 5
+                    or abs(pos.y() - frame_geometry.bottom()) <= 5
+            ):
+                self.resize_position = pos
+                if abs(pos.x() - frame_geometry.left()) <= 5:
+                    if abs(pos.y() - frame_geometry.top()) <= 5:
+                        self.resize_direction = "top_left"
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    elif abs(pos.y() - frame_geometry.bottom()) <= 5:
+                        self.resize_direction = "bottom_left"
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    else:
+                        self.resize_direction = "left"
+                        self.setCursor(Qt.SizeHorCursor)
+                elif abs(pos.x() - frame_geometry.right()) <= 5:
+                    if abs(pos.y() - frame_geometry.top()) <= 5:
+                        self.resize_direction = "top_right"
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    elif abs(pos.y() - frame_geometry.bottom()) <= 5:
+                        self.resize_direction = "bottom_right"
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    else:
+                        self.resize_direction = "right"
+                        self.setCursor(Qt.SizeHorCursor)
+                elif abs(pos.y() - frame_geometry.top()) <= 5:
+                    self.resize_direction = "top"
+                    self.setCursor(Qt.SizeVerCursor)
+                elif abs(pos.y() - frame_geometry.bottom()) <= 5:
+                    self.resize_direction = "bottom"
+                    self.setCursor(Qt.SizeVerCursor)
+                event.accept()
+
+            elif (
+                    abs(pos.y() - frame_geometry.top()) <= 5
+                    and frame_geometry.left() <= pos.x() <= frame_geometry.right()
+            ):
+                self.drag_position = pos - frame_geometry.topLeft()
+                event.accept()
+
+            elif self.ui.widget_2.rect().contains(self.ui.widget_2.mapFromGlobal(pos)):
+                self.drag_position = pos - frame_geometry.topLeft()
+                event.accept()
 
     def mouseMoveEvent(self, event):
-        if event.buttons() == Qt.LeftButton and self.drag_position is not None:
-            self.move(event.globalPosition().toPoint() - self.drag_position)
-            event.accept()
+        if event.buttons() == Qt.LeftButton:
+            if self.drag_position is not None:
+                self.move(event.globalPosition().toPoint() - self.drag_position)
+                event.accept()
+            elif self.resize_position is not None:
+                delta = event.globalPosition().toPoint() - self.resize_position
+                frame_geometry = self.frameGeometry()
+
+                if "left" in self.resize_direction:
+                    new_left = frame_geometry.left() + delta.x()
+                    if new_left < frame_geometry.right() - self.minimumWidth():
+                        frame_geometry.setLeft(new_left)
+                elif "right" in self.resize_direction:
+                    new_right = frame_geometry.right() + delta.x()
+                    if new_right > frame_geometry.left() + self.minimumWidth():
+                        frame_geometry.setRight(new_right)
+                if "top" in self.resize_direction:
+                    new_top = frame_geometry.top() + delta.y()
+                    if new_top < frame_geometry.bottom() - self.minimumHeight():
+                        frame_geometry.setTop(new_top)
+                elif "bottom" in self.resize_direction:
+                    new_bottom = frame_geometry.bottom() + delta.y()
+                    if new_bottom > frame_geometry.top() + self.minimumHeight():
+                        frame_geometry.setBottom(new_bottom)
+
+                self.setGeometry(frame_geometry)
+                self.resize_position = event.globalPosition().toPoint()
+                event.accept()
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.drag_position = None
+            self.resize_position = None
+            self.setCursor(Qt.ArrowCursor)
             event.accept()
 
 
