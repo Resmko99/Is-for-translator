@@ -1551,7 +1551,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>11</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3686,6 +3686,13 @@
                    <number>0</number>
                   </property>
                   <item>
+                   <widget class="QLabel" name="label_93">
+                    <property name="text">
+                     <string>Произведения команды</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <spacer name="horizontalSpacer_52">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -3840,24 +3847,10 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="label_93">
-              <property name="text">
-               <string>Произведения команды</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0" colspan="2">
              <widget class="QLabel" name="userNameAcc">
               <property name="text">
                <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Состав команды</string>
               </property>
              </widget>
             </item>
@@ -3882,6 +3875,13 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
+                  <item>
+                   <widget class="QLabel" name="label_8">
+                    <property name="text">
+                     <string>Состав команды</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item>
                    <spacer name="horizontalSpacer_51">
                     <property name="orientation">

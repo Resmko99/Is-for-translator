@@ -1763,6 +1763,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_26.setSpacing(0)
         self.horizontalLayout_26.setObjectName(u"horizontalLayout_26")
         self.horizontalLayout_26.setContentsMargins(0, 0, 0, 0)
+        self.label_93 = QLabel(self.widget_35)
+        self.label_93.setObjectName(u"label_93")
+
+        self.horizontalLayout_26.addWidget(self.label_93)
+
         self.horizontalSpacer_52 = QSpacerItem(700, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_26.addItem(self.horizontalSpacer_52)
@@ -1829,20 +1834,10 @@ class Ui_MainWindow(object):
 
         self.gridLayout_52.addWidget(self.label_92, 3, 0, 1, 1)
 
-        self.label_93 = QLabel(self.pageAccount)
-        self.label_93.setObjectName(u"label_93")
-
-        self.gridLayout_52.addWidget(self.label_93, 8, 0, 1, 1)
-
         self.userNameAcc = QLabel(self.pageAccount)
         self.userNameAcc.setObjectName(u"userNameAcc")
 
         self.gridLayout_52.addWidget(self.userNameAcc, 0, 0, 1, 2)
-
-        self.label_8 = QLabel(self.pageAccount)
-        self.label_8.setObjectName(u"label_8")
-
-        self.gridLayout_52.addWidget(self.label_8, 5, 0, 1, 1)
 
         self.widget_32 = QWidget(self.pageAccount)
         self.widget_32.setObjectName(u"widget_32")
@@ -1854,6 +1849,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_25.setSpacing(0)
         self.horizontalLayout_25.setObjectName(u"horizontalLayout_25")
         self.horizontalLayout_25.setContentsMargins(0, 0, 0, 0)
+        self.label_8 = QLabel(self.widget_33)
+        self.label_8.setObjectName(u"label_8")
+
+        self.horizontalLayout_25.addWidget(self.label_8)
+
         self.horizontalSpacer_51 = QSpacerItem(691, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_25.addItem(self.horizontalSpacer_51)
@@ -2190,7 +2190,7 @@ class Ui_MainWindow(object):
         self.pushButton.toggled.connect(self.widget_4.setVisible)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(4)
+        self.stackedWidget_2.setCurrentIndex(11)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2330,12 +2330,12 @@ class Ui_MainWindow(object):
         self.fileAdd.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b \".rar\" \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u043f\u0440\u0435\u0432\u044b\u0448\u0430\u0442\u044c 4\u0433\u0431, \".docx\" \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u043f\u0440\u0435\u0432\u044b\u0448\u0430\u0442\u044c 100\u043c\u0431", None))
         self.label_90.setText(QCoreApplication.translate("MainWindow", u"\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
         self.sendFile.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c", None))
+        self.label_93.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.addTitleTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.deleteTitleTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.saveTitleTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.label_91.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.label_92.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_93.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.userNameAcc.setText("")
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0441\u0442\u0430\u0432 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.addTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))

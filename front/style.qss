@@ -2,6 +2,10 @@
         background-color: #24282E;
     }
 
+    #aboutUs_2 {
+        margin-bottom: 5px;
+    }
+
     #openMenuBtn {
         padding: 5px;
         border: none;
@@ -123,10 +127,22 @@
 
     #pageTranslator QLabel {
         color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageAboutUs QLabel {
+        color: #fff;
+        font: 15px "Inter";
     }
 
     #pageIncome QLabel {
         color: #fff;
+        font: 15px "Inter";
+    }
+
+    #pageSchedule QLabel {
+        color: #fff;
+        font: 15px "Inter";
     }
 
     #widget_14 QLabel {
@@ -143,6 +159,7 @@
 
     #pageSocialNetwork QLabel {
         color: #fff;
+        font: 15px "Inter";
     }
 
     #verticalLayout_17 QLabel {
@@ -155,10 +172,12 @@
 
     #pageFileSharing QLabel {
         color: #fff;
+        font: 15px "Inter";
     }
 
     #pageAccount QLabel {
         color: #fff;
+        font: 15px "Inter";
     }
 
     #verticalLayout_19 QLabel {
@@ -179,6 +198,7 @@
 
     #pageReceiveFile QLabel {
         color: #fff;
+        font: 15px "Inter";
     }
 
     #SearchBtn {
@@ -218,42 +238,16 @@
     border-radius: 10px;
     }
 
-    #pushButton_2 {
-        background-color :#3D434B;
-        border-radius: 10px;
-        border: 1px solid #FFFFFF;
-        padding: 5px 10px;
-        color: #FFFFFF;
-        margin-top: 10 px;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    #pushButton_3 {
-        background-color :#3D434B;
-        border-radius: 10px;
-        border: 1px solid #FFFFFF;
-        padding: 5px 10px;
-        margin-top: 7 px;
-        color: #FFFFFF;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    #pushButton_4 {
-        background-color :#3D434B;
-        border-radius: 10px;
-        border: 1px solid #FFFFFF;
-        padding: 5px 10px;
-        margin-top: 7 px;
-        color: #FFFFFF;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
     #widget_4 QPushButton {
-        background-color: #0D1117;
-        font: "Inter";
+        background-color: #3D434B;
+        border-radius: 10px;
+        border: 1px solid #FFFFFF;
+        padding: 5px 10px;
+        margin-top: 7 px;
+        color: #FFFFFF;
+        margin-left: 10px;
+        margin-right: 10px;
+        font: 15px "Inter";
     }
 
     #widget_4 {
@@ -328,4 +322,212 @@
        border-radius: 10px;
        color: #FFFFFF;
        height: 25px;
+    }
+
+    #widget_9 QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #comboBoxMonth {
+       background-color: #010409;
+       border: 1px solid #FFCC33;
+       border-radius: 10px;
+       color: #FFFFFF;
+       height: 25px;
+       font-size: 14px;
+    }
+
+    #comboBoxMonth::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #comboBoxMonth::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #comboBoxYear {
+       background-color: #010409;
+       border: 1px solid #FFCC33;
+       border-radius: 10px;
+       color: #FFFFFF;
+       height: 25px;
+       font-size: 14px;
+    }
+
+    #comboBoxYear::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #comboBoxYear::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #tgBtn {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #vkBtn {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #dsBtn {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #postEdit {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        placeholder-text-color: #FFFFFF;
+    }
+
+    #imagePost {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        placeholder-text-color: #FFFFFF;
+    }
+
+    #publishBtn {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #fileAdd {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        placeholder-text-color: #FFFFFF;
+    }
+
+    #recipientFile {
+       background-color: #010409;
+       border: 1px solid #FFCC33;
+       border-radius: 10px;
+       color: #FFFFFF;
+       height: 25px;
+       font-size: 14px;
+    }
+
+    #recipientFile::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #recipientFile::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #nameCrewAcc {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #imageCrewAcc {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #tableTeamAcc {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #tableTitleAcc {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #widget_33 QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #addTeamBtn {
+        margin-right: 3px;
+    }
+
+    #deleteTeamBtn {
+        margin-right: 3px;
+    }
+
+    #widget_35 QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #addTitleTeamBtn {
+        margin-right: 3px;
+    }
+
+    #deleteTitleTeamBtn {
+        margin-right: 3px;
+    }
+
+    #textEdit {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #textEdit_2 {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+        placeholder-text-color: #FFFFFF;
+    }
+
+    #tableFiles {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #tableIncome {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #sendFile {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
     }
