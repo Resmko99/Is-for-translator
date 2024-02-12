@@ -92,11 +92,11 @@ class MainWindow(QMainWindow):
         if not self.screen_expanded:
             start_geometry = self.geometry()
             end_geometry = QApplication.primaryScreen().availableGeometry()
-            if self.normal_geometry is None:  # Сохраняем начальную геометрию, если еще не сохранена
+            if self.normal_geometry is None:
                 self.normal_geometry = start_geometry
         else:
             start_geometry = self.geometry()
-            end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
+            end_geometry = self.normal_geometry
 
         if start_geometry == end_geometry:
             start_geometry, end_geometry = end_geometry, self.normal_geometry
