@@ -1,19 +1,19 @@
 import sys
 from functools import partial
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QPoint
 from PySide6.QtWidgets import QApplication, QMainWindow
 from ui import Ui_MainWindow
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.resize_direction = None
-        self.resize_position = None
+        self.resize_offset = QPoint()
         self.drag_position = None
+        self.mouse_press_position = None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.ui.icon.hide()
         self.ui.stackedWidget.setCurrentIndex(4)
         self.ui.stackedWidget_2.setCurrentIndex(0)
@@ -39,39 +39,6 @@ class MainWindow(QMainWindow):
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.screen_expanded = False
 
-    def enterEvent(self, event):
-        if not self.screen_expanded:
-            pos = event.globalPosition().toPoint()
-            frame_geometry = self.frameGeometry()
-            left_edge = abs(pos.x() - frame_geometry.left()) <= 5
-            right_edge = abs(pos.x() - frame_geometry.right()) <= 5
-            top_edge = abs(pos.y() - frame_geometry.top()) <= 5
-            bottom_edge = abs(pos.y() - frame_geometry.bottom()) <= 5
-
-            if left_edge or right_edge or top_edge or bottom_edge:
-                if left_edge:
-                    if top_edge:
-                        self.setCursor(Qt.SizeFDiagCursor)
-                    elif bottom_edge:
-                        self.setCursor(Qt.SizeBDiagCursor)
-                    else:
-                        self.setCursor(Qt.SizeHorCursor)
-                elif right_edge:
-                    if top_edge:
-                        self.setCursor(Qt.SizeBDiagCursor)
-                    elif bottom_edge:
-                        self.setCursor(Qt.SizeFDiagCursor)
-                    else:
-                        self.setCursor(Qt.SizeHorCursor)
-                elif top_edge or bottom_edge:
-                    self.setCursor(Qt.SizeVerCursor)
-                elif self.ui.widget_2.rect().contains(self.ui.widget_2.mapFromGlobal(pos)):
-                    self.setCursor(Qt.OpenHandCursor)
-
-    def leaveEvent(self, event):
-        if not self.screen_expanded:
-            self.setCursor(Qt.ArrowCursor)
-
     def closeApp(self):
         self.close()
 
@@ -89,90 +56,69 @@ class MainWindow(QMainWindow):
         if event.buttons() == Qt.LeftButton:
             pos = event.globalPosition().toPoint()
             frame_geometry = self.frameGeometry()
+            left_edge = abs(pos.x() - frame_geometry.left()) <= 5
+            right_edge = abs(pos.x() - frame_geometry.right()) <= 5
+            top_edge = abs(pos.y() - frame_geometry.top()) <= 5
+            bottom_edge = abs(pos.y() - frame_geometry.bottom()) <= 5
 
-            if (
-                    abs(pos.x() - frame_geometry.left()) <= 5
-                    or abs(pos.x() - frame_geometry.right()) <= 5
-                    or abs(pos.y() - frame_geometry.top()) <= 5
-                    or abs(pos.y() - frame_geometry.bottom()) <= 5
-            ):
-                self.resize_position = pos
-                if abs(pos.x() - frame_geometry.left()) <= 5:
-                    if abs(pos.y() - frame_geometry.top()) <= 5:
+            if left_edge or right_edge or top_edge or bottom_edge:
+                self.mouse_press_position = pos
+                self.resize_offset = pos
+
+                if left_edge:
+                    if top_edge:
                         self.resize_direction = "top_left"
-                        self.setCursor(Qt.SizeFDiagCursor)
-                    elif abs(pos.y() - frame_geometry.bottom()) <= 5:
+                    elif bottom_edge:
                         self.resize_direction = "bottom_left"
-                        self.setCursor(Qt.SizeBDiagCursor)
                     else:
                         self.resize_direction = "left"
-                        self.setCursor(Qt.SizeHorCursor)
-                elif abs(pos.x() - frame_geometry.right()) <= 5:
-                    if abs(pos.y() - frame_geometry.top()) <= 5:
+                elif right_edge:
+                    if top_edge:
                         self.resize_direction = "top_right"
-                        self.setCursor(Qt.SizeBDiagCursor)
-                    elif abs(pos.y() - frame_geometry.bottom()) <= 5:
+                    elif bottom_edge:
                         self.resize_direction = "bottom_right"
-                        self.setCursor(Qt.SizeFDiagCursor)
                     else:
                         self.resize_direction = "right"
-                        self.setCursor(Qt.SizeHorCursor)
-                elif abs(pos.y() - frame_geometry.top()) <= 5:
+                elif top_edge:
                     self.resize_direction = "top"
-                    self.setCursor(Qt.SizeVerCursor)
-                elif abs(pos.y() - frame_geometry.bottom()) <= 5:
+                elif bottom_edge:
                     self.resize_direction = "bottom"
-                    self.setCursor(Qt.SizeVerCursor)
-                event.accept()
-
-            elif (
-                    abs(pos.y() - frame_geometry.top()) <= 5
-                    and frame_geometry.left() <= pos.x() <= frame_geometry.right()
-            ):
-                self.drag_position = pos - frame_geometry.topLeft()
-                event.accept()
 
             elif self.ui.widget_2.rect().contains(self.ui.widget_2.mapFromGlobal(pos)):
                 self.drag_position = pos - frame_geometry.topLeft()
-                event.accept()
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton:
+            pos = event.globalPosition().toPoint()
             if self.drag_position is not None:
-                self.move(event.globalPosition().toPoint() - self.drag_position)
-                event.accept()
-            elif self.resize_position is not None:
-                delta = event.globalPosition().toPoint() - self.resize_position
+                self.move(pos - self.drag_position)
+            elif self.resize_direction is not None:
                 frame_geometry = self.frameGeometry()
+                new_geometry = frame_geometry
 
                 if "left" in self.resize_direction:
-                    new_left = frame_geometry.left() + delta.x()
-                    if new_left < frame_geometry.right() - self.minimumWidth():
-                        frame_geometry.setLeft(new_left)
+                    new_geometry.setLeft(pos.x())
+                    if new_geometry.width() < self.minimumWidth():
+                        new_geometry.setLeft(frame_geometry.right() - self.minimumWidth())
                 elif "right" in self.resize_direction:
-                    new_right = frame_geometry.right() + delta.x()
-                    if new_right > frame_geometry.left() + self.minimumWidth():
-                        frame_geometry.setRight(new_right)
+                    new_geometry.setRight(pos.x())
+                    if new_geometry.width() < self.minimumWidth():
+                        new_geometry.setRight(frame_geometry.left() + self.minimumWidth())
                 if "top" in self.resize_direction:
-                    new_top = frame_geometry.top() + delta.y()
-                    if new_top < frame_geometry.bottom() - self.minimumHeight():
-                        frame_geometry.setTop(new_top)
+                    new_geometry.setTop(pos.y())
+                    if new_geometry.height() < self.minimumHeight():
+                        new_geometry.setTop(frame_geometry.bottom() - self.minimumHeight())
                 elif "bottom" in self.resize_direction:
-                    new_bottom = frame_geometry.bottom() + delta.y()
-                    if new_bottom > frame_geometry.top() + self.minimumHeight():
-                        frame_geometry.setBottom(new_bottom)
+                    new_geometry.setBottom(pos.y())
+                    if new_geometry.height() < self.minimumHeight():
+                        new_geometry.setBottom(frame_geometry.top() + self.minimumHeight())
 
-                self.setGeometry(frame_geometry)
-                self.resize_position = event.globalPosition().toPoint()
-                event.accept()
+                self.setGeometry(new_geometry)
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.drag_position = None
-            self.resize_position = None
-            self.setCursor(Qt.ArrowCursor)
-            event.accept()
-
+            self.resize_direction = None
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
