@@ -1,6 +1,6 @@
 import sys
 from functools import partial
-from PySide6.QtCore import Qt, QPoint
+from PySide6.QtCore import Qt, QPoint, QEvent
 from PySide6.QtWidgets import QApplication, QMainWindow
 from ui import Ui_MainWindow
 
@@ -38,6 +38,44 @@ class MainWindow(QMainWindow):
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.screen_expanded = False
+
+        self.setMouseTracking(True)
+
+        # Установка фильтра событий для главного окна
+        self.installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.HoverMove:
+            pos = event.globalPosition().toPoint()
+            frame_geometry = self.frameGeometry()
+            left_edge = abs(pos.x() - frame_geometry.left()) <= 5
+            right_edge = abs(pos.x() - frame_geometry.right()) <= 5
+            top_edge = abs(pos.y() - frame_geometry.top()) <= 5
+            bottom_edge = abs(pos.y() - frame_geometry.bottom()) <= 5
+
+            if left_edge or right_edge or top_edge or bottom_edge:
+                if left_edge:
+                    if top_edge:
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    elif bottom_edge:
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    else:
+                        self.setCursor(Qt.SizeHorCursor)
+                elif right_edge:
+                    if top_edge:
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    elif bottom_edge:
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    else:
+                        self.setCursor(Qt.SizeHorCursor)
+                elif top_edge or bottom_edge:
+                    self.setCursor(Qt.SizeVerCursor)
+                else:
+                    self.setCursor(Qt.ArrowCursor)
+            else:
+                self.setCursor(Qt.ArrowCursor)
+
+        return super().eventFilter(obj, event)
 
     def closeApp(self):
         self.close()
