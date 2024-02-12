@@ -1,6 +1,6 @@
 import sys
 from functools import partial
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve
+from PySide6.QtCore import Qt, QPoint, QEvent, QPropertyAnimation, QEasingCurve
 from PySide6.QtWidgets import QApplication, QMainWindow
 from ui import Ui_MainWindow
 
@@ -46,6 +46,42 @@ class MainWindow(QMainWindow):
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.screen_expanded = False
 
+        # Установка фильтра событий для главного окна
+        self.installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.HoverMove:
+            pos = event.globalPosition().toPoint()
+            frame_geometry = self.frameGeometry()
+            left_edge = abs(pos.x() - frame_geometry.left()) <= 5
+            right_edge = abs(pos.x() - frame_geometry.right()) <= 5
+            top_edge = abs(pos.y() - frame_geometry.top()) <= 5
+            bottom_edge = abs(pos.y() - frame_geometry.bottom()) <= 5
+
+            if left_edge or right_edge or top_edge or bottom_edge:
+                if left_edge:
+                    if top_edge:
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    elif bottom_edge:
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    else:
+                        self.setCursor(Qt.SizeHorCursor)
+                elif right_edge:
+                    if top_edge:
+                        self.setCursor(Qt.SizeBDiagCursor)
+                    elif bottom_edge:
+                        self.setCursor(Qt.SizeFDiagCursor)
+                    else:
+                        self.setCursor(Qt.SizeHorCursor)
+                elif top_edge or bottom_edge:
+                    self.setCursor(Qt.SizeVerCursor)
+                else:
+                    self.setCursor(Qt.ArrowCursor)
+            else:
+                self.setCursor(Qt.ArrowCursor)
+
+        return super().eventFilter(obj, event)
+
     def closeApp(self):
         self.close()
 
@@ -56,11 +92,11 @@ class MainWindow(QMainWindow):
         if not self.screen_expanded:
             start_geometry = self.geometry()
             end_geometry = QApplication.primaryScreen().availableGeometry()
-            if self.normal_geometry is None:
+            if self.normal_geometry is None:  # Сохраняем начальную геометрию, если еще не сохранена
                 self.normal_geometry = start_geometry
         else:
             start_geometry = self.geometry()
-            end_geometry = self.normal_geometry
+            end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
 
         if start_geometry == end_geometry:
             start_geometry, end_geometry = end_geometry, self.normal_geometry
