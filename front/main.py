@@ -39,8 +39,6 @@ class MainWindow(QMainWindow):
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.screen_expanded = False
 
-        self.setMouseTracking(True)
-
         # Установка фильтра событий для главного окна
         self.installEventFilter(self)
 
