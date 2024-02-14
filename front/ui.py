@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1473, 939)
+        MainWindow.resize(1485, 939)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -475,7 +475,9 @@ class Ui_MainWindow(object):
         self.openMenuBtn = QPushButton(self.widget)
         self.openMenuBtn.setObjectName(u"openMenuBtn")
         icon4 = QIcon()
-        icon4.addFile(u":/icon/icon/free-icon-chevron-248744.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon4.addFile(u":/icon/icon/rev.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon4.addFile(u":/icon/icon/free-icon-chevron-248744.png", QSize(), QIcon.Active, QIcon.On)
+        icon4.addFile(u":/icon/icon/rev.png", QSize(), QIcon.Selected, QIcon.On)
         self.openMenuBtn.setIcon(icon4)
         self.openMenuBtn.setIconSize(QSize(20, 20))
         self.openMenuBtn.setCheckable(True)
@@ -780,6 +782,7 @@ class Ui_MainWindow(object):
         self.pushButton.setLayoutDirection(Qt.LeftToRight)
         icon15 = QIcon()
         icon15.addFile(u":/icon/icon/rev.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon15.addFile(u":/icon/icon/free-icon-chevron-248744.png", QSize(), QIcon.Active, QIcon.On)
         self.pushButton.setIcon(icon15)
         self.pushButton.setIconSize(QSize(20, 20))
         self.pushButton.setCheckable(True)
@@ -790,8 +793,13 @@ class Ui_MainWindow(object):
 
         self.gridLayout_13.addLayout(self.horizontalLayout_3, 0, 0, 1, 1)
 
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_13.addItem(self.verticalSpacer_3, 1, 0, 1, 1)
+
         self.widget_4 = QWidget(self.pageTitle)
         self.widget_4.setObjectName(u"widget_4")
+        self.widget_4.setMinimumSize(QSize(250, 0))
         self.gridLayout_2 = QGridLayout(self.widget_4)
         self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
@@ -800,8 +808,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
         self.pushButton_2 = QPushButton(self.widget_4)
         self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.setMinimumSize(QSize(150, 0))
-        self.pushButton_2.setMaximumSize(QSize(150, 16777215))
+        self.pushButton_2.setMinimumSize(QSize(0, 0))
+        self.pushButton_2.setMaximumSize(QSize(16777215, 16777215))
         icon16 = QIcon()
         icon16.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_2.setIcon(icon16)
@@ -835,11 +843,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addItem(self.verticalSpacer_12, 1, 0, 1, 1)
 
 
-        self.gridLayout_13.addWidget(self.widget_4, 0, 2, 2, 1)
-
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_13.addItem(self.verticalSpacer_3, 1, 0, 1, 1)
+        self.gridLayout_13.addWidget(self.widget_4, 0, 1, 2, 2)
 
         self.stackedWidget_2.addWidget(self.pageTitle)
         self.pageTranslator = QWidget()
@@ -2189,7 +2193,7 @@ class Ui_MainWindow(object):
         self.pushButton.toggled.connect(self.widget_4.setHidden)
         self.pushButton.toggled.connect(self.widget_4.setVisible)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(4)
         self.stackedWidget_2.setCurrentIndex(0)
 
 
