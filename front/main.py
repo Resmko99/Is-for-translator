@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
-        self.ui.stackedWidget.setCurrentIndex(3)
+        self.ui.stackedWidget.setCurrentIndex(4)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.titleBtn_2.setChecked(True)
 
