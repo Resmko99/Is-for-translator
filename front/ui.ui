@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1371</width>
+    <width>1473</width>
     <height>939</height>
    </rect>
   </property>
@@ -176,7 +176,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageLog">
        <layout class="QGridLayout" name="gridLayout_11">
@@ -282,7 +282,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -454,7 +454,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -488,7 +488,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -624,7 +624,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -761,7 +761,7 @@
             <item>
              <widget class="QLabel" name="label_20">
               <property name="text">
-               <string>придумайте пароль</string>
+               <string>Придумайте пароль</string>
               </property>
               <property name="margin">
                <number>0</number>
@@ -791,7 +791,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>150</width>
+                <width>16777215</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -819,7 +819,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>150</width>
+                <width>16777215</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1551,7 +1551,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>11</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
