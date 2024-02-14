@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
         self.mouse_press_position = None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
         self.ui.stackedWidget.setCurrentIndex(4)
         self.ui.stackedWidget_2.setCurrentIndex(0)
@@ -48,6 +48,12 @@ class MainWindow(QMainWindow):
 
         # Установка фильтра событий для главного окна
         self.installEventFilter(self)
+
+    def mouseDoubleClickEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            pos = event.globalPosition().toPoint()
+            if self.ui.widget_2.rect().contains(self.ui.widget_2.mapFromGlobal(pos)):
+                self.toggle_screen_state()
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.HoverMove:
@@ -89,23 +95,26 @@ class MainWindow(QMainWindow):
         self.showMinimized()
 
     def toggle_screen_state(self):
+        start_geometry = self.geometry()
         if not self.screen_expanded:
-            start_geometry = self.geometry()
             end_geometry = QApplication.primaryScreen().availableGeometry()
-            if self.normal_geometry is None:  # Сохраняем начальную геометрию, если еще не сохранена
-                self.normal_geometry = start_geometry
+            self.normal_geometry = start_geometry  # Обновляем сохраненную геометрию
         else:
-            start_geometry = self.geometry()
             end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
-
         if start_geometry == end_geometry:
             start_geometry, end_geometry = end_geometry, self.normal_geometry
 
         self.animation.setStartValue(start_geometry)
         self.animation.setEndValue(end_geometry)
+        self.animation.finished.connect(self.on_animation_finished)  # Связываем обработчик события завершения анимации
         self.animation.start()
 
         self.screen_expanded = not self.screen_expanded
+
+    def on_animation_finished(self):
+        if not self.screen_expanded:
+            self.setGeometry(self.normal_geometry)
+
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
