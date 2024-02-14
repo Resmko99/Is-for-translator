@@ -1,8 +1,9 @@
 import sys
 from functools import partial
-from PySide6.QtCore import Qt, QPoint, QEvent
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent
 from PySide6.QtWidgets import QApplication, QMainWindow
 from ui import Ui_MainWindow
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -13,11 +14,17 @@ class MainWindow(QMainWindow):
         self.mouse_press_position = None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
         self.ui.stackedWidget.setCurrentIndex(4)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.titleBtn_2.setChecked(True)
+
+        self.animation = QPropertyAnimation(self, b"geometry")
+        self.animation.setDuration(500)
+        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+
+        self.normal_geometry = None
 
         page_buttons = [
             (self.ui.incomeBtn_1, self.ui.incomeBtn_2, self.ui.pageIncome),
@@ -82,10 +89,22 @@ class MainWindow(QMainWindow):
         self.showMinimized()
 
     def toggle_screen_state(self):
-        if self.screen_expanded:
-            self.showNormal()
+        if not self.screen_expanded:
+            start_geometry = self.geometry()
+            end_geometry = QApplication.primaryScreen().availableGeometry()
+            if self.normal_geometry is None:  # Сохраняем начальную геометрию, если еще не сохранена
+                self.normal_geometry = start_geometry
         else:
-            self.showMaximized()
+            start_geometry = self.geometry()
+            end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
+
+        if start_geometry == end_geometry:
+            start_geometry, end_geometry = end_geometry, self.normal_geometry
+
+        self.animation.setStartValue(start_geometry)
+        self.animation.setEndValue(end_geometry)
+        self.animation.start()
+
         self.screen_expanded = not self.screen_expanded
 
     def mousePressEvent(self, event):
@@ -155,6 +174,7 @@ class MainWindow(QMainWindow):
         if event.button() == Qt.LeftButton:
             self.drag_position = None
             self.resize_direction = None
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
