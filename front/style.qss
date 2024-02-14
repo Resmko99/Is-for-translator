@@ -8,7 +8,6 @@
 
     #openMenuBtn {
         padding: 5px;
-        border: none;
         width: 30px;
         height: 30px;
     }
@@ -242,7 +241,7 @@
         border-radius: 10px;
         border: 1px solid #FFFFFF;
         padding: 5px 10px;
-        margin-top: 7 px;
+        margin-top: 7px;
         color: #FFFFFF;
         margin-left: 10px;
         margin-right: 10px;
@@ -528,5 +527,110 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #pageLog QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageLog QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageLog QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageChangePas QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageChangePas QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageChangePas QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageResPas QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageResPas QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageResPas QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageReg QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageReg QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageReg QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #notRegLabel {
+        margin-top: 20px;
         color: #FFFFFF;
     }

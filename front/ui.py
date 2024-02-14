@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1371, 939)
+        MainWindow.resize(1473, 939)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.inLogBtn.sizePolicy().hasHeightForWidth())
         self.inLogBtn.setSizePolicy(sizePolicy3)
-        self.inLogBtn.setMaximumSize(QSize(100, 16777215))
+        self.inLogBtn.setMaximumSize(QSize(16777215, 16777215))
         self.inLogBtn.setLayoutDirection(Qt.LeftToRight)
         self.inLogBtn.setAutoFillBackground(True)
 
@@ -253,7 +253,7 @@ class Ui_MainWindow(object):
         sizePolicy3.setHeightForWidth(self.changePasBtn.sizePolicy().hasHeightForWidth())
         self.changePasBtn.setSizePolicy(sizePolicy3)
         self.changePasBtn.setMinimumSize(QSize(110, 0))
-        self.changePasBtn.setMaximumSize(QSize(150, 16777215))
+        self.changePasBtn.setMaximumSize(QSize(16777215, 16777215))
         self.changePasBtn.setSizeIncrement(QSize(0, 0))
         self.changePasBtn.setLayoutDirection(Qt.LeftToRight)
         self.changePasBtn.setAutoFillBackground(True)
@@ -263,7 +263,7 @@ class Ui_MainWindow(object):
         self.backChangePasBtn = QPushButton(self.pageChangePas)
         self.backChangePasBtn.setObjectName(u"backChangePasBtn")
         self.backChangePasBtn.setMinimumSize(QSize(110, 0))
-        self.backChangePasBtn.setMaximumSize(QSize(150, 16777215))
+        self.backChangePasBtn.setMaximumSize(QSize(16777215, 16777215))
         self.backChangePasBtn.setSizeIncrement(QSize(100, 0))
 
         self.verticalLayout_12.addWidget(self.backChangePasBtn, 0, Qt.AlignHCenter)
@@ -327,7 +327,7 @@ class Ui_MainWindow(object):
         self.nextResBtn.setObjectName(u"nextResBtn")
         sizePolicy3.setHeightForWidth(self.nextResBtn.sizePolicy().hasHeightForWidth())
         self.nextResBtn.setSizePolicy(sizePolicy3)
-        self.nextResBtn.setMaximumSize(QSize(100, 16777215))
+        self.nextResBtn.setMaximumSize(QSize(16777214, 16777215))
         self.nextResBtn.setLayoutDirection(Qt.LeftToRight)
         self.nextResBtn.setAutoFillBackground(True)
 
@@ -417,7 +417,7 @@ class Ui_MainWindow(object):
         self.regBtn.setObjectName(u"regBtn")
         sizePolicy3.setHeightForWidth(self.regBtn.sizePolicy().hasHeightForWidth())
         self.regBtn.setSizePolicy(sizePolicy3)
-        self.regBtn.setMaximumSize(QSize(150, 16777215))
+        self.regBtn.setMaximumSize(QSize(16777215, 16777215))
         self.regBtn.setLayoutDirection(Qt.LeftToRight)
         self.regBtn.setAutoFillBackground(True)
 
@@ -426,7 +426,7 @@ class Ui_MainWindow(object):
         self.backBtnReg = QPushButton(self.pageReg)
         self.backBtnReg.setObjectName(u"backBtnReg")
         self.backBtnReg.setMinimumSize(QSize(100, 0))
-        self.backBtnReg.setMaximumSize(QSize(150, 16777215))
+        self.backBtnReg.setMaximumSize(QSize(16777215, 16777215))
 
         self.verticalLayout_8.addWidget(self.backBtnReg, 0, Qt.AlignHCenter)
 
@@ -2189,8 +2189,8 @@ class Ui_MainWindow(object):
         self.pushButton.toggled.connect(self.widget_4.setHidden)
         self.pushButton.toggled.connect(self.widget_4.setVisible)
 
-        self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(11)
+        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget_2.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2231,7 +2231,7 @@ class Ui_MainWindow(object):
         self.label_16.setText("")
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 email", None))
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"\u043f\u0440\u0438\u0434\u0443\u043c\u0430\u0439\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c", None))
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u0434\u0443\u043c\u0430\u0439\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c", None))
         self.label_22.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c", None))
 #if QT_CONFIG(tooltip)
         self.regBtn.setToolTip("")
