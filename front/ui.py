@@ -327,7 +327,7 @@ class Ui_MainWindow(object):
         self.nextResBtn.setObjectName(u"nextResBtn")
         sizePolicy3.setHeightForWidth(self.nextResBtn.sizePolicy().hasHeightForWidth())
         self.nextResBtn.setSizePolicy(sizePolicy3)
-        self.nextResBtn.setMaximumSize(QSize(16777215, 16777215))
+        self.nextResBtn.setMaximumSize(QSize(16777214, 16777215))
         self.nextResBtn.setLayoutDirection(Qt.LeftToRight)
         self.nextResBtn.setAutoFillBackground(True)
 
@@ -2189,7 +2189,7 @@ class Ui_MainWindow(object):
         self.pushButton.toggled.connect(self.widget_4.setHidden)
         self.pushButton.toggled.connect(self.widget_4.setVisible)
 
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(2)
         self.stackedWidget_2.setCurrentIndex(0)
 
 

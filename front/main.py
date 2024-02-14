@@ -182,5 +182,5 @@ if __name__ == "__main__":
         style_str = style_file.read()
     app.setStyleSheet(style_str)
     window = MainWindow()
-    window.showMaximized()
+    window.show()
     sys.exit(app.exec())
