@@ -1053,3 +1053,21 @@
     QScrollArea QWidget {
         background-color: transparent;
     }
+
+    #backBtnDesc {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #textEditDesc {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+        placeholder-text-color: #fff;
+    }

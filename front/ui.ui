@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1474</width>
-    <height>894</height>
+    <height>911</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1030,7 +1030,6 @@
                 <font>
                  <family>Montserrat Medium</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -1554,7 +1553,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -2190,8 +2189,8 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>193</width>
-                  <height>265</height>
+                  <width>250</width>
+                  <height>380</height>
                  </size>
                 </property>
                 <property name="acceptDrops">
