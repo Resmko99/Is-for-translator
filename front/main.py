@@ -1,3 +1,4 @@
+import sys
 from functools import partial
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout
@@ -7,10 +8,11 @@ import itertools
 
 from ui import Ui_MainWindow
 
+
 class RoundedImageLabel(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setContentsMargins(10, 10, 10, 10)  # Устанавливаем отступы для рамки
+        self.setContentsMargins(10, 10, 10, 10)
         self.setStyleSheet("border-radius: 10px; border: 1px solid #FFCC33;")
 
     def setPixmap(self, pixmap):
@@ -57,9 +59,45 @@ class ImageScrollArea(QWidget):
         self.scroll.setWidgetResizable(True)
         self.scrollContent = QWidget()
         self.scrollLayout = QVBoxLayout(self.scrollContent)
-        self.scroll.setStyleSheet("background-color: #24282E;"
-                                  "border: transparent;"
-                                  "border-radius: 20px;")
+
+        self.scroll.setStyleSheet(
+            """
+            QScrollArea {
+                background-color: #24282E;
+                border: none;
+            }
+
+            QScrollBar:vertical, QScrollBar:horizontal {
+                background-color: transparent;
+                border: none;
+                border-radius: 5px;
+                width: 10px;
+                height: 10px;
+            }
+
+            QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+                background-color: #FFFFFF;
+                border-radius: 5px;
+            }
+
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+                background-color: #2E333A;
+                height: 0px;
+                subcontrol-position: bottom;
+                subcontrol-origin: margin;
+            }
+
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+            QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+                background: none;
+            }
+
+            QScrollArea QWidget {
+                background-color: transparent;
+            }
+            """
+        )
 
         self.images_per_row = 5
 
@@ -103,9 +141,6 @@ class ImageScrollArea(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.clicked_widget = None
-        self.image_scroll_area = None
-        self.layout = None
         self.resize_direction = None
         self.resize_offset = QPoint()
         self.drag_position = None
@@ -133,8 +168,7 @@ class MainWindow(QMainWindow):
             (self.ui.accountBtn_1, self.ui.accountBtn_2, self.ui.pageAccount),
             (self.ui.aboutUs_1, self.ui.aboutUs_2, self.ui.pageAboutUs),
             (self.ui.acceptFileBtn_1, self.ui.acceptFileBtn_2, self.ui.pageReceiveFile),
-            (self.ui.translateBtn_1, self.ui.translateBtn_2, self.ui.pageTranslator),
-
+            (self.ui.translateBtn_1, self.ui.translateBtn_2, self.ui.pageTranslator)
         ]
         for button, button_2, page in page_buttons:
             for btn in [button, button_2]:
@@ -153,8 +187,9 @@ class MainWindow(QMainWindow):
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
-
         self.screen_expanded = False
+
+        # Установка фильтра событий для главного окна
         self.installEventFilter(self)
         self.setup_scroll_area()
 
@@ -226,15 +261,15 @@ class MainWindow(QMainWindow):
         start_geometry = self.geometry()
         if not self.screen_expanded:
             end_geometry = QApplication.primaryScreen().availableGeometry()
-            self.normal_geometry = start_geometry
+            self.normal_geometry = start_geometry  # Обновляем сохраненную геометрию
         else:
-            end_geometry = self.normal_geometry
+            end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
         if start_geometry == end_geometry:
             start_geometry, end_geometry = end_geometry, self.normal_geometry
 
         self.animation.setStartValue(start_geometry)
         self.animation.setEndValue(end_geometry)
-        self.animation.finished.connect(self.on_animation_finished)
+        self.animation.finished.connect(self.on_animation_finished)  # Связываем обработчик события завершения анимации
         self.animation.start()
 
         self.screen_expanded = not self.screen_expanded
@@ -242,6 +277,7 @@ class MainWindow(QMainWindow):
     def on_animation_finished(self):
         if not self.screen_expanded:
             self.setGeometry(self.normal_geometry)
+
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
@@ -313,10 +349,10 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication([])
+    app = QApplication(sys.argv)
     with open("style.qss", "r") as style_file:
         style_str = style_file.read()
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
-    app.exec()
+    sys.exit(app.exec())
