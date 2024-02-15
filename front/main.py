@@ -8,7 +8,7 @@ import itertools
 
 from ui import Ui_MainWindow
 
-class TextWidget(QWidget):
+class Calender(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.init_ui()
@@ -258,12 +258,12 @@ class MainWindow(QMainWindow):
         # Установка фильтра событий для главного окна
         self.installEventFilter(self)
         self.setup_scroll_area()
-        self.setup_text_widget()
+        self.setup_calender_widget()
 
-    def setup_text_widget(self):
-        text_widget = TextWidget()
+    def setup_calender_widget(self):
+        calender = Calender()
         self.ui.widgetCalender.setLayout(QVBoxLayout())  # Очищаем макет виджета widgetCalender
-        self.ui.widgetCalender.layout().addWidget(text_widget)
+        self.ui.widgetCalender.layout().addWidget(calender)
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()
