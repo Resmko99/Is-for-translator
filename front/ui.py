@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1474, 894)
+        MainWindow.resize(1474, 911)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -1042,7 +1042,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.photoDesc.sizePolicy().hasHeightForWidth())
         self.photoDesc.setSizePolicy(sizePolicy5)
         self.photoDesc.setMinimumSize(QSize(193, 265))
-        self.photoDesc.setMaximumSize(QSize(193, 265))
+        self.photoDesc.setMaximumSize(QSize(250, 380))
         self.photoDesc.setAcceptDrops(False)
         self.photoDesc.setLayoutDirection(Qt.LeftToRight)
         self.photoDesc.setPixmap(QPixmap(u":/Photo/Photo/EyX_7safWuU.jpg"))
@@ -2210,7 +2210,7 @@ class Ui_MainWindow(object):
         self.pushButton.toggled.connect(self.widget_4.setVisible)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(0)
+        self.stackedWidget_2.setCurrentIndex(3)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

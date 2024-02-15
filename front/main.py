@@ -1,7 +1,7 @@
 from functools import partial
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QRect
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout
-from PySide6.QtGui import QPixmap, QPainter, QBitmap
+from PySide6.QtGui import QPixmap, QPainter
 
 import itertools
 
@@ -11,7 +11,7 @@ from ui import Ui_MainWindow
 class RoundedImageLabel(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setContentsMargins(10, 10, 10, 10)  # Устанавливаем отступы для рамки
+        self.setContentsMargins(10, 10, 10, 10)
         self.setStyleSheet("border-radius: 10px; border: 1px solid #FFCC33;")
 
     def setPixmap(self, pixmap):
@@ -58,10 +58,45 @@ class ImageScrollArea(QWidget):
         self.scroll.setWidgetResizable(True)
         self.scrollContent = QWidget()
         self.scrollLayout = QVBoxLayout(self.scrollContent)
-        self.scroll.setStyleSheet("background-color: #24282E;"
-                                  "border: transparent;"
-                                  "border-radius: 20px;"
-                                  )
+
+        self.scroll.setStyleSheet(
+            """
+            QScrollArea {
+                background-color: #24282E;
+                border: none;
+            }
+
+            QScrollBar:vertical, QScrollBar:horizontal {
+                background-color: transparent;
+                border: none;
+                border-radius: 5px;
+                width: 10px;
+                height: 10px;
+            }
+
+            QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+                background-color: #FFFFFF;
+                border-radius: 5px;
+            }
+
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+                background-color: #2E333A;
+                height: 0px;
+                subcontrol-position: bottom;
+                subcontrol-origin: margin;
+            }
+
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+            QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+                background: none;
+            }
+
+            QScrollArea QWidget {
+                background-color: transparent;
+            }
+            """
+        )
 
         self.images_per_row = 5
 
@@ -143,10 +178,48 @@ class MainWindow(QMainWindow):
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
+        self.ui.backBtnDesc.clicked.connect(self.return_to_titles_page)
+        self.ui.pushButton_2.clicked.connect(self.pageAddOpen)
+        self.ui.backAddTitleBtn.clicked.connect(self.pageAddReturn)
         self.screen_expanded = False
 
         self.installEventFilter(self)
+
         self.setup_scroll_area()
+
+    def pageAddOpen(self):
+        self.ui.stackedWidget_2.setCurrentIndex(5)
+
+    def pageAddReturn(self):
+        self.ui.stackedWidget_2.setCurrentIndex(0)
+
+    def return_to_titles_page(self):
+        self.ui.stackedWidget_2.setCurrentIndex(0)
+
+    def setup_scroll_area(self):
+        self.image_scroll_area = ImageScrollArea()
+        self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
+
+        # Добавление обработчиков щелчка мыши для открытия страницы self.ui.pageDesc
+        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
+            child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
+
+    def open_desc_page(self, event, widget):
+        if event.button() == Qt.LeftButton:
+            self.clicked_widget = widget  # Сохраняем информацию о нажатом виджете
+            self.update_photo_desc()
+
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
+
+    def return_to_titles_page(self):
+        self.ui.stackedWidget_2.setCurrentIndex(0)  # Устанавливаем индекс обратно на страницу с тайтлами
+
+    def update_photo_desc(self):
+        # Отображение закругленной картинки в photoDesc
+        if hasattr(self, 'clicked_widget'):
+            pixmap = self.clicked_widget.pixmap()  # Получаем pixmap из нажатого виджета
+            rounded_pixmap = self.clicked_widget.rounded_pixmap(pixmap)  # Получаем закругленный pixmap
+            self.ui.photoDesc.setPixmap(rounded_pixmap)  # Отображаем закругленную картинку в photoDesc
 
     def mouseDoubleClickEvent(self, event):
         if event.buttons() == Qt.LeftButton:
@@ -281,10 +354,6 @@ class MainWindow(QMainWindow):
         if event.button() == Qt.LeftButton:
             self.drag_position = None
             self.resize_direction = None
-
-    def setup_scroll_area(self):
-        self.image_scroll_area = ImageScrollArea()
-        self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
 
 if __name__ == "__main__":
