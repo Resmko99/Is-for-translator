@@ -63,7 +63,7 @@ class ImageScrollArea(QWidget):
                                   "border-radius: 20px;"
                                   )
 
-        self.images_per_row = 4
+        self.images_per_row = 5
 
         for i in range(56):
             if i % self.images_per_row == 0:
