@@ -715,11 +715,11 @@
     }
 
     #dateReleaseAddTitle::down-button {
-        border:transparent;
+        border: transparent;
     }
 
     #dateReleaseAddTitle::up-button {
-        border:transparent;
+        border: transparent;
     }
 
     #pageEditTitle QLabel {
@@ -1005,4 +1005,51 @@
 
     #deleteListTask {
         margin-right: 10px;
+    }
+
+    #titleWidget{
+        background-color: #24282E;
+        border: none;
+    }
+
+    QScrollArea {
+        background-color: #24282E;
+        border: none;
+    }
+
+    QScrollBar:vertical {
+        background-color: #2E333A;
+        width: 12px;
+        margin: 0px 0px 0px 0px;
+    }
+
+    QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        min-height: 20px;
+    }
+
+    QScrollBar::add-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: top;
+        subcontrol-origin: margin;
+    }
+
+    QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+        background: none;
+    }
+
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    QScrollArea QWidget {
+        background-color: transparent;
     }
