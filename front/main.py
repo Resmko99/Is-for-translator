@@ -9,42 +9,32 @@ import itertools
 from ui import Ui_MainWindow
 
 class Calender(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, ui, parent=None):
         super().__init__(parent)
+        self.ui = ui
         self.init_ui()
 
     def init_ui(self):
         self.layout = QVBoxLayout(self)
-        self.setLayout(self.layout)
+        self.ui.widgetCalender.setLayout(self.layout)
 
-        # Добавляем поле для выбора месяца
-        self.month_combo = QComboBox()
+        self.month_combo = self.ui.comboBoxMonth
         self.month_combo.addItems([
-            "January", "February", "March", "April",
-            "May", "June", "July", "August",
-            "September", "October", "November", "December"
+            "Январь", "Февраль", "Март", "Апрель",
+            "Май", "Июнь", "Июль", "Август",
+            "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
         ])
         self.month_combo.setCurrentIndex(QDate.currentDate().month() - 1)
         self.month_combo.currentIndexChanged.connect(self.update_calendar)
-        self.layout.addWidget(self.month_combo)
 
-        # Добавляем поле для выбора года
-        self.year_combo = QComboBox()
+        self.year_combo = self.ui.comboBoxYear
         self.year_combo.addItems([str(year) for year in range(1900, 2101)])
         self.year_combo.setCurrentText(str(QDate.currentDate().year()))
         self.year_combo.currentIndexChanged.connect(self.update_calendar)
-        self.layout.addWidget(self.year_combo)
 
         # Создаем сетку для дней недели и чисел месяца
         self.grid_layout = QGridLayout()
         self.layout.addLayout(self.grid_layout)
-
-        # Добавляем заголовки для дней недели
-        days_of_week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        for col, day in enumerate(days_of_week):
-            label = QLabel(day)
-            label.setAlignment(Qt.AlignCenter)
-            self.grid_layout.addWidget(label, 0, col)  # Заголовки дней недели будут в первой строке
 
         # Добавляем дни месяца
         self.update_calendar()
@@ -55,20 +45,18 @@ class Calender(QWidget):
         first_day_of_month = QDate(year, month_index, 1).dayOfWeek()
         days_in_month = QDate(year, month_index, 1).daysInMonth()
 
-        # Очищаем текущие дни месяца
         for i in reversed(range(1, self.grid_layout.count())):
             widget = self.grid_layout.itemAt(i).widget()
             if widget:
                 widget.setParent(None)
 
-        # Определяем начальную позицию для первого числа месяца
-        row = 1  # Начинаем с второй строки (первая строка занята заголовками дней недели)
+        row = 0
         col = first_day_of_month - 1
 
 
         for day in range(1, days_in_month + 1):
             button = QPushButton(str(day))
-            button.setFixedSize(50, 50)
+            button.setFixedSize(100, 100)
             self.grid_layout.addWidget(button, row, col)
             col = (col + 1) % 7
             if col == 0:
@@ -260,29 +248,34 @@ class MainWindow(QMainWindow):
         self.setup_scroll_area()
         self.setup_calender_widget()
 
+    def open_desc_page(self, event, widget):
+        if event.button() == Qt.LeftButton:
+            self.clicked_widget = widget
+            self.update_photo_desc()
+            self.change_page_with_animation(self.ui.pageDesc)
+
     def setup_calender_widget(self):
-        calender = Calender()
-        self.ui.widgetCalender.setLayout(QVBoxLayout())  # Очищаем макет виджета widgetCalender
-        self.ui.widgetCalender.layout().addWidget(calender)
+        self.calender = Calender(self.ui)
+        self.ui.widgetCalender.layout().addWidget(self.calender, 0, 0)
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()
         self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
-        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel): # Добавление обработчиков щелчка мыши для открытия страницы self.ui.pageDesc
+        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
             child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
-            self.clicked_widget = widget  # Сохраняем информацию о нажатом виджете
+            self.clicked_widget = widget
             self.update_photo_desc()
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
     def update_photo_desc(self):
-        if hasattr(self, 'clicked_widget'):  # Отображение закругленной картинки в photoDesc
-            pixmap = self.clicked_widget.pixmap() # Получаем pixmap из нажатого виджета
-            rounded_pixmap = self.clicked_widget.rounded_pixmap(pixmap)  # Получаем закругленный pixmap
-            self.ui.photoDesc.setPixmap(rounded_pixmap)  # Отображаем закругленную картинку в photoDesc
+        if hasattr(self, 'clicked_widget'):
+            pixmap = self.clicked_widget.pixmap()
+            rounded_pixmap = self.clicked_widget.rounded_pixmap(pixmap)
+            self.ui.photoDesc.setPixmap(rounded_pixmap)
 
     def mouseDoubleClickEvent(self, event):
         if event.buttons() == Qt.LeftButton:
