@@ -1,12 +1,85 @@
 import sys
 from functools import partial
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
+from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QComboBox, QGridLayout, QPushButton
 from PySide6.QtGui import QPixmap, QPainter
 
 import itertools
 
 from ui import Ui_MainWindow
+
+class Calender(QWidget):
+    def __init__(self, ui, parent=None):
+        super().__init__(parent)
+        self.ui = ui
+        self.init_ui()
+
+    def init_ui(self):
+        self.layout = QGridLayout(self)
+        self.setLayout(self.layout)
+
+        # Заменяем создание выпадающего списка month_combo на использование comboBoxMonth
+        self.month_combo = self.ui.comboBoxMonth
+        self.month_combo.addItems([
+            "Январь", "Февраль", "Март", "Апрель",
+            "Май", "Июнь", "Июль", "Август",
+            "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        ])
+        self.month_combo.setCurrentIndex(QDate.currentDate().month() - 1)
+        self.month_combo.currentIndexChanged.connect(self.update_calendar)
+
+        # Заменяем создание выпадающего списка year_combo на использование comboBoxYear
+        self.year_combo = self.ui.comboBoxYear
+        self.year_combo.addItems([str(year) for year in range(1900, 2101)])
+        self.year_combo.setCurrentText(str(QDate.currentDate().year()))
+        self.year_combo.currentIndexChanged.connect(self.update_calendar)
+
+        # Создаем сетку для дней недели и чисел месяца
+        self.grid_layout = QGridLayout()
+        self.grid_layout.setHorizontalSpacing(0)
+        self.grid_layout.setVerticalSpacing(0)
+        self.layout.addLayout(self.grid_layout, 0, 0)
+
+        # Добавляем дни месяца
+        self.update_calendar()
+
+    def update_calendar(self):
+        month_index = self.month_combo.currentIndex() + 1
+        year = int(self.year_combo.currentText())
+        days_in_month = QDate(year, month_index, 1).daysInMonth()
+
+        # Очищаем текущие дни месяца
+        for i in reversed(range(1, self.grid_layout.count())):
+            widget = self.grid_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+
+        # Определяем начальную позицию для первого числа месяца
+        row = 1  # Начинаем с второй строки (первая строка занята заголовками дней недели)
+        col = 0  # Первый столбец
+
+        for day in range(1, days_in_month + 1):
+            button = QPushButton(str(day))
+            button.setMaximumSize(260, 260)
+            button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #010409;
+                    border: 1px solid #FFCC33;
+                    border-radius: 10px;
+                    font: 20px "Inter";
+                    color: #FFFFFF;
+                }
+                
+                QPushButton:pressed {
+                    background-color: #BEA14B;
+                }
+                '''
+            )
+            self.grid_layout.addWidget(button, row, col)
+            col = (col + 1) % 7
+            if col == 0:
+                row += 1
 
 
 class RoundedImageLabel(QLabel):
@@ -192,6 +265,12 @@ class MainWindow(QMainWindow):
         # Установка фильтра событий для главного окна
         self.installEventFilter(self)
         self.setup_scroll_area()
+        self.setup_calender_widget()
+
+    def setup_calender_widget(self):
+        calender = Calender(self.ui)
+        self.ui.widgetCalender.setLayout(QVBoxLayout())
+        self.ui.widgetCalender.layout().addWidget(calender)
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()

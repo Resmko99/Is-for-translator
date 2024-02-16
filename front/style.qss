@@ -337,6 +337,7 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       width: 540px;
        height: 25px;
        font-size: 14px;
     }
@@ -357,6 +358,7 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       width: 540px;
        height: 25px;
        font-size: 14px;
     }
