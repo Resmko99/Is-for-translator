@@ -38,7 +38,7 @@ class Calender(QWidget):
         self.grid_layout = QGridLayout()
         self.grid_layout.setHorizontalSpacing(0)
         self.grid_layout.setVerticalSpacing(0)
-        self.layout.addLayout(self.grid_layout, 0,  0)
+        self.layout.addLayout(self.grid_layout, 0, 0)
 
         # Добавляем дни месяца
         self.update_calendar()
@@ -60,7 +60,7 @@ class Calender(QWidget):
 
         for day in range(1, days_in_month + 1):
             button = QPushButton(str(day))
-            button.setMaximumSize(260, 260)
+            button.setMaximumSize(330, 330)
             button.setStyleSheet(
                 '''
                 QPushButton {

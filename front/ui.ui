@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1485</width>
-    <height>911</height>
+    <width>1156</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1024</width>
+    <width>1156</width>
     <height>768</height>
    </size>
   </property>
@@ -1042,6 +1042,7 @@
                 <font>
                  <family>Montserrat Medium</family>
                  <pointsize>9</pointsize>
+                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
