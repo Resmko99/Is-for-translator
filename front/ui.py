@@ -26,7 +26,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1474, 894)
+        MainWindow.resize(1485, 911)
+        MainWindow.setMinimumSize(QSize(1024, 768))
+        MainWindow.setMaximumSize(QSize(3840, 2160))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -1119,18 +1121,21 @@ class Ui_MainWindow(object):
 
         self.comboBoxMonth = QComboBox(self.widget_15)
         self.comboBoxMonth.setObjectName(u"comboBoxMonth")
-        sizePolicy2.setHeightForWidth(self.comboBoxMonth.sizePolicy().hasHeightForWidth())
-        self.comboBoxMonth.setSizePolicy(sizePolicy2)
-        self.comboBoxMonth.setMinimumSize(QSize(540, 0))
+        sizePolicy7 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.comboBoxMonth.sizePolicy().hasHeightForWidth())
+        self.comboBoxMonth.setSizePolicy(sizePolicy7)
+        self.comboBoxMonth.setMinimumSize(QSize(0, 0))
         self.comboBoxMonth.setMaximumSize(QSize(540, 16777215))
 
         self.gridLayout_21.addWidget(self.comboBoxMonth, 1, 0, 1, 1)
 
         self.comboBoxYear = QComboBox(self.widget_15)
         self.comboBoxYear.setObjectName(u"comboBoxYear")
-        sizePolicy2.setHeightForWidth(self.comboBoxYear.sizePolicy().hasHeightForWidth())
-        self.comboBoxYear.setSizePolicy(sizePolicy2)
-        self.comboBoxYear.setMinimumSize(QSize(540, 0))
+        sizePolicy7.setHeightForWidth(self.comboBoxYear.sizePolicy().hasHeightForWidth())
+        self.comboBoxYear.setSizePolicy(sizePolicy7)
+        self.comboBoxYear.setMinimumSize(QSize(0, 0))
         self.comboBoxYear.setMaximumSize(QSize(540, 16777215))
 
         self.gridLayout_21.addWidget(self.comboBoxYear, 1, 2, 1, 1)
@@ -1151,9 +1156,6 @@ class Ui_MainWindow(object):
 
         self.widgetCalender = QWidget(self.widget_14)
         self.widgetCalender.setObjectName(u"widgetCalender")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
         sizePolicy7.setHeightForWidth(self.widgetCalender.sizePolicy().hasHeightForWidth())
         self.widgetCalender.setSizePolicy(sizePolicy7)
         self.gridLayout_22 = QGridLayout(self.widgetCalender)

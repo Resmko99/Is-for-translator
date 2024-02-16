@@ -15,9 +15,10 @@ class Calender(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        self.layout = QVBoxLayout(self)
-        self.ui.widgetCalender.setLayout(self.layout)
+        self.layout = QGridLayout(self)
+        self.setLayout(self.layout)
 
+        # Заменяем создание выпадающего списка month_combo на использование comboBoxMonth
         self.month_combo = self.ui.comboBoxMonth
         self.month_combo.addItems([
             "Январь", "Февраль", "Март", "Апрель",
@@ -27,6 +28,7 @@ class Calender(QWidget):
         self.month_combo.setCurrentIndex(QDate.currentDate().month() - 1)
         self.month_combo.currentIndexChanged.connect(self.update_calendar)
 
+        # Заменяем создание выпадающего списка year_combo на использование comboBoxYear
         self.year_combo = self.ui.comboBoxYear
         self.year_combo.addItems([str(year) for year in range(1900, 2101)])
         self.year_combo.setCurrentText(str(QDate.currentDate().year()))
@@ -34,7 +36,9 @@ class Calender(QWidget):
 
         # Создаем сетку для дней недели и чисел месяца
         self.grid_layout = QGridLayout()
-        self.layout.addLayout(self.grid_layout)
+        self.grid_layout.setHorizontalSpacing(0)
+        self.grid_layout.setVerticalSpacing(0)
+        self.layout.addLayout(self.grid_layout, 0, 0)
 
         # Добавляем дни месяца
         self.update_calendar()
@@ -42,21 +46,36 @@ class Calender(QWidget):
     def update_calendar(self):
         month_index = self.month_combo.currentIndex() + 1
         year = int(self.year_combo.currentText())
-        first_day_of_month = QDate(year, month_index, 1).dayOfWeek()
         days_in_month = QDate(year, month_index, 1).daysInMonth()
 
+        # Очищаем текущие дни месяца
         for i in reversed(range(1, self.grid_layout.count())):
             widget = self.grid_layout.itemAt(i).widget()
             if widget:
                 widget.setParent(None)
 
-        row = 0
-        col = first_day_of_month - 1
-
+        # Определяем начальную позицию для первого числа месяца
+        row = 1  # Начинаем с второй строки (первая строка занята заголовками дней недели)
+        col = 0  # Первый столбец
 
         for day in range(1, days_in_month + 1):
             button = QPushButton(str(day))
-            button.setFixedSize(100, 100)
+            button.setMaximumSize(260, 260)
+            button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #010409;
+                    border: 1px solid #FFCC33;
+                    border-radius: 10px;
+                    font: 20px "Inter";
+                    color: #FFFFFF;
+                }
+                
+                QPushButton:pressed {
+                    background-color: #BEA14B;
+                }
+                '''
+            )
             self.grid_layout.addWidget(button, row, col)
             col = (col + 1) % 7
             if col == 0:
@@ -255,8 +274,9 @@ class MainWindow(QMainWindow):
             self.change_page_with_animation(self.ui.pageDesc)
 
     def setup_calender_widget(self):
-        self.calender = Calender(self.ui)
-        self.ui.widgetCalender.layout().addWidget(self.calender, 0, 0)
+        calender = Calender(self.ui)
+        self.ui.widgetCalender.setLayout(QVBoxLayout())
+        self.ui.widgetCalender.layout().addWidget(calender)
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()
