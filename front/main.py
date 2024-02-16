@@ -38,7 +38,7 @@ class Calender(QWidget):
         self.grid_layout = QGridLayout()
         self.grid_layout.setHorizontalSpacing(0)
         self.grid_layout.setVerticalSpacing(0)
-        self.layout.addLayout(self.grid_layout, 0, 0)
+        self.layout.addLayout(self.grid_layout, 0,  0)
 
         # Добавляем дни месяца
         self.update_calendar()
