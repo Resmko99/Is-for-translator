@@ -477,9 +477,9 @@ class Ui_MainWindow(object):
         self.openMenuBtn = QPushButton(self.widget)
         self.openMenuBtn.setObjectName(u"openMenuBtn")
         icon4 = QIcon()
-        icon4.addFile(u":/icon/icon/rev.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon4.addFile(u":/icon/icon/free-icon-chevron-248744.png", QSize(), QIcon.Active, QIcon.On)
-        icon4.addFile(u":/icon/icon/rev.png", QSize(), QIcon.Selected, QIcon.On)
+        icon4.addFile(u":/icon/icon/free-icon-chevron-248744.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon4.addFile(u":/icon/icon/rev.png", QSize(), QIcon.Active, QIcon.On)
+        icon4.addFile(u":/icon/icon/free-icon-chevron-248744.png", QSize(), QIcon.Selected, QIcon.On)
         self.openMenuBtn.setIcon(icon4)
         self.openMenuBtn.setIconSize(QSize(20, 20))
         self.openMenuBtn.setCheckable(True)
@@ -510,16 +510,6 @@ class Ui_MainWindow(object):
         self.label_2.setScaledContents(True)
 
         self.horizontalLayout.addWidget(self.label_2)
-
-        self.label_3 = QLabel(self.fullMenu)
-        self.label_3.setObjectName(u"label_3")
-        font = QFont()
-        font.setFamilies([u"Montserrat Medium"])
-        font.setPointSize(9)
-        font.setBold(False)
-        self.label_3.setFont(font)
-
-        self.horizontalLayout.addWidget(self.label_3)
 
 
         self.verticalLayout_4.addLayout(self.horizontalLayout)
@@ -2261,7 +2251,6 @@ class Ui_MainWindow(object):
         self.backBtnReg.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0430\u0434", None))
         self.openMenuBtn.setText("")
         self.label_2.setText("")
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"DADA GROUP", None))
         self.titleBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0439\u0442\u043b\u044b", None))
         self.incomeBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0445\u043e\u0434\u044b", None))
         self.scheduleBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435", None))

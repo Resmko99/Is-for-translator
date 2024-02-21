@@ -957,9 +957,9 @@
              </property>
              <property name="icon">
               <iconset resource="resource.qrc">
-               <normaloff>:/icon/icon/rev.png</normaloff>
-               <activeon>:/icon/icon/free-icon-chevron-248744.png</activeon>
-               <selectedon>:/icon/icon/rev.png</selectedon>:/icon/icon/rev.png</iconset>
+               <normaloff>:/icon/icon/free-icon-chevron-248744.png</normaloff>
+               <activeon>:/icon/icon/rev.png</activeon>
+               <selectedon>:/icon/icon/free-icon-chevron-248744.png</selectedon>:/icon/icon/free-icon-chevron-248744.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1033,21 +1033,6 @@
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="font">
-                <font>
-                 <family>Montserrat Medium</family>
-                 <pointsize>9</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>DADA GROUP</string>
                </property>
               </widget>
              </item>

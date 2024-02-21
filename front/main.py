@@ -225,6 +225,10 @@ class MainWindow(QMainWindow):
         self.ui.icon.hide()
         self.ui.stackedWidget.setCurrentIndex(4)
         self.ui.stackedWidget_2.setCurrentIndex(0)
+        self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
+        self.ui.fullMenu.hide()
+        self.ui.icon.show()
+        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
 
         self.animation = QPropertyAnimation(self, b"geometry")
@@ -278,6 +282,15 @@ class MainWindow(QMainWindow):
         calender = Calender(self.ui)
         self.ui.widgetCalender.setLayout(QVBoxLayout())
         self.ui.widgetCalender.layout().addWidget(calender)
+
+    def toggle_full_menu(self):
+
+        if self.ui.fullMenu.isHidden():
+            self.ui.fullMenu.show()
+            self.ui.icon.hide()
+        else:
+            self.ui.fullMenu.hide()
+            self.ui.icon.show()
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()

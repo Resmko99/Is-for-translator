@@ -218,6 +218,7 @@
         border: 1px solid #FFCC33;
         placeholder-text-color: #FFFFFF;
         text: #FFFFFF;
+        font: 14px "Inter";
         color: #FFFFFF;
     }
 
@@ -400,6 +401,8 @@
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
         color: #FFFFFF;
+        font: 14px "Inter";
+        margin-bottom: 7px;
     }
 
     #imagePost {
@@ -407,6 +410,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
+        font: 14px "Inter";
     }
 
     #publishBtn {
@@ -422,6 +426,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
+        font: 14px "Inter";
     }
 
     #recipientFile {
@@ -430,7 +435,7 @@
        border-radius: 10px;
        color: #FFFFFF;
        height: 25px;
-       font-size: 14px;
+       font: 14px "Inter";
     }
 
     #recipientFile::down-arrow {
@@ -449,6 +454,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         color: #FFFFFF;
+        font: 14px "Inter";
         height: 25px;
     }
 
@@ -705,6 +711,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         color: #FFFFFF;
+        font: 14px "Inter";
         height: 25px;
         font-size: 14px;
     }
