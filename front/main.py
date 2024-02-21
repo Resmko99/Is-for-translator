@@ -1,7 +1,8 @@
 import sys
 from functools import partial
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QComboBox, QGridLayout, QPushButton
+from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea,
+                               QHBoxLayout, QComboBox, QGridLayout, QPushButton)
 from PySide6.QtGui import QPixmap, QPainter
 
 import itertools
