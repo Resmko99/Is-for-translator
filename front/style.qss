@@ -301,6 +301,7 @@
        border-radius: 10px;
        color: #FFFFFF;
        font: 14px "Inter";
+       width: 540px;
        height: 25px;
        font-size: 14px;
     }
@@ -321,6 +322,7 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       width: 540px;
        height: 25px;
     }
 
@@ -397,6 +399,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
+        color: #FFFFFF;
     }
 
     #imagePost {
@@ -445,6 +448,8 @@
         background-color: #010409;
         border: 1px solid #FFCC33;
         border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
     }
 
     #imageCrewAcc {

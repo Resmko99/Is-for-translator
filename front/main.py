@@ -1,7 +1,8 @@
 import sys
 from functools import partial
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QComboBox, QGridLayout, QPushButton
+from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
+                               QGridLayout, QPushButton)
 from PySide6.QtGui import QPixmap, QPainter
 
 import itertools
@@ -60,7 +61,7 @@ class Calender(QWidget):
 
         for day in range(1, days_in_month + 1):
             button = QPushButton(str(day))
-            button.setMaximumSize(260, 260)
+            button.setMaximumSize(330, 330)
             button.setStyleSheet(
                 '''
                 QPushButton {
@@ -267,6 +268,12 @@ class MainWindow(QMainWindow):
         self.setup_scroll_area()
         self.setup_calender_widget()
 
+    def open_desc_page(self, event, widget):
+        if event.button() == Qt.LeftButton:
+            self.clicked_widget = widget
+            self.update_photo_desc()
+            self.change_page_with_animation(self.ui.pageDesc)
+
     def setup_calender_widget(self):
         calender = Calender(self.ui)
         self.ui.widgetCalender.setLayout(QVBoxLayout())
@@ -276,20 +283,20 @@ class MainWindow(QMainWindow):
         self.image_scroll_area = ImageScrollArea()
         self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
-        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel): # Добавление обработчиков щелчка мыши для открытия страницы self.ui.pageDesc
+        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
             child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
-            self.clicked_widget = widget  # Сохраняем информацию о нажатом виджете
+            self.clicked_widget = widget
             self.update_photo_desc()
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
     def update_photo_desc(self):
-        if hasattr(self, 'clicked_widget'):  # Отображение закругленной картинки в photoDesc
-            pixmap = self.clicked_widget.pixmap() # Получаем pixmap из нажатого виджета
-            rounded_pixmap = self.clicked_widget.rounded_pixmap(pixmap)  # Получаем закругленный pixmap
-            self.ui.photoDesc.setPixmap(rounded_pixmap)  # Отображаем закругленную картинку в photoDesc
+        if hasattr(self, 'clicked_widget'):
+            pixmap = self.clicked_widget.pixmap()
+            rounded_pixmap = self.clicked_widget.rounded_pixmap(pixmap)
+            self.ui.photoDesc.setPixmap(rounded_pixmap)
 
     def mouseDoubleClickEvent(self, event):
         if event.buttons() == Qt.LeftButton:
