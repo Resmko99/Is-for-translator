@@ -1042,6 +1042,7 @@
                 <font>
                  <family>Montserrat Medium</family>
                  <pointsize>9</pointsize>
+                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
