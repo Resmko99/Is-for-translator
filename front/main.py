@@ -1,12 +1,16 @@
 import sys
+import os
 from functools import partial
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QComboBox, QGridLayout, QPushButton
-from PySide6.QtGui import QPixmap, QPainter
+from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
+                               QGridLayout, QPushButton)
+from PySide6.QtGui import QPixmap, QPainter, QCursor
 
 import itertools
 
 from ui import Ui_MainWindow
+
+directory = os.path.abspath(os.curdir)
 
 class Calender(QWidget):
     def __init__(self, ui, parent=None):
@@ -224,6 +228,10 @@ class MainWindow(QMainWindow):
         self.ui.icon.hide()
         self.ui.stackedWidget.setCurrentIndex(4)
         self.ui.stackedWidget_2.setCurrentIndex(0)
+        self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
+        self.ui.fullMenu.hide()
+        self.ui.icon.show()
+        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
 
         self.animation = QPropertyAnimation(self, b"geometry")
@@ -231,6 +239,8 @@ class MainWindow(QMainWindow):
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
 
         self.normal_geometry = None
+
+
 
         page_buttons = [
             (self.ui.incomeBtn_1, self.ui.incomeBtn_2, self.ui.pageIncome),
@@ -263,9 +273,17 @@ class MainWindow(QMainWindow):
         self.screen_expanded = False
 
         # Установка фильтра событий для главного окна
+        self.open_hand_px = QPixmap(directory + f'/Photo/free-icon-cursor-5340828.png')
+        self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
+        self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
+        self.open_hand_cursor = QCursor(self.scaled_open_hand_px, 0, 0)
+        self.setCursor(self.open_hand_cursor)
+        self.current_cursor = self.open_hand_cursor
+
         self.installEventFilter(self)
         self.setup_scroll_area()
         self.setup_calender_widget()
+
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
@@ -277,6 +295,15 @@ class MainWindow(QMainWindow):
         calender = Calender(self.ui)
         self.ui.widgetCalender.setLayout(QVBoxLayout())
         self.ui.widgetCalender.layout().addWidget(calender)
+
+    def toggle_full_menu(self):
+
+        if self.ui.fullMenu.isHidden():
+            self.ui.fullMenu.show()
+            self.ui.icon.hide()
+        else:
+            self.ui.fullMenu.hide()
+            self.ui.icon.show()
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()
@@ -315,24 +342,26 @@ class MainWindow(QMainWindow):
             if left_edge or right_edge or top_edge or bottom_edge:
                 if left_edge:
                     if top_edge:
-                        self.setCursor(Qt.SizeFDiagCursor)
+                        self.current_cursor = Qt.SizeFDiagCursor
                     elif bottom_edge:
-                        self.setCursor(Qt.SizeBDiagCursor)
+                        self.current_cursor = Qt.SizeBDiagCursor
                     else:
-                        self.setCursor(Qt.SizeHorCursor)
+                        self.current_cursor = Qt.SizeHorCursor
                 elif right_edge:
                     if top_edge:
-                        self.setCursor(Qt.SizeBDiagCursor)
+                        self.current_cursor = Qt.SizeBDiagCursor
                     elif bottom_edge:
-                        self.setCursor(Qt.SizeFDiagCursor)
+                        self.current_cursor = Qt.SizeFDiagCursor
                     else:
-                        self.setCursor(Qt.SizeHorCursor)
+                        self.current_cursor = Qt.SizeHorCursor
                 elif top_edge or bottom_edge:
-                    self.setCursor(Qt.SizeVerCursor)
-                else:
-                    self.setCursor(Qt.ArrowCursor)
+                    self.current_cursor = Qt.SizeVerCursor
             else:
-                self.setCursor(Qt.ArrowCursor)
+                # Если не на боковых сторонах, оставляем курсор Open Hand
+                self.current_cursor = self.open_hand_cursor
+
+            # Устанавливаем текущий курсор
+            self.setCursor(self.current_cursor)
 
         return super().eventFilter(obj, event)
 

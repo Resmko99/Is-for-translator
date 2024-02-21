@@ -957,9 +957,9 @@
              </property>
              <property name="icon">
               <iconset resource="resource.qrc">
-               <normaloff>:/icon/icon/rev.png</normaloff>
-               <activeon>:/icon/icon/free-icon-chevron-248744.png</activeon>
-               <selectedon>:/icon/icon/rev.png</selectedon>:/icon/icon/rev.png</iconset>
+               <normaloff>:/icon/icon/free-icon-chevron-248744.png</normaloff>
+               <activeon>:/icon/icon/rev.png</activeon>
+               <selectedon>:/icon/icon/free-icon-chevron-248744.png</selectedon>:/icon/icon/free-icon-chevron-248744.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1033,21 +1033,6 @@
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="font">
-                <font>
-                 <family>Montserrat Medium</family>
-                 <pointsize>9</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>DADA GROUP</string>
                </property>
               </widget>
              </item>
@@ -1566,7 +1551,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>14</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -2025,14 +2010,14 @@
                <item row="2" column="2">
                 <widget class="QLineEdit" name="totalIncomeEdit">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>540</width>
+                   <width>0</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -2047,14 +2032,14 @@
                <item row="2" column="0">
                 <widget class="QComboBox" name="crewComboBox">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>540</width>
+                   <width>0</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -3567,14 +3552,14 @@
               <item>
                <widget class="QTextEdit" name="fileAdd">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>1000</width>
+                  <width>900</width>
                   <height>270</height>
                  </size>
                 </property>
@@ -3619,7 +3604,7 @@
                 <property name="maximumSize">
                  <size>
                   <width>540</width>
-                  <height>16777215</height>
+                  <height>25</height>
                  </size>
                 </property>
                </widget>
@@ -4462,7 +4447,7 @@
                <item row="0" column="0" alignment="Qt::AlignHCenter">
                 <widget class="QLabel" name="verLabel">
                  <property name="text">
-                  <string>ver 0.0.1</string>
+                  <string>ver 0.0.2</string>
                  </property>
                 </widget>
                </item>
