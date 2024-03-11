@@ -5,12 +5,16 @@ from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent,
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton)
 from PySide6.QtGui import QPixmap, QPainter, QCursor
+from PySide6.QtWidgets import QLabel, QLineEdit
+from googletrans import Translator
+from PySide6.QtCore import QTimer
 
-import itertools
+import psycopg2
 
 from ui import Ui_MainWindow
 
 directory = os.path.abspath(os.curdir)
+
 
 class Calender(QWidget):
     def __init__(self, ui, parent=None):
@@ -74,7 +78,7 @@ class Calender(QWidget):
                     font: 20px "Inter";
                     color: #FFFFFF;
                 }
-                
+
                 QPushButton:pressed {
                     background-color: #BEA14B;
                 }
@@ -118,19 +122,6 @@ class ImageScrollArea(QWidget):
     def setup_ui(self):
         self.scroll_area_contents_layout = QVBoxLayout(self)
         self.scroll_area_contents_layout.setAlignment(Qt.AlignTop)
-
-        image_paths = [
-            r"Photo\AA1kTdiJ.jpg",
-            r"Photo\EyX_7safWuU.jpg",
-            r"Photo\x_89c4262c.jpg",
-            r"Photo\3G3tOpNoHPQ.jpg",
-            r"Photo\ee855f4a-8d70-4c03-b56e-f7a5059bbbec.jpg",
-            r"Photo\1bbb92772c6c2826a41f6f43dddb515d.jpg",
-            r"Photo\e1d2c368-d1eb-43f3-9dd6-c33c8ac680d2.jpg",
-            r"Photo\0a1a1fd8-f38f-4ce2-84a8-74a83c63203c.jpg",
-        ]
-
-        repeated_paths = itertools.cycle(image_paths)
 
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
@@ -176,44 +167,67 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        self.images_per_row = 5
+        self.load_images_from_database()
 
-        for i in range(56):
-            if i % self.images_per_row == 0:
-                self.row_layout = QHBoxLayout()
-                self.scrollLayout.addLayout(self.row_layout)
+        self.scrollLayout.addStretch()
+        self.scroll.setWidget(self.scrollContent)
+        self.scroll_area_contents_layout.addWidget(self.scroll)
 
-            self.image_text_container = QWidget()
-            self.image_text_container.setStyleSheet("background-color: #3D434B;"
-                                                    "border: none;"
-                                                    "border-radius: 10px;"
-                                                    "border: 2px solid #FFCC33;"
-                                                    "margin: 15px;")
+    def load_images_from_database(self):
+        # Подключаемся к базе данных
+        connection = psycopg2.connect(
+            host="localhost",
+            database="Manga",
+            user="postgres",
+            password="Zasada0902_2000"
+        )
 
-            self.image_text_layout = QVBoxLayout(self.image_text_container)
+        cursor = connection.cursor()
+        cursor.execute('SELECT "name", "photo" FROM titles')
+        rows = cursor.fetchall()
 
-            image_path = next(repeated_paths)
+        images_per_row = 5
+        current_row_layout = None
+
+        for i, row in enumerate(rows):
+            if i % images_per_row == 0:
+                current_row_layout = QHBoxLayout()
+                self.scrollLayout.addLayout(current_row_layout)
+
+            image_text_container = QWidget()
+            image_text_container.setStyleSheet("background-color: #3D434B;"
+                                               "border: none;"
+                                               "border-radius: 10px;"
+                                               "border: 2px solid #FFCC33;"
+                                               "margin: 15px;")
+
+            image_text_layout = QVBoxLayout(image_text_container)
+
             label = RoundedImageLabel()
-            pixmap = QPixmap(image_path)
+
+            # Преобразование байтов изображения в QPixmap
+            pixmap = QPixmap()
+            pixmap.loadFromData(bytes(row[1]))
             pixmap = pixmap.scaled(250, 380, Qt.IgnoreAspectRatio)
+
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
             else:
                 label.setText("Image not found")
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("border: none")
-            self.image_text_layout.addWidget(label)
+            image_text_layout.addWidget(label)
 
-            text_label = QLabel(f"Text for Image {i + 1}")
-            self.image_text_layout.addWidget(text_label)
-            text_label.setStyleSheet("color: #fff; border: none; margin-top: 2px;")
+            text_label = QLabel(row[0])  # Используем текст из базы данных
+            image_text_layout.addWidget(text_label)
+            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 14pt "Inter";')
             text_label.setAlignment(Qt.AlignCenter)
 
-            self.row_layout.addWidget(self.image_text_container)
+            current_row_layout.addWidget(image_text_container)
 
-        self.scrollLayout.addStretch()
-        self.scroll.setWidget(self.scrollContent)
-        self.scroll_area_contents_layout.addWidget(self.scroll)
+        cursor.close()
+        connection.close()
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -240,8 +254,6 @@ class MainWindow(QMainWindow):
 
         self.normal_geometry = None
 
-
-
         page_buttons = [
             (self.ui.incomeBtn_1, self.ui.incomeBtn_2, self.ui.pageIncome),
             (self.ui.titleBtn_1, self.ui.titleBtn_2, self.ui.pageTitle),
@@ -266,7 +278,6 @@ class MainWindow(QMainWindow):
         for button, page in move_buttons:
             button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, page))
 
-
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
@@ -284,6 +295,26 @@ class MainWindow(QMainWindow):
         self.setup_scroll_area()
         self.setup_calender_widget()
 
+
+
+        self.init_translator_ui()
+        self.translation_timer = QTimer()
+        self.translation_timer.setSingleShot(True)
+        self.translation_timer.timeout.connect(self.translate_text)
+        self.init_translator_ui()
+
+    def init_translator_ui(self):
+        self.ui.textEdit.textChanged.connect(self.start_timer)
+
+    def start_timer(self):
+        self.translation_timer.stop()
+        self.translation_timer.start(100)
+
+    def translate_text(self):
+        text_to_translate = self.ui.textEdit.toPlainText()
+        translator = Translator()
+        translation = translator.translate(text_to_translate, dest='en')
+        self.ui.textEdit_2.setText(translation.text)
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
@@ -391,7 +422,6 @@ class MainWindow(QMainWindow):
     def on_animation_finished(self):
         if not self.screen_expanded:
             self.setGeometry(self.normal_geometry)
-
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:

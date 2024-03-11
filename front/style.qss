@@ -63,6 +63,8 @@
     #icon QPushButton {
         height: 50px;
         border-radius: 10px;
+        margin-left: 2px;
+        margin-right: 2px;
     }
 
     #icon QPushButton:hover {
@@ -323,9 +325,9 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
-       font: 14px "Inter";
        width: 540px;
        height: 25px;
+       font: 14px "Inter";
     }
 
     #widget_9 QPushButton {
