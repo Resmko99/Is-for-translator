@@ -67,6 +67,7 @@
         margin-right: 2px;
     }
 
+
     #icon QPushButton:hover {
         background-color: #23282b;
     }
