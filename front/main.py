@@ -295,9 +295,6 @@ class MainWindow(QMainWindow):
         self.setup_scroll_area()
         self.setup_calender_widget()
 
-
-
-        self.init_translator_ui()
         self.translation_timer = QTimer()
         self.translation_timer.setSingleShot(True)
         self.translation_timer.timeout.connect(self.translate_text)
@@ -305,6 +302,8 @@ class MainWindow(QMainWindow):
 
     def init_translator_ui(self):
         self.ui.textEdit.textChanged.connect(self.start_timer)
+        self.ui.comboBox.currentIndexChanged.connect(self.translate_text)
+        self.ui.comboBox_2.currentIndexChanged.connect(self.translate_text)
 
     def start_timer(self):
         self.translation_timer.stop()
@@ -313,8 +312,29 @@ class MainWindow(QMainWindow):
     def translate_text(self):
         text_to_translate = self.ui.textEdit.toPlainText()
         translator = Translator()
-        translation = translator.translate(text_to_translate, dest='en')
-        self.ui.textEdit_2.setText(translation.text)
+
+        src_lang_text = self.ui.comboBox.currentText()
+        dest_lang_text = self.ui.comboBox_2.currentText()
+
+        lang_dict = {
+            "Английский": "en",
+            "Русский": "ru",
+            "Корейский": "ko",
+            "Японский": "ja",
+        }
+
+        src_lang = lang_dict.get(src_lang_text)
+        dest_lang = lang_dict.get(dest_lang_text)
+
+        if src_lang and dest_lang:
+            try:
+                translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
+                translated_text = translation.text if translation else ""
+                self.ui.textEdit_2.setText(translated_text)
+            except Exception as e:
+                print("Ошибка при переводе текста:", e)
+        else:
+            print("Ошибка: один из выбранных языков не распознается.")
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
@@ -500,4 +520,3 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
