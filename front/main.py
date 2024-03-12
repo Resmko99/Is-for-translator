@@ -3,8 +3,8 @@ import os
 from functools import partial
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton)
-from PySide6.QtGui import QPixmap, QPainter, QCursor
+                               QGridLayout, QPushButton, QStyleFactory)
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QColor, QPalette
 from PySide6.QtWidgets import QLabel, QLineEdit
 from googletrans import Translator
 from PySide6.QtCore import QTimer
@@ -241,6 +241,25 @@ class MainWindow(QMainWindow):
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
+
+        #Выделение рамки подсказки
+        app_palette = QApplication.palette()
+        app_palette.setColor(QPalette.ToolTipBase, QColor("#3D434B"))
+        app_palette.setColor(QPalette.ToolTipText, Qt.white)
+        QApplication.setPalette(app_palette)
+        self.setStyleSheet(
+            "QToolTip { background-color: #3D434B; color: white; border: 1px solid #FFCC33; }")
+
+        #Подсказки
+        self.ui.incomeBtn_1.setToolTip("Доходы")
+        self.ui.titleBtn_1.setToolTip("Тайтлы")
+        self.ui.scheduleBtn_1.setToolTip("Расписание")
+        self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
+        self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
+        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
+        self.ui.accountBtn_1.setToolTip("Аккаунт")
+        self.ui.translateBtn_1.setToolTip("Переводчик")
+        self.ui.aboutUs_1.setToolTip("О нас")
 
         self.normal_geometry = None
 
