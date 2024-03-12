@@ -1,13 +1,19 @@
 import sys
+import os
 from functools import partial
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton)
-from PySide6.QtGui import QPixmap, QPainter
-
+from PySide6.QtGui import QPixmap, QPainter, QCursor
+from PySide6.QtWidgets import QLabel, QLineEdit
+from googletrans import Translator
+from PySide6.QtCore import QTimer
 import itertools
 
 from ui import Ui_MainWindow
+
+directory = os.path.abspath(os.curdir)
+
 
 class Calender(QWidget):
     def __init__(self, ui, parent=None):
@@ -71,7 +77,7 @@ class Calender(QWidget):
                     font: 20px "Inter";
                     color: #FFFFFF;
                 }
-                
+
                 QPushButton:pressed {
                     background-color: #BEA14B;
                 }
@@ -212,6 +218,7 @@ class ImageScrollArea(QWidget):
         self.scroll.setWidget(self.scrollContent)
         self.scroll_area_contents_layout.addWidget(self.scroll)
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -261,16 +268,78 @@ class MainWindow(QMainWindow):
         for button, page in move_buttons:
             button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, page))
 
-
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.screen_expanded = False
 
         # Установка фильтра событий для главного окна
+        self.open_hand_px = QPixmap(directory + f'/Photo/free-icon-cursor-5340828.png')
+        self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
+        self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
+        self.open_hand_cursor = QCursor(self.scaled_open_hand_px, 0, 0)
+        self.setCursor(self.open_hand_cursor)
+        self.current_cursor = self.open_hand_cursor
+
         self.installEventFilter(self)
         self.setup_scroll_area()
         self.setup_calender_widget()
+
+        self.translation_delay = 100
+        self.translation_timer = QTimer()
+        self.translation_timer.setSingleShot(True)
+        self.translation_timer.timeout.connect(self.translate_text)
+        self.init_translator_ui()
+        self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
+
+    def on_text_edit_changed(self):
+        text = self.ui.textEdit.toPlainText()
+        selected_text = self.ui.textEdit.textCursor().selectedText()
+        if selected_text == text:
+            self.ui.textEdit_2.clear()
+
+    def init_translator_ui(self):
+        self.ui.textEdit.textChanged.connect(self.start_timer)
+        self.ui.comboBox.currentIndexChanged.connect(self.translate_text)
+        self.ui.comboBox_2.currentIndexChanged.connect(self.translate_text)
+        self.ui.comboBox.setStyleSheet("background-color: #3D434B; color: white;")
+        self.ui.comboBox_2.setStyleSheet("background-color: #3D434B; color: white;")
+
+    def start_timer(self):
+        self.translation_timer.stop()
+        self.translation_timer.start(self.translation_delay)
+
+    def translate_text(self):
+        text_to_translate = self.ui.textEdit.toPlainText().strip()
+        selected_src_lang = self.ui.comboBox.currentText()
+        selected_dest_lang = self.ui.comboBox_2.currentText()
+
+        if not text_to_translate:
+            return
+
+        if selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
+            return
+
+        lang_dict = {
+            "Английский": "en",
+            "Русский": "ru",
+            "Корейский": "ko",
+            "Японский": "ja",
+        }
+
+        src_lang = lang_dict.get(selected_src_lang)
+        dest_lang = lang_dict.get(selected_dest_lang)
+
+        if src_lang and dest_lang:
+            try:
+                translator = Translator()
+                translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
+                translated_text = translation.text if translation else ""
+                self.ui.textEdit_2.setPlainText(translated_text)
+            except Exception as e:
+                print("Ошибка при переводе текста:", e)
+        else:
+            print("Ошибка: Один из выбранных языков не распознается.")
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
@@ -329,24 +398,26 @@ class MainWindow(QMainWindow):
             if left_edge or right_edge or top_edge or bottom_edge:
                 if left_edge:
                     if top_edge:
-                        self.setCursor(Qt.SizeFDiagCursor)
+                        self.current_cursor = Qt.SizeFDiagCursor
                     elif bottom_edge:
-                        self.setCursor(Qt.SizeBDiagCursor)
+                        self.current_cursor = Qt.SizeBDiagCursor
                     else:
-                        self.setCursor(Qt.SizeHorCursor)
+                        self.current_cursor = Qt.SizeHorCursor
                 elif right_edge:
                     if top_edge:
-                        self.setCursor(Qt.SizeBDiagCursor)
+                        self.current_cursor = Qt.SizeBDiagCursor
                     elif bottom_edge:
-                        self.setCursor(Qt.SizeFDiagCursor)
+                        self.current_cursor = Qt.SizeFDiagCursor
                     else:
-                        self.setCursor(Qt.SizeHorCursor)
+                        self.current_cursor = Qt.SizeHorCursor
                 elif top_edge or bottom_edge:
-                    self.setCursor(Qt.SizeVerCursor)
-                else:
-                    self.setCursor(Qt.ArrowCursor)
+                    self.current_cursor = Qt.SizeVerCursor
             else:
-                self.setCursor(Qt.ArrowCursor)
+                # Если не на боковых сторонах, оставляем курсор Open Hand
+                self.current_cursor = self.open_hand_cursor
+
+            # Устанавливаем текущий курсор
+            self.setCursor(self.current_cursor)
 
         return super().eventFilter(obj, event)
 
@@ -376,7 +447,6 @@ class MainWindow(QMainWindow):
     def on_animation_finished(self):
         if not self.screen_expanded:
             self.setGeometry(self.normal_geometry)
-
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
