@@ -334,8 +334,11 @@ class MainWindow(QMainWindow):
             try:
                 translator = Translator()
                 translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
-                translated_text = translation.text if translation else ""
-                self.ui.textEdit_2.setPlainText(translated_text)
+                if translation is not None:
+                    translated_text = translation.text
+                    self.ui.textEdit_2.setPlainText(translated_text)
+                else:
+                    print("Translation failed.")
             except Exception as e:
                 print("Ошибка при переводе текста:", e)
         else:
