@@ -168,7 +168,7 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        # self.load_images_from_database()
+        self.load_images_from_database()
 
         self.scrollLayout.addStretch()
         self.scroll.setWidget(self.scrollContent)
@@ -180,7 +180,7 @@ class ImageScrollArea(QWidget):
             host="localhost",
             database="Manga",
             user="postgres",
-            password="Zasada0902_2000"
+            password="1234"
         )
 
         cursor = connection.cursor()
@@ -393,7 +393,7 @@ class MainWindow(QMainWindow):
                 host="localhost",
                 database="Manga",
                 user="postgres",
-                password="Zasada0902_2000"
+                password="1234"
             )
 
             cursor = connection.cursor()
