@@ -483,6 +483,7 @@ class MainWindow(QMainWindow):
                 self.mouse_press_position = pos
                 self.resize_offset = pos
 
+
                 if left_edge:
                     if top_edge:
                         self.resize_direction = "top_left"
