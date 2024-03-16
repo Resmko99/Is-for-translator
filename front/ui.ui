@@ -22,6 +22,18 @@
     <height>2160</height>
    </size>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>1156</width>
+    <height>768</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>3840</width>
+    <height>2160</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -1551,7 +1563,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>12</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -1570,113 +1582,6 @@
             <property name="spacing">
              <number>0</number>
             </property>
-            <item row="0" column="1" rowspan="2" colspan="2">
-             <widget class="QWidget" name="widget_4" native="true">
-              <property name="minimumSize">
-               <size>
-                <width>250</width>
-                <height>0</height>
-               </size>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_2">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <item row="0" column="0">
-                <layout class="QVBoxLayout" name="verticalLayout_13">
-                 <item>
-                  <widget class="QPushButton" name="pushOpenAdd">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Добавить</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="resource.qrc">
-                     <normaloff>:/icon/icon/free-icon-add-7222864.png</normaloff>:/icon/icon/free-icon-add-7222864.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pushOpenEdit">
-                   <property name="text">
-                    <string>Изменить</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="resource.qrc">
-                     <normaloff>:/icon/icon/free-icon-pencil-7266923.png</normaloff>:/icon/icon/free-icon-pencil-7266923.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pushOpenDel">
-                   <property name="text">
-                    <string>Удалить</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="resource.qrc">
-                     <normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="0">
-                <spacer name="verticalSpacer_12">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QWidget" name="titleWidget" native="true">
               <property name="sizePolicy">
@@ -1714,19 +1619,6 @@
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <widget class="QLineEdit" name="SearchEdit">
                 <property name="placeholderText">
                  <string>Поиск</string>
@@ -1751,7 +1643,20 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushOpenAdd">
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
@@ -1760,8 +1665,8 @@
                 </property>
                 <property name="icon">
                  <iconset resource="resource.qrc">
-                  <normaloff>:/icon/icon/rev.png</normaloff>
-                  <activeon>:/icon/icon/free-icon-chevron-248744.png</activeon>:/icon/icon/rev.png</iconset>
+                  <normaloff>:/icon/icon/free-icon-add-7222864.png</normaloff>
+                  <activeon>:/icon/icon/free-icon-add-7222864.png</activeon>:/icon/icon/free-icon-add-7222864.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -2210,6 +2115,9 @@
               </item>
               <item>
                <widget class="QTextEdit" name="textEditDesc">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Введите описание тайтла</string>
                 </property>
@@ -2278,6 +2186,52 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="editTitleBtn">
+                 <property name="minimumSize">
+                  <size>
+                   <width>140</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>140</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Изменить</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/icon/icon/free-icon-pencil-7266923.png</normaloff>:/icon/icon/free-icon-pencil-7266923.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="deleteTitleBtn">
+                 <property name="minimumSize">
+                  <size>
+                   <width>140</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>140</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Удалить</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</iconset>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="backBtnDesc">
@@ -2536,12 +2490,12 @@
               <item>
                <widget class="QLabel" name="label_33">
                 <property name="text">
-                 <string>Переводчики</string>
+                 <string>Описание тайтла</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="translatorsAddTitle"/>
+               <widget class="QTextEdit" name="descriptionEdit"/>
               </item>
               <item>
                <widget class="QLabel" name="label_34">
@@ -2711,12 +2665,12 @@
               <item>
                <widget class="QLabel" name="label_43">
                 <property name="text">
-                 <string>Переводчики</string>
+                 <string>Описание тайтла</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="translatorsEditTitle"/>
+               <widget class="QTextEdit" name="descriptionEdit_2"/>
               </item>
               <item>
                <widget class="QLabel" name="label_44">
@@ -4972,38 +4926,6 @@
     <hint type="destinationlabel">
      <x>30</x>
      <y>101</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>widget_4</receiver>
-   <slot>setHidden(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1141</x>
-     <y>93</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1194</x>
-     <y>231</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>widget_4</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1149</x>
-     <y>95</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1205</x>
-     <y>279</y>
     </hint>
    </hints>
   </connection>

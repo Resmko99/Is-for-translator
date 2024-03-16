@@ -1,6 +1,7 @@
 import sys
 import os
 from functools import partial
+
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton, QHeaderView, QMessageBox)
@@ -242,7 +243,6 @@ class MainWindow(QMainWindow):
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
         self.ui.icon.show()
-        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
         self.ui.dateEdit.dateChanged.connect(self.get_data_orders)
 
