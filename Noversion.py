@@ -1,6 +1,7 @@
 import sys
 import os
 from functools import partial
+
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton, QHeaderView, QMessageBox)
@@ -242,7 +243,6 @@ class MainWindow(QMainWindow):
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
         self.ui.icon.show()
-        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
         self.ui.dateEdit.dateChanged.connect(self.get_data_orders)
 
@@ -360,7 +360,7 @@ class MainWindow(QMainWindow):
             selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")  # Получаем выбранную дату из календаря
             with self.connection.cursor() as cursor:
                 cursor.execute('''
-                    SELECT "user".login, task.task_text
+                    SELECT "user".login, task.task_text, task.date
                     FROM user_task
                     INNER JOIN "user" ON user_task.id_user = "user".user_id
                     INNER JOIN task ON user_task.id_task = task.id_task
@@ -370,8 +370,8 @@ class MainWindow(QMainWindow):
                 records = cursor.fetchall()
 
                 self.model_table_task.clear()
-                self.model_table_task.setColumnCount(2)
-                self.model_table_task.setHorizontalHeaderLabels(['Пользователь', 'Задача'])
+                self.model_table_task.setColumnCount(3)
+                self.model_table_task.setHorizontalHeaderLabels(['Пользователь', 'Задача', 'Дата'])
 
                 for record in records:
                     row = [QStandardItem(str(value)) for value in record]
@@ -619,4 +619,3 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
