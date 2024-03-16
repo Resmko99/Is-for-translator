@@ -1021,12 +1021,20 @@
         border: none;
     }
 
-    #backBtnDesc {
+    #pageDesc QPushButton {
         background-color: #3D434B;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
         color: #FFFFFF;
+    }
+
+    #deleteTitleBtn {
+        margin-right: 10px;
+    }
+
+    #editTitleBtn {
+        margin-right: 10px;
     }
 
     #textEditDesc {
