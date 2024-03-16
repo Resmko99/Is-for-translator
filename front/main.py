@@ -1,11 +1,13 @@
 import sys
 import os
 from functools import partial
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QTimer
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QHeaderView, QLabel, QLineEdit)
+                               QGridLayout, QPushButton, QHeaderView)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QStandardItemModel, QStandardItem
+from PySide6.QtWidgets import QLabel, QLineEdit
 from googletrans import Translator
+from PySide6.QtCore import QTimer
 from datetime import datetime
 import itertools
 import psycopg2
@@ -242,6 +244,7 @@ class MainWindow(QMainWindow):
         self.ui.icon.show()
         self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
+        self.ui.dateEdit.dateChanged.connect(self.get_data_orders)
 
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
@@ -354,19 +357,21 @@ class MainWindow(QMainWindow):
 
     def get_data_orders(self):
         try:
+            selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")  # Получаем выбранную дату из календаря
             with self.connection.cursor() as cursor:
                 cursor.execute('''
-                    SELECT "user".login, task.task_text, task.date
+                    SELECT "user".login, task.task_text
                     FROM user_task
                     INNER JOIN "user" ON user_task.id_user = "user".user_id
                     INNER JOIN task ON user_task.id_task = task.id_task
+                    WHERE task.date = %s
                     ORDER BY user_task.id_user_task;
-                ''')
+                ''', (selected_date,))
                 records = cursor.fetchall()
 
                 self.model_table_task.clear()
-                self.model_table_task.setColumnCount(3)
-                self.model_table_task.setHorizontalHeaderLabels(['Пользователь', 'Задача', 'Дата'])
+                self.model_table_task.setColumnCount(2)
+                self.model_table_task.setHorizontalHeaderLabels(['Пользователь', 'Задача'])
 
                 for record in records:
                     row = [QStandardItem(str(value)) for value in record]

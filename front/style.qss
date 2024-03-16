@@ -8,7 +8,6 @@
 
     #openMenuBtn {
         padding: 5px;
-        border: none;
         width: 30px;
         height: 30px;
     }
@@ -242,7 +241,7 @@
         border-radius: 10px;
         border: 1px solid #FFFFFF;
         padding: 5px 10px;
-        margin-top: 7 px;
+        margin-top: 7px;
         color: #FFFFFF;
         margin-left: 10px;
         margin-right: 10px;
@@ -253,6 +252,7 @@
         background-color: #0D1117;
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
+        width: 300px;
     }
 
     #comboBox {
@@ -300,6 +300,8 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       font: 14px "Inter";
+       width: 540px;
        height: 25px;
        font-size: 14px;
     }
@@ -320,6 +322,7 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       width: 540px;
        height: 25px;
     }
 
@@ -336,6 +339,7 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       width: 540px;
        height: 25px;
        font-size: 14px;
     }
@@ -356,6 +360,7 @@
        border: 1px solid #FFCC33;
        border-radius: 10px;
        color: #FFFFFF;
+       width: 540px;
        height: 25px;
        font-size: 14px;
     }
@@ -394,6 +399,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
+        color: #FFFFFF;
     }
 
     #imagePost {
@@ -442,6 +448,8 @@
         background-color: #010409;
         border: 1px solid #FFCC33;
         border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
     }
 
     #imageCrewAcc {
@@ -529,4 +537,502 @@
         border-radius: 10px;
         font: 14px "Inter";
         color: #FFFFFF;
+    }
+
+    #pageLog QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageLog QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageLog QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageChangePas QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageChangePas QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageChangePas QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageResPas QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageResPas QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageResPas QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageReg QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageReg QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageReg QPushButton {
+        font: 18px "Inter";
+        background-color: #3D434B;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #notRegLabel {
+        margin-top: 20px;
+        color: #FFFFFF;
+    }
+
+    #pageAddTitle QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageAddTitle QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageAddTitle QTextEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+        placeholder-text-color: #fff;
+    }
+
+    #pageAddTitle QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #backAddTitleBtn {
+        margin-right: 10px;
+    }
+
+    #nameCrewTranslatorAddTitle {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #nameCrewTranslatorAddTitle::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #nameCrewTranslatorAddTitle::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #dateReleaseAddTitle {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #dateReleaseAddTitle::down-arrow {
+        image:url('icon/down-arrow.png');
+        width: 10px;
+        height: 15px;
+    }
+
+    #dateReleaseAddTitle::up-arrow {
+        image:url('icon/up-arrow.png');
+        width: 10px;
+        height: 15px;
+    }
+
+    #dateReleaseAddTitle::down-button {
+        border: transparent;
+    }
+
+    #dateReleaseAddTitle::up-button {
+        border: transparent;
+    }
+
+    #pageEditTitle QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageEditTitle QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageEditTitle QTextEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+        placeholder-text-color: #fff;
+    }
+
+    #pageEditTitle QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #backEditTitleBtn {
+        margin-right: 10px;
+    }
+
+    #nameCrewTranslatorEditTitle {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #nameCrewTranslatorEditTitle::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #nameCrewTranslatorEditTitle::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #dateReleaseEditTitle {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #dateReleaseEditTitle::down-arrow {
+        image:url('icon/down-arrow.png');
+        width: 10px;
+        height: 15px;
+    }
+
+    #dateReleaseEditTitle::up-arrow {
+        image:url('icon/up-arrow.png');
+        width: 10px;
+        height: 15px;
+    }
+
+    #dateReleaseEditTitle::down-button {
+        border:transparent;
+    }
+
+    #dateReleaseEditTitle::up-button {
+        border:transparent;
+    }
+
+    #pageAddIncome QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageAddIncome QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageAddIncome QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #backAddIncome {
+        margin-right: 10px;
+    }
+
+    #pageAddIncome QComboBox {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #pageAddIncome QComboBox::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #pageAddIncome QComboBox::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+
+
+
+
+    #pageEditIncome QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageEditIncome QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageEditIncome QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #backEditIncome {
+        margin-right: 10px;
+    }
+
+    #pageEditIncome QComboBox {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #pageEditIncome QComboBox::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #pageEditIncome QComboBox::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #pageAddTask QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageAddTask QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageAddTask QTextEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageAddTask QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #taskAddBtn {
+        margin-right: 10px;
+    }
+
+    #pageAddTask QComboBox {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #pageAddTask QComboBox::down-arrow {
+        width: 20px;
+        image: url('icon/down-arrow.png');
+    }
+
+    #pageAddTask QComboBox::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #pageUserPr QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageUserPr QLineEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageUserPr QTextEdit {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    #pageUserPr QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #pageListTask QTableView {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+    }
+
+    #pageListTask QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #deleteListTask {
+        margin-right: 10px;
+    }
+
+    #titleWidget{
+        background-color: #24282E;
+        border: none;
+    }
+
+    #backBtnDesc {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #textEditDesc {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 35px;
+        placeholder-text-color: #fff;
     }
