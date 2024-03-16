@@ -1895,10 +1895,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_19.addWidget(self.label_55)
 
-        self.dateEdit = QDateEdit(self.pageAddTask)
-        self.dateEdit.setObjectName(u"dateEdit")
+        self.dateLineAddTask = QLineEdit(self.pageAddTask)
+        self.dateLineAddTask.setObjectName(u"dateLineAddTask")
 
-        self.verticalLayout_19.addWidget(self.dateEdit)
+        self.verticalLayout_19.addWidget(self.dateLineAddTask)
 
         self.label_56 = QLabel(self.pageAddTask)
         self.label_56.setObjectName(u"label_56")
@@ -2141,27 +2141,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_44.addWidget(self.tableListTask, 1, 0, 1, 1)
 
-        self.widget_13 = QWidget(self.pageListTask)
-        self.widget_13.setObjectName(u"widget_13")
-        self.horizontalLayout_15 = QHBoxLayout(self.widget_13)
-        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
-        self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_26 = QSpacerItem(823, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_15.addItem(self.horizontalSpacer_26)
-
-        self.cancelPageList = QPushButton(self.widget_13)
-        self.cancelPageList.setObjectName(u"cancelPageList")
-        self.cancelPageList.setMinimumSize(QSize(140, 30))
-        self.cancelPageList.setMaximumSize(QSize(140, 30))
-        self.cancelPageList.setIcon(icon19)
-        self.cancelPageList.setIconSize(QSize(20, 20))
-
-        self.horizontalLayout_15.addWidget(self.cancelPageList)
-
-
-        self.gridLayout_44.addWidget(self.widget_13, 2, 0, 1, 1)
-
         self.stackedWidget_2.addWidget(self.pageListTask)
 
         self.gridLayout_10.addWidget(self.stackedWidget_2, 1, 2, 1, 1)
@@ -2264,9 +2243,6 @@ class Ui_MainWindow(object):
         self.accountBtn_1.setText("")
         self.translateBtn_1.setText("")
         self.aboutUs_1.setText("")
-        self.pushOpenAdd.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
-        self.pushOpenEdit.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
-        self.pushOpenDel.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.SearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0438\u0441\u043a", None))
         self.SearchBtn.setText("")
         self.pushOpenAdd.setText("")
@@ -2360,6 +2336,5 @@ class Ui_MainWindow(object):
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u0443\u0447\u0435\u043d\u043d\u044b\u0435 \u0444\u0430\u0439\u043b\u044b", None))
         self.deleteListTask.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.addListTask.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
-        self.cancelPageList.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
     # retranslateUi
 
