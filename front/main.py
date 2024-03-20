@@ -6,11 +6,9 @@ import psycopg2
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton)
-from PySide6.QtGui import QPixmap, QPainter, QCursor
-from PySide6.QtWidgets import QLabel, QLineEdit
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor
 from googletrans import Translator
 from PySide6.QtCore import QTimer
-import itertools
 
 from ui import Ui_MainWindow
 
@@ -175,6 +173,12 @@ class ImageScrollArea(QWidget):
         self.scroll_area_contents_layout.addWidget(self.scroll)
 
     def load_images_from_database(self):
+        # Удаляем все дочерние виджеты из scrollLayout
+        while self.scrollLayout.count():
+            widget = self.scrollLayout.takeAt(0).widget()
+            if widget:
+                widget.deleteLater()
+
         # Подключаемся к базе данных
         connection = psycopg2.connect(
             host="localhost",
@@ -184,7 +188,7 @@ class ImageScrollArea(QWidget):
         )
 
         cursor = connection.cursor()
-        cursor.execute('SELECT "name", "photo" FROM titles')
+        cursor.execute('SELECT "name", "photo", "title_id" FROM titles ORDER BY "title_id" ASC')
         rows = cursor.fetchall()
 
         images_per_row = 5
@@ -205,6 +209,7 @@ class ImageScrollArea(QWidget):
             image_text_layout = QVBoxLayout(image_text_container)
 
             label = RoundedImageLabel()
+            label.title_id = row[2]
 
             # Преобразование байтов изображения в QPixmap
             pixmap = QPixmap()
@@ -251,6 +256,25 @@ class MainWindow(QMainWindow):
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
+
+        # Выделение рамки подсказки
+        app_palette = QApplication.palette()
+        app_palette.setColor(QPalette.ToolTipBase, QColor("#3D434B"))
+        app_palette.setColor(QPalette.ToolTipText, Qt.white)
+        QApplication.setPalette(app_palette)
+        self.setStyleSheet(
+            "QToolTip { background-color: #3D434B; color: white; border: 1px solid #FFCC33; }")
+
+        # Подсказки
+        self.ui.incomeBtn_1.setToolTip("Доходы")
+        self.ui.titleBtn_1.setToolTip("Тайтлы")
+        self.ui.scheduleBtn_1.setToolTip("Расписание")
+        self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
+        self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
+        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
+        self.ui.accountBtn_1.setToolTip("Аккаунт")
+        self.ui.translateBtn_1.setToolTip("Переводчик")
+        self.ui.aboutUs_1.setToolTip("О нас")
 
         self.normal_geometry = None
 
@@ -306,6 +330,8 @@ class MainWindow(QMainWindow):
 
         # Привязываем функцию self.load_description к событию переключения страниц в stackedWidget_2
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
+        # Добавляем обработчик события нажатия на кнопку удаления
+        self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -329,10 +355,7 @@ class MainWindow(QMainWindow):
         selected_src_lang = self.ui.comboBox.currentText()
         selected_dest_lang = self.ui.comboBox_2.currentText()
 
-        if not text_to_translate:
-            return
-
-        if selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
+        if not text_to_translate or selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
             return
 
         lang_dict = {
@@ -349,7 +372,7 @@ class MainWindow(QMainWindow):
             try:
                 translator = Translator()
                 translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
-                translated_text = translation.text if translation else ""
+                translated_text = translation.text
                 self.ui.textEdit_2.setPlainText(translated_text)
             except Exception as e:
                 print("Ошибка при переводе текста:", e)
@@ -361,32 +384,19 @@ class MainWindow(QMainWindow):
         self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
         for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
+            # Привязываем событие открытия описания к label'ам
             child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
             self.clicked_widget = widget
             self.update_photo_desc()
-
-            # Получаем родительский контейнер тайтла
-            title_container = widget.parentWidget()
-
-            # Ищем внутри контейнера текстовый виджет с названием тайтла
-            text_label = None
-            if title_container.layout() is not None:
-                if title_container.layout().count() > 1:
-                    text_label = title_container.layout().itemAt(1).widget()
-
-            if text_label:
-                # Получаем имя тайтла из текстового виджета
-                self.title_name = text_label.text()  # Сохраняем имя тайтла в переменной класса
-                # Переходим на страницу с описанием тайтла
-                self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
-            else:
-                print("Text label not found.")
+            # Получаем title_id из widget
+            self.title_id = widget.title_id
+            # Переходим на страницу с описанием тайтла
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
     def load_description(self, index):
-        # Проверяем, что текущая страница - страница pageDesc
         if index == self.ui.stackedWidget_2.indexOf(self.ui.pageDesc):
             # Подключаемся к базе данных
             connection = psycopg2.connect(
@@ -398,7 +408,7 @@ class MainWindow(QMainWindow):
 
             cursor = connection.cursor()
             # Выполняем запрос к базе данных для получения описания тайтла
-            cursor.execute('SELECT description FROM titles WHERE name = %s', (self.title_name,))
+            cursor.execute('SELECT description FROM titles WHERE title_id = %s', (self.title_id,))
             row = cursor.fetchone()
 
             # Закрываем соединение с базой данных
@@ -412,6 +422,39 @@ class MainWindow(QMainWindow):
             else:
                 # Если описание не найдено, очищаем textEditDesc
                 self.ui.textEditDesc.clear()
+
+    # Определяем метод для удаления тайтла
+    def delete_title(self):
+        # Получаем идентификатор тайтла
+        title_id = self.title_id
+
+        # Устанавливаем соединение с базой данных
+        connection = psycopg2.connect(
+            host="localhost",
+            database="Manga",
+            user="postgres",
+            password="1234"
+        )
+        cursor = connection.cursor()
+
+        try:
+            # Выполняем SQL-запрос для удаления тайтла из базы данных
+            cursor.execute('DELETE FROM titles WHERE title_id = %s', (title_id,))
+            # Подтверждаем изменения в базе данных
+            connection.commit()
+        except psycopg2.Error as e:
+            # В случае ошибки откатываем изменения
+            connection.rollback()
+            print("Ошибка при удалении тайтла:", e)
+        finally:
+            # Закрываем курсор и соединение с базой данных
+            cursor.close()
+            connection.close()
+
+        # Переключаемся на страницу с тайтлами
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        # Обновляем данные (например, перезагружаем изображения)
+        self.setup_scroll_area()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
