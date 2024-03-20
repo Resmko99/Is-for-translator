@@ -333,10 +333,7 @@ class MainWindow(QMainWindow):
         selected_src_lang = self.ui.comboBox.currentText()
         selected_dest_lang = self.ui.comboBox_2.currentText()
 
-        if not text_to_translate:
-            return
-
-        if selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
+        if not text_to_translate or selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
             return
 
         lang_dict = {
@@ -353,11 +350,8 @@ class MainWindow(QMainWindow):
             try:
                 translator = Translator()
                 translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
-                if translation is not None:
-                    translated_text = translation.text
-                    self.ui.textEdit_2.setPlainText(translated_text)
-                else:
-                    print("Translation failed.")
+                translated_text = translation.text
+                self.ui.textEdit_2.setPlainText(translated_text)
             except Exception as e:
                 print("Ошибка при переводе текста:", e)
         else:
