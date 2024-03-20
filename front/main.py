@@ -1,15 +1,16 @@
 import sys
 import os
 from functools import partial
-
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QStyleFactory)
-from PySide6.QtGui import QPixmap, QPainter, QCursor, QColor, QPalette
+                               QGridLayout, QPushButton, QHeaderView, QMessageBox)
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QLabel, QLineEdit
 from googletrans import Translator
 from PySide6.QtCore import QTimer
+from datetime import datetime
 import itertools
+import psycopg2
 
 from ui import Ui_MainWindow
 
@@ -88,7 +89,12 @@ class Calender(QWidget):
             col = (col + 1) % 7
             if col == 0:
                 row += 1
+            button.clicked.connect(partial(self.set_date_in_date_edit, day, month_index, year))
+            button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, self.ui.pageListTask))
 
+    def set_date_in_date_edit(self, day, month, year):
+        date = QDate(year, month, day)
+        self.ui.dateEdit.setDate(date)
 
 class RoundedImageLabel(QLabel):
     def __init__(self, parent=None):
@@ -236,32 +242,19 @@ class MainWindow(QMainWindow):
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
         self.ui.icon.show()
+        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
+        self.ui.dateEdit.dateChanged.connect(self.get_data_orders)
 
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
 
-        #Выделение рамки подсказки
-        app_palette = QApplication.palette()
-        app_palette.setColor(QPalette.ToolTipBase, QColor("#3D434B"))
-        app_palette.setColor(QPalette.ToolTipText, Qt.white)
-        QApplication.setPalette(app_palette)
-        self.setStyleSheet(
-            "QToolTip { background-color: #3D434B; color: white; border: 1px solid #FFCC33; }")
-
-        #Подсказки
-        self.ui.incomeBtn_1.setToolTip("Доходы")
-        self.ui.titleBtn_1.setToolTip("Тайтлы")
-        self.ui.scheduleBtn_1.setToolTip("Расписание")
-        self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
-        self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
-        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
-        self.ui.accountBtn_1.setToolTip("Аккаунт")
-        self.ui.translateBtn_1.setToolTip("Переводчик")
-        self.ui.aboutUs_1.setToolTip("О нас")
-
         self.normal_geometry = None
+
+        self.model_table_task = QStandardItemModel()
+        self.ui.tableListTask.setModel(self.model_table_task)
+        self.database_connection()
 
         page_buttons = [
             (self.ui.incomeBtn_1, self.ui.incomeBtn_2, self.ui.pageIncome),
@@ -281,7 +274,10 @@ class MainWindow(QMainWindow):
         move_buttons = [
             (self.ui.backAddTitleBtn, self.ui.pageTitle),
             (self.ui.backBtnDesc, self.ui.pageTitle),
-            (self.ui.pushOpenAdd, self.ui.pageAddTitle)
+            (self.ui.pushOpenAdd, self.ui.pageAddTitle),
+            (self.ui.cancelPageList, self.ui.pageSchedule),
+            (self.ui.addListTask, self.ui.pageAddTask),
+            (self.ui.backTaskBtn, self.ui.pageListTask)
         ]
 
         for button, page in move_buttons:
@@ -290,6 +286,7 @@ class MainWindow(QMainWindow):
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
+        self.ui.taskAddBtn.clicked.connect(self.apply_task)
         self.screen_expanded = False
 
         # Установка фильтра событий для главного окна
@@ -303,6 +300,7 @@ class MainWindow(QMainWindow):
         self.installEventFilter(self)
         self.setup_scroll_area()
         self.setup_calender_widget()
+        self.get_data_orders()
 
         self.translation_delay = 100
         self.translation_timer = QTimer()
@@ -310,6 +308,104 @@ class MainWindow(QMainWindow):
         self.translation_timer.timeout.connect(self.translate_text)
         self.init_translator_ui()
         self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
+        self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
+
+    def database_connection(self):
+        try:
+            self.connection = psycopg2.connect(
+                dbname="dada",
+                user="postgres",
+                password="122334",
+                host="localhost",
+            )
+            self.cursor = self.connection.cursor()
+            print("Успешное подключение к базе данных PostgreSQL!")
+        except (Exception, psycopg2.Error) as error:
+            print("Ошибка при подключении к базе данных PostgreSQL:", error)
+            QMessageBox.critical(self, "Ошибка", "Ошибка при подключении к базе данных PostgreSQL.")
+            sys.exit(1)
+
+        self.load_users()
+        self.get_data_orders()
+
+    def load_users(self):
+        self.ui.employeeAddTask.clear()
+        self.cursor.execute("SELECT user_id, login, password FROM public.user")
+        users = self.cursor.fetchall()
+        for user in users:
+            self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
+
+    def apply_task(self):
+        user_id = self.ui.employeeAddTask.currentData()
+        task_text = self.ui.taskEditAdd.toPlainText()
+        date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
+
+        if user_id is None or not task_text:
+            return
+
+        self.cursor.execute("INSERT INTO task (date, task_text) VALUES (%s, %s) RETURNING id_task", (date, task_text))
+        id_task = self.cursor.fetchone()[0]
+
+        self.cursor.execute("INSERT INTO user_task (id_user, id_task) VALUES (%s, %s) RETURNING id_user_task", (user_id, id_task))
+        self.connection.commit()
+
+
+        self.ui.employeeAddTask.clear()
+        self.ui.taskEditAdd.clear()
+        self.load_users()
+        self.get_data_orders()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageListTask)
+
+    def get_data_orders(self):
+        try:
+            selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT "user".login, task.task_text, task.date, task.id_task
+                    FROM user_task
+                    INNER JOIN "user" ON user_task.id_user = "user".user_id
+                    INNER JOIN task ON user_task.id_task = task.id_task
+                    WHERE task.date = %s
+                    ORDER BY user_task.id_user_task;
+                ''', (selected_date,))
+                records = cursor.fetchall()
+
+                self.model_table_task.clear()
+                self.model_table_task.setColumnCount(3)
+                self.model_table_task.setHorizontalHeaderLabels(['Пользователь', 'Задача', 'Дата'])
+
+                for record in records:
+                    row = [QStandardItem(str(value)) for value in record[:3]]
+                    # Set data for the task ID using a custom role
+                    task_id_item = QStandardItem()
+                    task_id_item.setData(record[3], Qt.UserRole)
+                    row.append(task_id_item)
+
+                    self.model_table_task.appendRow(row)
+                self.ui.tableListTask.resizeColumnsToContents()
+
+                header = self.ui.tableListTask.horizontalHeader()
+                header.setSectionResizeMode(QHeaderView.Stretch)
+
+                self.ui.tableListTask.setColumnHidden(3, True)
+
+        except Exception as e:
+            print(f'Ошибка: {e}')
+
+    def delete_selected_task(self):
+        selected_indexes = self.ui.tableListTask.selectionModel().selectedRows()
+        if not selected_indexes:
+            return
+
+        try:
+            for index in selected_indexes:
+                task_id = int(index.siblingAtColumn(3).data(Qt.UserRole))  # Access task ID using custom role
+                with self.connection.cursor() as cursor:
+                    cursor.execute('DELETE FROM task WHERE id_task = %s', (task_id,))
+            self.connection.commit()
+            self.get_data_orders()
+        except Exception as e:
+            print('Error deleting tasks:', e)
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -333,7 +429,10 @@ class MainWindow(QMainWindow):
         selected_src_lang = self.ui.comboBox.currentText()
         selected_dest_lang = self.ui.comboBox_2.currentText()
 
-        if not text_to_translate or selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
+        if not text_to_translate:
+            return
+
+        if selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
             return
 
         lang_dict = {
@@ -350,7 +449,7 @@ class MainWindow(QMainWindow):
             try:
                 translator = Translator()
                 translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
-                translated_text = translation.text
+                translated_text = translation.text if translation else ""
                 self.ui.textEdit_2.setPlainText(translated_text)
             except Exception as e:
                 print("Ошибка при переводе текста:", e)
@@ -476,7 +575,6 @@ class MainWindow(QMainWindow):
             if left_edge or right_edge or top_edge or bottom_edge:
                 self.mouse_press_position = pos
                 self.resize_offset = pos
-
 
                 if left_edge:
                     if top_edge:
