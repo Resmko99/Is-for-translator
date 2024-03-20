@@ -242,9 +242,8 @@ class MainWindow(QMainWindow):
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
         self.ui.icon.show()
-        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
-        self.ui.dateEdit.dateChanged.connect(self.get_data_orders)
+        self.ui.dateEdit.dateChanged.connect(self.get_data)
 
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
@@ -277,7 +276,8 @@ class MainWindow(QMainWindow):
             (self.ui.pushOpenAdd, self.ui.pageAddTitle),
             (self.ui.cancelPageList, self.ui.pageSchedule),
             (self.ui.addListTask, self.ui.pageAddTask),
-            (self.ui.backTaskBtn, self.ui.pageListTask)
+            (self.ui.backTaskBtn, self.ui.pageListTask),
+            (self.ui.editListTask, self.ui.pageEditTask)
         ]
 
         for button, page in move_buttons:
@@ -300,7 +300,7 @@ class MainWindow(QMainWindow):
         self.installEventFilter(self)
         self.setup_scroll_area()
         self.setup_calender_widget()
-        self.get_data_orders()
+        self.get_data()
 
         self.translation_delay = 100
         self.translation_timer = QTimer()
@@ -308,6 +308,9 @@ class MainWindow(QMainWindow):
         self.translation_timer.timeout.connect(self.translate_text)
         self.init_translator_ui()
         self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
+        self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
+        self.ui.editListTask.clicked.connect(self.edit_task)
+        self.ui.taskApplyBtn.clicked.connect(self.update_task)
 
     def database_connection(self):
         try:
@@ -325,7 +328,8 @@ class MainWindow(QMainWindow):
             sys.exit(1)
 
         self.load_users()
-        self.get_data_orders()
+        self.get_data()
+        self.load_edit_users()
 
     def load_users(self):
         self.ui.employeeAddTask.clear()
@@ -333,6 +337,22 @@ class MainWindow(QMainWindow):
         users = self.cursor.fetchall()
         for user in users:
             self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
+
+    def load_edit_users(self):
+        self.ui.employeeEditTask.clear()
+        try:
+            self.cursor.execute("SELECT user_id, login, password FROM public.user")
+            users = self.cursor.fetchall()
+            for user in users:
+                self.ui.employeeEditTask.addItem(f"{user[1]}", userData=user[0])
+            if users:
+                first_user_id = users[0][0]
+                index = self.ui.employeeEditTask.findData(first_user_id)
+                if index != -1:
+                    self.ui.employeeEditTask.setCurrentIndex(index)
+
+        except Exception as e:
+            print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
     def apply_task(self):
         user_id = self.ui.employeeAddTask.currentData()
@@ -352,15 +372,78 @@ class MainWindow(QMainWindow):
         self.ui.employeeAddTask.clear()
         self.ui.taskEditAdd.clear()
         self.load_users()
-        self.get_data_orders()
+        self.get_data()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageListTask)
 
-    def get_data_orders(self):
+    def update_task(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+        updated_task_text = self.ui.taskEditChange.toPlainText()
+        updated_date = self.ui.dateEditEditTask.date().toString("yyyy-MM-dd")
+        updated_user_id = self.ui.employeeEditTask.currentData()
+
         try:
-            selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")  # Получаем выбранную дату из календаря
             with self.connection.cursor() as cursor:
                 cursor.execute('''
-                    SELECT "user".login, task.task_text, task.date
+                    UPDATE task
+                    SET task_text = %s, date = %s
+                    WHERE id_task = %s
+                ''', (updated_task_text, updated_date, task_id))
+
+                cursor.execute('''
+                    UPDATE user_task
+                    SET id_user = %s
+                    WHERE id_task = %s
+                ''', (updated_user_id, task_id))
+
+            self.connection.commit()
+            self.get_data()
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageListTask)
+
+        except Exception as e:
+            print(f'Ошибка при обновлении задачи: {e}')
+
+    def edit_task(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT t.task_text, t.date, ut.id_user 
+                    FROM task t
+                    INNER JOIN user_task ut ON t.id_task = ut.id_task
+                    WHERE t.id_task = %s
+                ''', (task_id,))
+                task_details = cursor.fetchone()
+
+                if task_details:
+                    task_text = task_details[0]
+                    date = task_details[1].strftime("%Y-%m-%d")
+                    user_id = task_details[2]
+
+                    self.ui.taskEditChange.setPlainText(task_text)
+                    self.ui.dateEditEditTask.setDate(QDate.fromString(date, "yyyy-MM-dd"))
+
+                    index = self.ui.employeeEditTask.findData(user_id)
+                    if index != -1:
+                        self.ui.employeeEditTask.setCurrentIndex(index)
+
+        except Exception as e:
+            print(f'Ошибка: {e}')
+
+    def get_data(self):
+        try:
+            selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT "user".login, task.task_text, task.date, task.id_task
                     FROM user_task
                     INNER JOIN "user" ON user_task.id_user = "user".user_id
                     INNER JOIN task ON user_task.id_task = task.id_task
@@ -374,7 +457,10 @@ class MainWindow(QMainWindow):
                 self.model_table_task.setHorizontalHeaderLabels(['Пользователь', 'Задача', 'Дата'])
 
                 for record in records:
-                    row = [QStandardItem(str(value)) for value in record]
+                    row = [QStandardItem(str(value)) for value in record[:3]]
+                    task_id_item = QStandardItem()
+                    task_id_item.setData(record[3], Qt.UserRole)
+                    row.append(task_id_item)
 
                     self.model_table_task.appendRow(row)
                 self.ui.tableListTask.resizeColumnsToContents()
@@ -382,9 +468,24 @@ class MainWindow(QMainWindow):
                 header = self.ui.tableListTask.horizontalHeader()
                 header.setSectionResizeMode(QHeaderView.Stretch)
 
+                self.ui.tableListTask.setColumnHidden(3, True)
+
         except Exception as e:
             print(f'Ошибка: {e}')
 
+    def delete_selected_task(self):
+        selected_indexes = self.ui.tableListTask.selectionModel().selectedRows()
+        if not selected_indexes:
+            return
+        try:
+            for index in selected_indexes:
+                task_id = int(index.siblingAtColumn(3).data(Qt.UserRole))
+                with self.connection.cursor() as cursor:
+                    cursor.execute('DELETE FROM task WHERE id_task = %s', (task_id,))
+            self.connection.commit()
+            self.get_data()
+        except Exception as e:
+            print(f'Ошибка: {e}')
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -525,15 +626,15 @@ class MainWindow(QMainWindow):
         start_geometry = self.geometry()
         if not self.screen_expanded:
             end_geometry = QApplication.primaryScreen().availableGeometry()
-            self.normal_geometry = start_geometry  # Обновляем сохраненную геометрию
+            self.normal_geometry = start_geometry
         else:
-            end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
+            end_geometry = self.normal_geometry
         if start_geometry == end_geometry:
             start_geometry, end_geometry = end_geometry, self.normal_geometry
 
         self.animation.setStartValue(start_geometry)
         self.animation.setEndValue(end_geometry)
-        self.animation.finished.connect(self.on_animation_finished)  # Связываем обработчик события завершения анимации
+        self.animation.finished.connect(self.on_animation_finished)
         self.animation.start()
 
         self.screen_expanded = not self.screen_expanded

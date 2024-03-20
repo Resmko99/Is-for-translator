@@ -63,7 +63,10 @@
     #icon QPushButton {
         height: 50px;
         border-radius: 10px;
+        margin-left: 4px;
+        margin-right: 4px;
     }
+
 
     #icon QPushButton:hover {
         background-color: #23282b;
@@ -203,6 +206,7 @@
         border: none;
         width: 30px;
         height: 30px;
+        margin-left: 5px;
     }
 
     #SearchBtn:hover {
@@ -218,7 +222,9 @@
         border: 1px solid #FFCC33;
         placeholder-text-color: #FFFFFF;
         text: #FFFFFF;
+        font: 14px "Inter";
         color: #FFFFFF;
+        margin-left: 15px;
     }
 
     #openMenuBtn {
@@ -236,23 +242,22 @@
     border-radius: 10px;
     }
 
-    #widget_4 QPushButton {
+    QPushButton#pushOpenAdd {
         background-color: #3D434B;
         border-radius: 10px;
-        border: 1px solid #FFFFFF;
+        border: 1px solid #FFCC33;
         padding: 5px 10px;
-        margin-top: 7px;
         color: #FFFFFF;
-        margin-left: 10px;
-        margin-right: 10px;
-        font: 15px "Inter";
+        margin-right: 15px;
     }
 
-    #widget_4 {
-        background-color: #0D1117;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-        width: 300px;
+    QPushButton:pressed#pushOpenAdd {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        padding: 5px 10px;
+        color: #FFFFFF;
+        margin-right: 15px;
     }
 
     #comboBox {
@@ -324,10 +329,19 @@
        color: #FFFFFF;
        width: 540px;
        height: 25px;
+       font: 14px "Inter";
     }
 
     #widget_9 QPushButton {
         background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #widget_9 QPushButton:pressed {
+        background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
@@ -400,6 +414,8 @@
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
         color: #FFFFFF;
+        font: 14px "Inter";
+        margin-bottom: 7px;
     }
 
     #imagePost {
@@ -407,6 +423,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
+        font: 14px "Inter";
     }
 
     #publishBtn {
@@ -422,6 +439,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
+        font: 14px "Inter";
     }
 
     #recipientFile {
@@ -430,7 +448,7 @@
        border-radius: 10px;
        color: #FFFFFF;
        height: 25px;
-       font-size: 14px;
+       font: 14px "Inter";
     }
 
     #recipientFile::down-arrow {
@@ -449,6 +467,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         color: #FFFFFF;
+        font: 14px "Inter";
         height: 25px;
     }
 
@@ -478,6 +497,14 @@
         color: #FFFFFF;
     }
 
+    #widget_33 QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
     #addTeamBtn {
         margin-right: 3px;
     }
@@ -488,6 +515,14 @@
 
     #widget_35 QPushButton {
         background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #widget_35 QPushButton:pressed {
+        background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
@@ -564,6 +599,17 @@
         margin-top: 27px;
     }
 
+    #pageLog QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
     #pageChangePas QLabel {
         color: #fff;
         font: 18px "Inter";
@@ -583,6 +629,17 @@
         background-color: #3D434B;
         border: 1px solid #FFFFFF;
         border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageChangePas QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        font: 18px "Inter";
         color: #FFFFFF;
         width: 200px;
         height: 40px;
@@ -614,6 +671,17 @@
         margin-top: 27px;
     }
 
+    #pageResPas QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
     #pageReg QLabel {
         color: #fff;
         font: 18px "Inter";
@@ -633,6 +701,17 @@
         background-color: #3D434B;
         border: 1px solid #FFFFFF;
         border-radius: 10px;
+        color: #FFFFFF;
+        width: 200px;
+        height: 40px;
+        margin-top: 27px;
+    }
+
+    #pageReg QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFFFFF;
+        border-radius: 10px;
+        font: 18px "Inter";
         color: #FFFFFF;
         width: 200px;
         height: 40px;
@@ -676,6 +755,14 @@
         color: #FFFFFF;
     }
 
+    #pageAddTitle QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
     #backAddTitleBtn {
         margin-right: 10px;
     }
@@ -705,6 +792,7 @@
         border: 1px solid #FFCC33;
         border-radius: 10px;
         color: #FFFFFF;
+        font: 14px "Inter";
         height: 25px;
         font-size: 14px;
     }
@@ -755,6 +843,14 @@
 
     #pageEditTitle QPushButton {
         background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #pageEditTitle QPushButton:pressed {
+        background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
@@ -836,6 +932,14 @@
         color: #FFFFFF;
     }
 
+    #pageAddIncome QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
     #backAddIncome {
         margin-right: 10px;
     }
@@ -860,10 +964,6 @@
         margin-right: 3px;
     }
 
-
-
-
-
     #pageEditIncome QLabel {
         color: #fff;
         font: 18px "Inter";
@@ -880,6 +980,14 @@
 
     #pageEditIncome QPushButton {
         background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #pageEditIncome QPushButton:pressed {
+        background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
@@ -941,6 +1049,14 @@
         color: #FFFFFF;
     }
 
+    #pageAddTask QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
     #taskAddBtn {
         margin-right: 10px;
     }
@@ -996,6 +1112,14 @@
         color: #FFFFFF;
     }
 
+    #pageUserPr QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
     #pageListTask QTableView {
         background-color: #010409;
         border: 1px solid #FFCC33;
@@ -1004,6 +1128,14 @@
 
     #pageListTask QPushButton {
         background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #pageListTask QPushButton:pressed {
+        background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
@@ -1019,12 +1151,28 @@
         border: none;
     }
 
-    #backBtnDesc {
+    #pageDesc QPushButton {
         background-color: #3D434B;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 14px "Inter";
         color: #FFFFFF;
+    }
+
+    #pageDesc QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 14px "Inter";
+        color: #FFFFFF;
+    }
+
+    #deleteTitleBtn {
+        margin-right: 10px;
+    }
+
+    #editTitleBtn {
+        margin-right: 10px;
     }
 
     #textEditDesc {
