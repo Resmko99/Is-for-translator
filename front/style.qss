@@ -1184,3 +1184,33 @@
         height: 35px;
         placeholder-text-color: #fff;
     }
+
+    #dateEdit {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        font: 14px "Inter";
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #dateEdit::down-arrow {
+        image:url('icon/down-arrow.png');
+        width: 10px;
+        height: 15px;
+    }
+
+    #dateEdit::up-arrow {
+        image:url('icon/up-arrow.png');
+        width: 10px;
+        height: 15px;
+    }
+
+    #dateEdit::down-button {
+        border: transparent;
+    }
+
+    #dateEdit::up-button {
+        border: transparent;
+    }
