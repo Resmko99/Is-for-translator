@@ -3,9 +3,9 @@ import os
 from functools import partial
 
 import psycopg2
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton)
+                               QGridLayout, QPushButton, QFileDialog)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor
 from googletrans import Translator
 from PySide6.QtCore import QTimer
@@ -332,6 +332,46 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
         # Добавляем обработчик события нажатия на кнопку удаления
         self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
+        # Добавляем обработчик события нажатия на кнопку editTitleBtn
+        self.ui.editTitleBtn.clicked.connect(self.open_edit_title_page)
+
+        self.ui.backEditTitleBtn.clicked.connect(self.switch_to_page_desc)
+        self.ui.applyEditBtn.clicked.connect(self.apply_title_changes)
+
+        # Привязываем событие mouseDoubleClickEvent к imageAreaEdit
+        self.ui.imageAreaEdit.mouseDoubleClickEvent = self.open_image_dialog
+
+        # Apply styles to the vertical scrollbar of descriptionEdit2
+        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
+                    QScrollBar:vertical {
+                        background-color: transparent;
+                        border: none;
+                        border-radius: 5px;
+                        width: 15px;
+                        margin-right: 5px;
+                        margin-top: 2px;
+                        margin-bottom: 2px;
+                    }
+
+                    QScrollBar::handle:vertical {
+                        background-color: #FFFFFF;
+                        border-radius: 5px;
+                        min-height: 20px;
+                    }
+
+                    QScrollBar::add-line:vertical,
+                    QScrollBar::sub-line:vertical {
+                        background-color: #2E333A;
+                        height: 0px;
+                        subcontrol-position: bottom;
+                        subcontrol-origin: margin;
+                    }
+
+                    QScrollBar::add-page:vertical,
+                    QScrollBar::sub-page:vertical {
+                        background: none;
+                    }
+                """)
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -455,6 +495,79 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         # Обновляем данные (например, перезагружаем изображения)
         self.setup_scroll_area()
+
+    def open_edit_title_page(self):
+        # Retrieve the title data based on the selected title_id
+        connection = psycopg2.connect(
+            host="localhost",
+            database="Manga",
+            user="postgres",
+            password="1234"
+        )
+        cursor = connection.cursor()
+        cursor.execute('SELECT "name", "description" FROM titles WHERE title_id = %s', (self.title_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        if row:
+            title_name, title_description = row
+            # Open the pageEditTitle page
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
+            # Populate the fields on the pageEditTitle with the retrieved data
+            self.ui.nameEditTitle.setText(title_name)
+            self.ui.descriptionEdit_2.setText(title_description)
+
+    def switch_to_page_desc(self):
+        # Switch to the pageDesc page
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
+
+    def apply_title_changes(self):
+        # Retrieve new data from nameEditTitle and descriptionEdit_2
+        new_title_name = self.ui.nameEditTitle.text()
+        new_description = self.ui.descriptionEdit_2.toPlainText()
+
+        # Получаем путь к изображению из ImageAreaEdit
+        image_path = self.ui.imageAreaEdit.toPlainText()
+
+        # Загружаем изображение по указанному пути
+        pixmap = QPixmap(image_path)
+        byte_array = QByteArray()
+        buffer = QBuffer(byte_array)
+        buffer.open(QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+        byte_array = buffer.data()
+
+        # Здесь можно выполнить дополнительные операции с байтовым массивом изображения, например, сохранить его в базе данных
+        # Преобразуем QByteArray в bytes
+        image_data = bytes(byte_array)
+
+        # Добавляем данные (включая изображение) в базу данных
+        connection = psycopg2.connect(
+            host="localhost",
+            database="Manga",
+            user="postgres",
+            password="1234"
+        )
+        cursor = connection.cursor()
+        cursor.execute('UPDATE titles SET "name" = %s, "description" = %s, "photo" = %s WHERE title_id = %s',
+                       (new_title_name, new_description, image_data, self.title_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        # Переключаемся на страницу, содержащую тайтлы
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        self.ui.imageAreaEdit.clear()
+        # Обновляем данные (например, перезагружаем изображения)
+        self.setup_scroll_area()
+
+    def open_image_dialog(self, event):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)", options=options)
+        if file_path:
+            # Отображаем путь к выбранному изображению в imageAreaEdit
+            self.ui.imageAreaEdit.setText(file_path)
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
