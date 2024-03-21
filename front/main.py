@@ -916,8 +916,17 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    with open("style.qss", "r") as style_file:
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    style_file_path = os.path.join(current_dir, "style.qss")
+
+    if not os.path.exists(style_file_path):
+        print("Файл стиля QSS не найден:", style_file_path)
+        sys.exit(1)
+
+    with open(style_file_path, "r") as style_file:
         style_str = style_file.read()
+
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
