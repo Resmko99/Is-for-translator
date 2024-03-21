@@ -16,8 +16,6 @@ from database import connect, close_db_connect
 import psycopg2
 import itertools
 
-directory = os.path.abspath(os.curdir)
-
 
 class Calender(QWidget):
     def __init__(self, ui, parent=None):
@@ -325,8 +323,18 @@ class MainWindow(QMainWindow):
         self.ui.taskAddBtn.clicked.connect(self.apply_task)
         self.screen_expanded = False
 
-        # Установка фильтра событий для главного окна
-        open_hand_px_path = os.path.join(directory, 'Photo', 'free-icon-cursor-5340828.png')
+        # Получаем абсолютный путь к каталогу со скриптом
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Получаем абсолютный путь к изображению курсора
+        open_hand_px_path = os.path.join(current_dir, 'Photo', 'free-icon-cursor-5340828.png')
+
+        # Проверяем, существует ли файл изображения курсора
+        if not os.path.exists(open_hand_px_path):
+            print("Файл изображения курсора не найден:", open_hand_px_path)
+            sys.exit(1)
+
+        # Загружаем изображение курсора
         self.open_hand_px = QPixmap(open_hand_px_path)
         self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
         self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
