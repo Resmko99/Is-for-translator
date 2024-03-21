@@ -326,7 +326,8 @@ class MainWindow(QMainWindow):
         self.screen_expanded = False
 
         # Установка фильтра событий для главного окна
-        self.open_hand_px = QPixmap(directory + f'/Photo/free-icon-cursor-5340828.png')
+        open_hand_px_path = os.path.join(directory, 'Photo', 'free-icon-cursor-5340828.png')
+        self.open_hand_px = QPixmap(open_hand_px_path)
         self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
         self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
         self.open_hand_cursor = QCursor(self.scaled_open_hand_px, 0, 0)
