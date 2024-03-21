@@ -181,14 +181,14 @@ class ImageScrollArea(QWidget):
 
         # Подключаемся к базе данных
         connection = psycopg2.connect(
-            host="localhost",
-            database="Manga",
-            user="postgres",
-            password="1234"
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
         )
 
         cursor = connection.cursor()
-        cursor.execute('SELECT "name", "photo", "title_id" FROM titles ORDER BY "title_id" ASC')
+        cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
         rows = cursor.fetchall()
 
         images_per_row = 5
@@ -346,7 +346,6 @@ class MainWindow(QMainWindow):
 
         # Привязываем событие к кнопке "Добавить" на странице pageAddTitle
         self.ui.addTitleBtn.clicked.connect(self.add_title_to_database)
-        self.ui.addTitleBtn.clicked.connect(self.apply_title_changes)
 
         # Apply styles to the vertical scrollbar of descriptionEdit2
         self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
@@ -379,6 +378,37 @@ class MainWindow(QMainWindow):
                         background: none;
                     }
                 """)
+        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet("""
+                    QScrollBar:vertical {
+                        background-color: transparent;
+                        border: none;
+                        border-radius: 5px;
+                        width: 15px;
+                        margin-right: 5px;
+                        margin-top: 2px;
+                        margin-bottom: 2px;
+                    }
+
+                    QScrollBar::handle:vertical {
+                        background-color: #FFFFFF;
+                        border-radius: 5px;
+                        min-height: 20px;
+                    }
+
+                    QScrollBar::add-line:vertical,
+                    QScrollBar::sub-line:vertical {
+                        background-color: #2E333A;
+                        height: 0px;
+                        subcontrol-position: bottom;
+                        subcontrol-origin: margin;
+                    }
+
+                    QScrollBar::add-page:vertical,
+                    QScrollBar::sub-page:vertical {
+                        background: none;
+                    }
+                """)
+
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -447,15 +477,15 @@ class MainWindow(QMainWindow):
         if index == self.ui.stackedWidget_2.indexOf(self.ui.pageDesc):
             # Подключаемся к базе данных
             connection = psycopg2.connect(
-                host="localhost",
-                database="Manga",
-                user="postgres",
-                password="1234"
+                host="5.183.188.132",
+                database="stud_group",
+                user="stud_group_usr",
+                password="N3vpU66W9u2jM0Tk"
             )
 
             cursor = connection.cursor()
             # Выполняем запрос к базе данных для получения описания тайтла
-            cursor.execute('SELECT description FROM titles WHERE title_id = %s', (self.title_id,))
+            cursor.execute('SELECT description FROM "Title" WHERE title_id = %s', (self.title_id,))
             row = cursor.fetchone()
 
             # Закрываем соединение с базой данных
@@ -477,16 +507,16 @@ class MainWindow(QMainWindow):
 
         # Устанавливаем соединение с базой данных
         connection = psycopg2.connect(
-            host="localhost",
-            database="Manga",
-            user="postgres",
-            password="1234"
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
         )
         cursor = connection.cursor()
 
         try:
             # Выполняем SQL-запрос для удаления тайтла из базы данных
-            cursor.execute('DELETE FROM titles WHERE title_id = %s', (title_id,))
+            cursor.execute('DELETE FROM "Title" WHERE title_id = %s', (title_id,))
             # Подтверждаем изменения в базе данных
             connection.commit()
         except psycopg2.Error as e:
@@ -506,13 +536,13 @@ class MainWindow(QMainWindow):
     def open_edit_title_page(self):
         # Retrieve the title data based on the selected title_id
         connection = psycopg2.connect(
-            host="localhost",
-            database="Manga",
-            user="postgres",
-            password="1234"
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
         )
         cursor = connection.cursor()
-        cursor.execute('SELECT "name", "description" FROM titles WHERE title_id = %s', (self.title_id,))
+        cursor.execute('SELECT "title_name", "description" FROM "Title" WHERE title_id = %s', (self.title_id,))
         row = cursor.fetchone()
         cursor.close()
         connection.close()
@@ -551,13 +581,13 @@ class MainWindow(QMainWindow):
 
         # Добавляем данные (включая изображение) в базу данных
         connection = psycopg2.connect(
-            host="localhost",
-            database="Manga",
-            user="postgres",
-            password="1234"
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
         )
         cursor = connection.cursor()
-        cursor.execute('UPDATE titles SET "name" = %s, "description" = %s, "photo" = %s WHERE title_id = %s',
+        cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
                        (new_title_name, new_description, image_data, self.title_id))
         connection.commit()
         cursor.close()
@@ -604,13 +634,13 @@ class MainWindow(QMainWindow):
         image_data = bytes(byte_array)
 
         connection = psycopg2.connect(
-            host="localhost",
-            database="Manga",
-            user="postgres",
-            password="1234"
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
         )
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO titles ("name", "description", "photo") VALUES (%s, %s, %s)',
+        cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
                        (title_name, title_description, image_data))
         connection.commit()
         cursor.close()
@@ -620,6 +650,9 @@ class MainWindow(QMainWindow):
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
         self.ui.imageArea.clear()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        # Обновляем данные (например, перезагружаем изображения)
+        self.setup_scroll_area()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
