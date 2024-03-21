@@ -1,18 +1,20 @@
 import sys
 import os
-from functools import partial
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
-from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QHeaderView, QMessageBox)
-from PySide6.QtGui import QPixmap, QPainter, QCursor, QStandardItemModel, QStandardItem
-from PySide6.QtWidgets import QLabel, QLineEdit
-from googletrans import Translator
-from PySide6.QtCore import QTimer
-from datetime import datetime
-import itertools
-import psycopg2
 
+from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
+                            QTimer)
+from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView)
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem
+
+from googletrans import Translator
+from datetime import datetime
+from functools import partial
 from ui import Ui_MainWindow
+from database import connect, close_db_connect
+
+import psycopg2
+import itertools
 
 directory = os.path.abspath(os.curdir)
 
@@ -129,19 +131,6 @@ class ImageScrollArea(QWidget):
         self.scroll_area_contents_layout = QVBoxLayout(self)
         self.scroll_area_contents_layout.setAlignment(Qt.AlignTop)
 
-        image_paths = [
-            r"Photo\AA1kTdiJ.jpg",
-            r"Photo\EyX_7safWuU.jpg",
-            r"Photo\x_89c4262c.jpg",
-            r"Photo\3G3tOpNoHPQ.jpg",
-            r"Photo\ee855f4a-8d70-4c03-b56e-f7a5059bbbec.jpg",
-            r"Photo\1bbb92772c6c2826a41f6f43dddb515d.jpg",
-            r"Photo\e1d2c368-d1eb-43f3-9dd6-c33c8ac680d2.jpg",
-            r"Photo\0a1a1fd8-f38f-4ce2-84a8-74a83c63203c.jpg",
-        ]
-
-        repeated_paths = itertools.cycle(image_paths)
-
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
         self.scrollContent = QWidget()
@@ -186,50 +175,72 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        self.images_per_row = 5
+        self.load_images_from_database()
 
-        for i in range(56):
-            if i % self.images_per_row == 0:
-                self.row_layout = QHBoxLayout()
-                self.scrollLayout.addLayout(self.row_layout)
+        self.scrollLayout.addStretch()
+        self.scroll.setWidget(self.scrollContent)
+        self.scroll_area_contents_layout.addWidget(self.scroll)
 
-            self.image_text_container = QWidget()
-            self.image_text_container.setStyleSheet("background-color: #3D434B;"
-                                                    "border: none;"
-                                                    "border-radius: 10px;"
-                                                    "border: 2px solid #FFCC33;"
-                                                    "margin: 15px;")
+    def load_images_from_database(self):
+        # Удаляем все дочерние виджеты из scrollLayout
+        while self.scrollLayout.count():
+            widget = self.scrollLayout.takeAt(0).widget()
+            if widget:
+                widget.deleteLater()
 
-            self.image_text_layout = QVBoxLayout(self.image_text_container)
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
+        rows = cursor.fetchall()
 
-            image_path = next(repeated_paths)
+        images_per_row = 5
+        current_row_layout = None
+
+        for i, row in enumerate(rows):
+            if i % images_per_row == 0:
+                current_row_layout = QHBoxLayout()
+                self.scrollLayout.addLayout(current_row_layout)
+
+            image_text_container = QWidget()
+            image_text_container.setStyleSheet("background-color: #3D434B;"
+                                               "border: none;"
+                                               "border-radius: 10px;"
+                                               "border: 2px solid #FFCC33;"
+                                               "margin: 15px;")
+
+            image_text_layout = QVBoxLayout(image_text_container)
+
             label = RoundedImageLabel()
-            pixmap = QPixmap(image_path)
+            label.title_id = row[2]
+
+            # Преобразование байтов изображения в QPixmap
+            pixmap = QPixmap()
+            pixmap.loadFromData(bytes(row[1]))
             pixmap = pixmap.scaled(250, 380, Qt.IgnoreAspectRatio)
+
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
             else:
                 label.setText("Image not found")
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("border: none")
-            self.image_text_layout.addWidget(label)
+            image_text_layout.addWidget(label)
 
-            text_label = QLabel(f"Text for Image {i + 1}")
-            self.image_text_layout.addWidget(text_label)
-            text_label.setStyleSheet("color: #fff; border: none; margin-top: 2px;")
+            text_label = QLabel(row[0])  # Используем текст из базы данных
+            image_text_layout.addWidget(text_label)
+            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 14pt "Inter";')
             text_label.setAlignment(Qt.AlignCenter)
 
-            self.row_layout.addWidget(self.image_text_container)
+            current_row_layout.addWidget(image_text_container)
 
-        self.scrollLayout.addStretch()
-        self.scroll.setWidget(self.scrollContent)
-        self.scroll_area_contents_layout.addWidget(self.scroll)
+        close_db_connect(connection, cursor)
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.resize_direction = None
+        self.connection = connect()
         self.resize_offset = QPoint()
         self.drag_position = None
         self.mouse_press_position = None
@@ -242,9 +253,8 @@ class MainWindow(QMainWindow):
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
         self.ui.icon.show()
-        self.ui.widget_4.hide()
         self.ui.titleBtn_2.setChecked(True)
-        self.ui.dateEdit.dateChanged.connect(self.get_data_orders)
+        self.ui.dateEdit.dateChanged.connect(self.get_data)
 
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
@@ -254,7 +264,31 @@ class MainWindow(QMainWindow):
 
         self.model_table_task = QStandardItemModel()
         self.ui.tableListTask.setModel(self.model_table_task)
-        self.database_connection()
+
+        self.animation = QPropertyAnimation(self, b"geometry")
+        self.animation.setDuration(500)
+        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+
+        # Выделение рамки подсказки
+        app_palette = QApplication.palette()
+        app_palette.setColor(QPalette.ToolTipBase, QColor("#3D434B"))
+        app_palette.setColor(QPalette.ToolTipText, Qt.white)
+        QApplication.setPalette(app_palette)
+        self.setStyleSheet(
+            "QToolTip { background-color: #3D434B; color: white; border: 1px solid #FFCC33; }")
+
+        # Подсказки
+        self.ui.incomeBtn_1.setToolTip("Доходы")
+        self.ui.titleBtn_1.setToolTip("Тайтлы")
+        self.ui.scheduleBtn_1.setToolTip("Расписание")
+        self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
+        self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
+        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
+        self.ui.accountBtn_1.setToolTip("Аккаунт")
+        self.ui.translateBtn_1.setToolTip("Переводчик")
+        self.ui.aboutUs_1.setToolTip("О нас")
+
+        self.normal_geometry = None
 
         page_buttons = [
             (self.ui.incomeBtn_1, self.ui.incomeBtn_2, self.ui.pageIncome),
@@ -277,7 +311,9 @@ class MainWindow(QMainWindow):
             (self.ui.pushOpenAdd, self.ui.pageAddTitle),
             (self.ui.cancelPageList, self.ui.pageSchedule),
             (self.ui.addListTask, self.ui.pageAddTask),
-            (self.ui.backTaskBtn, self.ui.pageListTask)
+            (self.ui.backTaskBtn, self.ui.pageListTask),
+            (self.ui.editListTask, self.ui.pageEditTask),
+            (self.ui.backApplyTaskBtn, self.ui.pageListTask)
         ]
 
         for button, page in move_buttons:
@@ -300,40 +336,117 @@ class MainWindow(QMainWindow):
         self.installEventFilter(self)
         self.setup_scroll_area()
         self.setup_calender_widget()
-        self.get_data_orders()
+        self.get_data()
 
-        self.translation_delay = 100
+        self.translation_delay = 1000
         self.translation_timer = QTimer()
         self.translation_timer.setSingleShot(True)
         self.translation_timer.timeout.connect(self.translate_text)
         self.init_translator_ui()
         self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
         self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
+        self.ui.editListTask.clicked.connect(self.edit_task)
+        self.ui.taskApplyBtn.clicked.connect(self.update_task)
 
-    def database_connection(self):
-        try:
-            self.connection = psycopg2.connect(
-                dbname="dada",
-                user="postgres",
-                password="122334",
-                host="localhost",
-            )
-            self.cursor = self.connection.cursor()
-            print("Успешное подключение к базе данных PostgreSQL!")
-        except (Exception, psycopg2.Error) as error:
-            print("Ошибка при подключении к базе данных PostgreSQL:", error)
-            QMessageBox.critical(self, "Ошибка", "Ошибка при подключении к базе данных PostgreSQL.")
-            sys.exit(1)
+        self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
+        self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
+        self.ui.editTitleBtn.clicked.connect(self.open_edit_title_page)
+        self.ui.backEditTitleBtn.clicked.connect(self.switch_to_page_desc)
+        self.ui.applyEditBtn.clicked.connect(self.apply_title_changes)
+        self.ui.imageAreaEdit.mouseDoubleClickEvent = self.open_image_dialog
+        self.ui.imageArea.mouseDoubleClickEvent = self.open_image_dialog_add_title
+        self.ui.addTitleBtn.clicked.connect(self.add_title_to_database)
+        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
+                            QScrollBar:vertical {
+                                background-color: transparent;
+                                border: none;
+                                border-radius: 5px;
+                                width: 15px;
+                                margin-right: 5px;
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                            }
+
+                            QScrollBar::handle:vertical {
+                                background-color: #FFFFFF;
+                                border-radius: 5px;
+                                min-height: 20px;
+                            }
+
+                            QScrollBar::add-line:vertical,
+                            QScrollBar::sub-line:vertical {
+                                background-color: #2E333A;
+                                height: 0px;
+                                subcontrol-position: bottom;
+                                subcontrol-origin: margin;
+                            }
+
+                            QScrollBar::add-page:vertical,
+                            QScrollBar::sub-page:vertical {
+                                background: none;
+                            }
+                        """)
+        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet("""
+                            QScrollBar:vertical {
+                                background-color: transparent;
+                                border: none;
+                                border-radius: 5px;
+                                width: 15px;
+                                margin-right: 5px;
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                            }
+
+                            QScrollBar::handle:vertical {
+                                background-color: #FFFFFF;
+                                border-radius: 5px;
+                                min-height: 20px;
+                            }
+
+                            QScrollBar::add-line:vertical,
+                            QScrollBar::sub-line:vertical {
+                                background-color: #2E333A;
+                                height: 0px;
+                                subcontrol-position: bottom;
+                                subcontrol-origin: margin;
+                            }
+
+                            QScrollBar::add-page:vertical,
+                            QScrollBar::sub-page:vertical {
+                                background: none;
+                            }
+                        """)
 
         self.load_users()
-        self.get_data_orders()
+        self.get_data()
+        self.load_edit_users()
 
     def load_users(self):
         self.ui.employeeAddTask.clear()
-        self.cursor.execute("SELECT user_id, login, password FROM public.user")
-        users = self.cursor.fetchall()
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT user_id, login, password FROM "User"')
+        users = cursor.fetchall()
         for user in users:
             self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
+
+    def load_edit_users(self):
+        self.ui.employeeEditTask.clear()
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT user_id, login, password FROM "User"')
+            users = cursor.fetchall()
+            for user in users:
+                self.ui.employeeEditTask.addItem(f"{user[1]}", userData=user[0])
+            if users:
+                first_user_id = users[0][0]
+                index = self.ui.employeeEditTask.findData(first_user_id)
+                if index != -1:
+                    self.ui.employeeEditTask.setCurrentIndex(index)
+
+        except Exception as e:
+            print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
     def apply_task(self):
         user_id = self.ui.employeeAddTask.currentData()
@@ -343,30 +456,93 @@ class MainWindow(QMainWindow):
         if user_id is None or not task_text:
             return
 
-        self.cursor.execute("INSERT INTO task (date, task_text) VALUES (%s, %s) RETURNING id_task", (date, task_text))
-        id_task = self.cursor.fetchone()[0]
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "Task" (date, task_text) VALUES (%s, %s) RETURNING task_id', (date, task_text))
+        task_id = cursor.fetchone()[0]
 
-        self.cursor.execute("INSERT INTO user_task (id_user, id_task) VALUES (%s, %s) RETURNING id_user_task", (user_id, id_task))
-        self.connection.commit()
+        cursor.execute('INSERT INTO "User_task" (user_id, task_id) OVERRIDING SYSTEM VALUE VALUES (%s, %s) RETURNING user_task_id', (user_id, task_id))
+        connection.commit()
 
 
         self.ui.employeeAddTask.clear()
         self.ui.taskEditAdd.clear()
         self.load_users()
-        self.get_data_orders()
+        self.get_data()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageListTask)
 
-    def get_data_orders(self):
+    def update_task(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+        updated_task_text = self.ui.taskEditChange.toPlainText()
+        updated_date = self.ui.dateEditEditTask.date().toString("yyyy-MM-dd")
+        updated_user_id = self.ui.employeeEditTask.currentData()
+
         try:
-            selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
+            with self.connection.cursor() as cursor:
+                connection = connect()
+                cursor = connection.cursor()
+                cursor.execute('UPDATE "Task" SET task_text = %s, date = %s WHERE task_id = %s',
+                               (updated_task_text, updated_date, task_id))
+
+                cursor.execute('UPDATE "User_task" SET user_id = %s WHERE task_id = %s',
+                               (updated_user_id, task_id))
+
+            connection.commit()
+            self.get_data()
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageListTask)
+
+        except Exception as e:
+            print(f'Ошибка при обновлении задачи: {e}')
+
+    def edit_task(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+
+        try:
+            connection = connect()
             with self.connection.cursor() as cursor:
                 cursor.execute('''
-                    SELECT "user".login, task.task_text, task.date, task.id_task
-                    FROM user_task
-                    INNER JOIN "user" ON user_task.id_user = "user".user_id
-                    INNER JOIN task ON user_task.id_task = task.id_task
-                    WHERE task.date = %s
-                    ORDER BY user_task.id_user_task;
+                    SELECT t.task_text, t.date, ut.user_id
+                    FROM "Task" t
+                    INNER JOIN "User_task" ut ON t.task_id = ut.task_id
+                    WHERE t.task_id = %s
+                ''', (task_id,))
+                task_details = cursor.fetchone()
+
+                if task_details:
+                    task_text = task_details[0]
+                    date = task_details[1].strftime("%Y-%m-%d")
+                    user_id = task_details[2]
+
+                    self.ui.taskEditChange.setPlainText(task_text)
+                    self.ui.dateEditEditTask.setDate(QDate.fromString(date, "yyyy-MM-dd"))
+
+                    index = self.ui.employeeEditTask.findData(user_id)
+                    if index != -1:
+                        self.ui.employeeEditTask.setCurrentIndex(index)
+
+        except Exception as e:
+            print(f'Ошибка2: {e}')
+
+    def get_data(self):
+        try:
+            selected_date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT u.login, t.task_text, t.date, t.task_id
+                    FROM "User_task" ut
+                    INNER JOIN "User" u ON ut.user_id = u.user_id
+                    INNER JOIN "Task" t ON ut.task_id = t.task_id
+                    WHERE t.date = %s
+                    ORDER BY ut.user_task_id;
                 ''', (selected_date,))
                 records = cursor.fetchall()
 
@@ -376,7 +552,6 @@ class MainWindow(QMainWindow):
 
                 for record in records:
                     row = [QStandardItem(str(value)) for value in record[:3]]
-                    # Set data for the task ID using a custom role
                     task_id_item = QStandardItem()
                     task_id_item.setData(record[3], Qt.UserRole)
                     row.append(task_id_item)
@@ -390,22 +565,22 @@ class MainWindow(QMainWindow):
                 self.ui.tableListTask.setColumnHidden(3, True)
 
         except Exception as e:
-            print(f'Ошибка: {e}')
+            print(f'Ошибка1: {e}')
 
     def delete_selected_task(self):
         selected_indexes = self.ui.tableListTask.selectionModel().selectedRows()
         if not selected_indexes:
             return
-
         try:
             for index in selected_indexes:
-                task_id = int(index.siblingAtColumn(3).data(Qt.UserRole))  # Access task ID using custom role
+                task_id = int(index.siblingAtColumn(3).data(Qt.UserRole))
+                connection = connect()
                 with self.connection.cursor() as cursor:
-                    cursor.execute('DELETE FROM task WHERE id_task = %s', (task_id,))
-            self.connection.commit()
-            self.get_data_orders()
+                    cursor.execute('DELETE FROM "Task" WHERE task_id = %s', (task_id,))
+            connection.commit()
+            self.get_data()
         except Exception as e:
-            print('Error deleting tasks:', e)
+            print(f'Ошибка3: {e}')
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -429,10 +604,7 @@ class MainWindow(QMainWindow):
         selected_src_lang = self.ui.comboBox.currentText()
         selected_dest_lang = self.ui.comboBox_2.currentText()
 
-        if not text_to_translate:
-            return
-
-        if selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
+        if not text_to_translate or selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
             return
 
         lang_dict = {
@@ -449,32 +621,12 @@ class MainWindow(QMainWindow):
             try:
                 translator = Translator()
                 translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
-                translated_text = translation.text if translation else ""
+                translated_text = translation.text
                 self.ui.textEdit_2.setPlainText(translated_text)
             except Exception as e:
                 print("Ошибка при переводе текста:", e)
         else:
             print("Ошибка: Один из выбранных языков не распознается.")
-
-    def open_desc_page(self, event, widget):
-        if event.button() == Qt.LeftButton:
-            self.clicked_widget = widget
-            self.update_photo_desc()
-            self.change_page_with_animation(self.ui.pageDesc)
-
-    def setup_calender_widget(self):
-        calender = Calender(self.ui)
-        self.ui.widgetCalender.setLayout(QVBoxLayout())
-        self.ui.widgetCalender.layout().addWidget(calender)
-
-    def toggle_full_menu(self):
-
-        if self.ui.fullMenu.isHidden():
-            self.ui.fullMenu.show()
-            self.ui.icon.hide()
-        else:
-            self.ui.fullMenu.hide()
-            self.ui.icon.show()
 
     def setup_scroll_area(self):
         self.image_scroll_area = ImageScrollArea()
@@ -487,7 +639,137 @@ class MainWindow(QMainWindow):
         if event.button() == Qt.LeftButton:
             self.clicked_widget = widget
             self.update_photo_desc()
+            self.title_id = widget.title_id
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
+
+    def load_description(self, index):
+        if index == self.ui.stackedWidget_2.indexOf(self.ui.pageDesc):
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT description FROM "Title" WHERE title_id = %s', (self.title_id,))
+            row = cursor.fetchone()
+            close_db_connect(connection, cursor)
+
+            if row:
+                description = row[0]
+                self.ui.textEditDesc.setPlainText(description)
+            else:
+                self.ui.textEditDesc.clear()
+
+    def delete_title(self):
+        title_id = self.title_id
+
+        connection = connect()
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('DELETE FROM "Title" WHERE title_id = %s', (title_id,))
+            connection.commit()
+        except psycopg2.Error as e:
+            connection.rollback()
+            print("Ошибка при удалении тайтла:", e)
+        finally:
+            close_db_connect(connection, cursor)
+
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        self.setup_scroll_area()
+
+    def open_edit_title_page(self):
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT "title_name", "description" FROM "Title" WHERE title_id = %s', (self.title_id,))
+        row = cursor.fetchone()
+        close_db_connect(connection, cursor)
+
+        if row:
+            title_name, title_description = row
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
+            self.ui.nameEditTitle.setText(title_name)
+            self.ui.descriptionEdit_2.setText(title_description)
+
+    def switch_to_page_desc(self):
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
+
+    def apply_title_changes(self):
+        new_title_name = self.ui.nameEditTitle.text()
+        new_description = self.ui.descriptionEdit_2.toPlainText()
+
+        # Получаем путь к изображению из ImageAreaEdit
+        image_path = self.ui.imageAreaEdit.toPlainText()
+
+        # Загружаем изображение по указанному пути
+        pixmap = QPixmap(image_path)
+        byte_array = QByteArray()
+        buffer = QBuffer(byte_array)
+        buffer.open(QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+        byte_array = buffer.data()
+        image_data = bytes(byte_array)
+
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
+                       (new_title_name, new_description, image_data, self.title_id))
+        connection.commit()
+        close_db_connect(connection, cursor)
+
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        self.ui.imageAreaEdit.clear()
+        self.setup_scroll_area()
+
+    def open_image_dialog(self, event):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)", options=options)
+        if file_path:
+            self.ui.imageAreaEdit.setText(file_path)
+
+    def open_image_dialog_add_title(self, event):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            self.ui.imageArea.setText(file_path)
+
+    def add_title_to_database(self):
+        title_name = self.ui.nameAddTitle.text()
+        title_description = self.ui.descriptionEdit.toPlainText()
+        image_path = self.ui.imageArea.toPlainText()
+
+        # Загружаем изображение по указанному пути
+        pixmap = QPixmap(image_path)
+        byte_array = QByteArray()
+        buffer = QBuffer(byte_array)
+        buffer.open(QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+        byte_array = buffer.data()
+        image_data = bytes(byte_array)
+
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
+                       (title_name, title_description, image_data))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        self.ui.nameAddTitle.clear()
+        self.ui.descriptionEdit.clear()
+        self.ui.imageArea.clear()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        self.setup_scroll_area()
+
+    def setup_calender_widget(self):
+        calender = Calender(self.ui)
+        self.ui.widgetCalender.setLayout(QVBoxLayout())
+        self.ui.widgetCalender.layout().addWidget(calender)
+
+    def toggle_full_menu(self):
+        if self.ui.fullMenu.isHidden():
+            self.ui.fullMenu.show()
+            self.ui.icon.hide()
+        else:
+            self.ui.fullMenu.hide()
+            self.ui.icon.show()
 
     def update_photo_desc(self):
         if hasattr(self, 'clicked_widget'):
