@@ -2192,6 +2192,9 @@ class Ui_MainWindow(object):
         self.tableListTask = QTableView(self.pageListTask)
         self.tableListTask.setObjectName(u"tableListTask")
         self.tableListTask.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableListTask.setGridStyle(Qt.NoPen)
+        self.tableListTask.setSortingEnabled(True)
+        self.tableListTask.setCornerButtonEnabled(True)
 
         self.gridLayout_44.addWidget(self.tableListTask, 1, 0, 1, 1)
 
@@ -2288,7 +2291,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(1)
+        self.stackedWidget_2.setCurrentIndex(17)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
