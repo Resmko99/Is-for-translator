@@ -1,6 +1,17 @@
 import sys
 import os
 from functools import partial
+
+import psycopg2
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice
+from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
+                               QGridLayout, QPushButton, QFileDialog)
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor
+from googletrans import Translator
+from PySide6.QtCore import QTimer
+from datetime import datetime
+import itertools
+import psycopg2
 from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton, QHeaderView)
@@ -129,19 +140,6 @@ class ImageScrollArea(QWidget):
         self.scroll_area_contents_layout = QVBoxLayout(self)
         self.scroll_area_contents_layout.setAlignment(Qt.AlignTop)
 
-        image_paths = [
-            r"Photo\AA1kTdiJ.jpg",
-            r"Photo\EyX_7safWuU.jpg",
-            r"Photo\x_89c4262c.jpg",
-            r"Photo\3G3tOpNoHPQ.jpg",
-            r"Photo\ee855f4a-8d70-4c03-b56e-f7a5059bbbec.jpg",
-            r"Photo\1bbb92772c6c2826a41f6f43dddb515d.jpg",
-            r"Photo\e1d2c368-d1eb-43f3-9dd6-c33c8ac680d2.jpg",
-            r"Photo\0a1a1fd8-f38f-4ce2-84a8-74a83c63203c.jpg",
-        ]
-
-        repeated_paths = itertools.cycle(image_paths)
-
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
         self.scrollContent = QWidget()
@@ -186,44 +184,73 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        self.images_per_row = 5
+        self.load_images_from_database()
 
-        for i in range(56):
-            if i % self.images_per_row == 0:
-                self.row_layout = QHBoxLayout()
-                self.scrollLayout.addLayout(self.row_layout)
+        self.scrollLayout.addStretch()
+        self.scroll.setWidget(self.scrollContent)
+        self.scroll_area_contents_layout.addWidget(self.scroll)
 
-            self.image_text_container = QWidget()
-            self.image_text_container.setStyleSheet("background-color: #3D434B;"
-                                                    "border: none;"
-                                                    "border-radius: 10px;"
-                                                    "border: 2px solid #FFCC33;"
-                                                    "margin: 15px;")
+    def load_images_from_database(self):
+        # Удаляем все дочерние виджеты из scrollLayout
+        while self.scrollLayout.count():
+            widget = self.scrollLayout.takeAt(0).widget()
+            if widget:
+                widget.deleteLater()
 
-            self.image_text_layout = QVBoxLayout(self.image_text_container)
+        # Подключаемся к базе данных
+        connection = psycopg2.connect(
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
+        )
 
-            image_path = next(repeated_paths)
+        cursor = connection.cursor()
+        cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
+        rows = cursor.fetchall()
+
+        images_per_row = 5
+        current_row_layout = None
+
+        for i, row in enumerate(rows):
+            if i % images_per_row == 0:
+                current_row_layout = QHBoxLayout()
+                self.scrollLayout.addLayout(current_row_layout)
+
+            image_text_container = QWidget()
+            image_text_container.setStyleSheet("background-color: #3D434B;"
+                                               "border: none;"
+                                               "border-radius: 10px;"
+                                               "border: 2px solid #FFCC33;"
+                                               "margin: 15px;")
+
+            image_text_layout = QVBoxLayout(image_text_container)
+
             label = RoundedImageLabel()
-            pixmap = QPixmap(image_path)
+            label.title_id = row[2]
+
+            # Преобразование байтов изображения в QPixmap
+            pixmap = QPixmap()
+            pixmap.loadFromData(bytes(row[1]))
             pixmap = pixmap.scaled(250, 380, Qt.IgnoreAspectRatio)
+
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
             else:
                 label.setText("Image not found")
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("border: none")
-            self.image_text_layout.addWidget(label)
+            image_text_layout.addWidget(label)
 
-            text_label = QLabel(f"Text for Image {i + 1}")
-            self.image_text_layout.addWidget(text_label)
-            text_label.setStyleSheet("color: #fff; border: none; margin-top: 2px;")
+            text_label = QLabel(row[0])  # Используем текст из базы данных
+            image_text_layout.addWidget(text_label)
+            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 14pt "Inter";')
             text_label.setAlignment(Qt.AlignCenter)
 
-            self.row_layout.addWidget(self.image_text_container)
+            current_row_layout.addWidget(image_text_container)
 
-        self.scrollLayout.addStretch()
-        self.scroll.setWidget(self.scrollContent)
-        self.scroll_area_contents_layout.addWidget(self.scroll)
+        cursor.close()
+        connection.close()
 
 
 class MainWindow(QMainWindow):
@@ -254,6 +281,31 @@ class MainWindow(QMainWindow):
         self.model_table_task = QStandardItemModel()
         self.ui.tableListTask.setModel(self.model_table_task)
         self.database_connection()
+
+        self.animation = QPropertyAnimation(self, b"geometry")
+        self.animation.setDuration(500)
+        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+
+        # Выделение рамки подсказки
+        app_palette = QApplication.palette()
+        app_palette.setColor(QPalette.ToolTipBase, QColor("#3D434B"))
+        app_palette.setColor(QPalette.ToolTipText, Qt.white)
+        QApplication.setPalette(app_palette)
+        self.setStyleSheet(
+            "QToolTip { background-color: #3D434B; color: white; border: 1px solid #FFCC33; }")
+
+        # Подсказки
+        self.ui.incomeBtn_1.setToolTip("Доходы")
+        self.ui.titleBtn_1.setToolTip("Тайтлы")
+        self.ui.scheduleBtn_1.setToolTip("Расписание")
+        self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
+        self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
+        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
+        self.ui.accountBtn_1.setToolTip("Аккаунт")
+        self.ui.translateBtn_1.setToolTip("Переводчик")
+        self.ui.aboutUs_1.setToolTip("О нас")
+
+        self.normal_geometry = None
 
         page_buttons = [
             (self.ui.incomeBtn_1, self.ui.incomeBtn_2, self.ui.pageIncome),
@@ -311,6 +363,89 @@ class MainWindow(QMainWindow):
         self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
         self.ui.editListTask.clicked.connect(self.edit_task)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
+
+        self.title_name = None  # Переменная для хранения имени тайтла
+
+        # Привязываем функцию self.load_description к событию переключения страниц в stackedWidget_2
+        self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
+        # Добавляем обработчик события нажатия на кнопку удаления
+        self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
+        # Добавляем обработчик события нажатия на кнопку editTitleBtn
+        self.ui.editTitleBtn.clicked.connect(self.open_edit_title_page)
+
+        self.ui.backEditTitleBtn.clicked.connect(self.switch_to_page_desc)
+        self.ui.applyEditBtn.clicked.connect(self.apply_title_changes)
+
+        # Привязываем событие mouseDoubleClickEvent к imageAreaEdit
+        self.ui.imageAreaEdit.mouseDoubleClickEvent = self.open_image_dialog
+
+        # Привязываем событие mouseDoubleClickEvent к imageArea на странице pageAddTitle
+        self.ui.imageArea.mouseDoubleClickEvent = self.open_image_dialog_add_title
+
+        # Привязываем событие к кнопке "Добавить" на странице pageAddTitle
+        self.ui.addTitleBtn.clicked.connect(self.add_title_to_database)
+
+        # Apply styles to the vertical scrollbar of descriptionEdit2
+        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
+                            QScrollBar:vertical {
+                                background-color: transparent;
+                                border: none;
+                                border-radius: 5px;
+                                width: 15px;
+                                margin-right: 5px;
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                            }
+
+                            QScrollBar::handle:vertical {
+                                background-color: #FFFFFF;
+                                border-radius: 5px;
+                                min-height: 20px;
+                            }
+
+                            QScrollBar::add-line:vertical,
+                            QScrollBar::sub-line:vertical {
+                                background-color: #2E333A;
+                                height: 0px;
+                                subcontrol-position: bottom;
+                                subcontrol-origin: margin;
+                            }
+
+                            QScrollBar::add-page:vertical,
+                            QScrollBar::sub-page:vertical {
+                                background: none;
+                            }
+                        """)
+        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet("""
+                            QScrollBar:vertical {
+                                background-color: transparent;
+                                border: none;
+                                border-radius: 5px;
+                                width: 15px;
+                                margin-right: 5px;
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                            }
+
+                            QScrollBar::handle:vertical {
+                                background-color: #FFFFFF;
+                                border-radius: 5px;
+                                min-height: 20px;
+                            }
+
+                            QScrollBar::add-line:vertical,
+                            QScrollBar::sub-line:vertical {
+                                background-color: #2E333A;
+                                height: 0px;
+                                subcontrol-position: bottom;
+                                subcontrol-origin: margin;
+                            }
+
+                            QScrollBar::add-page:vertical,
+                            QScrollBar::sub-page:vertical {
+                                background: none;
+                            }
+                        """)
 
     def database_connection(self):
         try:
@@ -509,10 +644,7 @@ class MainWindow(QMainWindow):
         selected_src_lang = self.ui.comboBox.currentText()
         selected_dest_lang = self.ui.comboBox_2.currentText()
 
-        if not text_to_translate:
-            return
-
-        if selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
+        if not text_to_translate or selected_src_lang == "Выберите язык" or selected_dest_lang == "Выберите язык":
             return
 
         lang_dict = {
@@ -529,18 +661,210 @@ class MainWindow(QMainWindow):
             try:
                 translator = Translator()
                 translation = translator.translate(text_to_translate, src=src_lang, dest=dest_lang)
-                translated_text = translation.text if translation else ""
+                translated_text = translation.text
                 self.ui.textEdit_2.setPlainText(translated_text)
             except Exception as e:
                 print("Ошибка при переводе текста:", e)
         else:
             print("Ошибка: Один из выбранных языков не распознается.")
 
+    def setup_scroll_area(self):
+        self.image_scroll_area = ImageScrollArea()
+        self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
+
+        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
+            # Привязываем событие открытия описания к label'ам
+            child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
+
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
             self.clicked_widget = widget
             self.update_photo_desc()
-            self.change_page_with_animation(self.ui.pageDesc)
+            # Получаем title_id из widget
+            self.title_id = widget.title_id
+            # Переходим на страницу с описанием тайтла
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
+
+    def load_description(self, index):
+        if index == self.ui.stackedWidget_2.indexOf(self.ui.pageDesc):
+            # Подключаемся к базе данных
+            connection = psycopg2.connect(
+                host="5.183.188.132",
+                database="stud_group",
+                user="stud_group_usr",
+                password="N3vpU66W9u2jM0Tk"
+            )
+
+            cursor = connection.cursor()
+            # Выполняем запрос к базе данных для получения описания тайтла
+            cursor.execute('SELECT description FROM "Title" WHERE title_id = %s', (self.title_id,))
+            row = cursor.fetchone()
+
+            # Закрываем соединение с базой данных
+            cursor.close()
+            connection.close()
+
+            # Если найдено описание тайтла, загружаем его в textEditDesc
+            if row:
+                description = row[0]
+                self.ui.textEditDesc.setPlainText(description)
+            else:
+                # Если описание не найдено, очищаем textEditDesc
+                self.ui.textEditDesc.clear()
+
+    # Определяем метод для удаления тайтла
+    def delete_title(self):
+        # Получаем идентификатор тайтла
+        title_id = self.title_id
+
+        # Устанавливаем соединение с базой данных
+        connection = psycopg2.connect(
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
+        )
+        cursor = connection.cursor()
+
+        try:
+            # Выполняем SQL-запрос для удаления тайтла из базы данных
+            cursor.execute('DELETE FROM "Title" WHERE title_id = %s', (title_id,))
+            # Подтверждаем изменения в базе данных
+            connection.commit()
+        except psycopg2.Error as e:
+            # В случае ошибки откатываем изменения
+            connection.rollback()
+            print("Ошибка при удалении тайтла:", e)
+        finally:
+            # Закрываем курсор и соединение с базой данных
+            cursor.close()
+            connection.close()
+
+        # Переключаемся на страницу с тайтлами
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        # Обновляем данные (например, перезагружаем изображения)
+        self.setup_scroll_area()
+
+    def open_edit_title_page(self):
+        # Retrieve the title data based on the selected title_id
+        connection = psycopg2.connect(
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
+        )
+        cursor = connection.cursor()
+        cursor.execute('SELECT "title_name", "description" FROM "Title" WHERE title_id = %s', (self.title_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        if row:
+            title_name, title_description = row
+            # Open the pageEditTitle page
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
+            # Populate the fields on the pageEditTitle with the retrieved data
+            self.ui.nameEditTitle.setText(title_name)
+            self.ui.descriptionEdit_2.setText(title_description)
+
+    def switch_to_page_desc(self):
+        # Switch to the pageDesc page
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
+
+    def apply_title_changes(self):
+        # Retrieve new data from nameEditTitle and descriptionEdit_2
+        new_title_name = self.ui.nameEditTitle.text()
+        new_description = self.ui.descriptionEdit_2.toPlainText()
+
+        # Получаем путь к изображению из ImageAreaEdit
+        image_path = self.ui.imageAreaEdit.toPlainText()
+
+        # Загружаем изображение по указанному пути
+        pixmap = QPixmap(image_path)
+        byte_array = QByteArray()
+        buffer = QBuffer(byte_array)
+        buffer.open(QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+        byte_array = buffer.data()
+
+        # Здесь можно выполнить дополнительные операции с байтовым массивом изображения, например, сохранить его в базе данных
+        # Преобразуем QByteArray в bytes
+        image_data = bytes(byte_array)
+
+        # Добавляем данные (включая изображение) в базу данных
+        connection = psycopg2.connect(
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
+        )
+        cursor = connection.cursor()
+        cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
+                       (new_title_name, new_description, image_data, self.title_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        # Переключаемся на страницу, содержащую тайтлы
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        self.ui.imageAreaEdit.clear()
+        # Обновляем данные (например, перезагружаем изображения)
+        self.setup_scroll_area()
+
+    def open_image_dialog(self, event):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)", options=options)
+        if file_path:
+            # Отображаем путь к выбранному изображению в imageAreaEdit
+            self.ui.imageAreaEdit.setText(file_path)
+
+    def open_image_dialog_add_title(self, event):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            # Отображаем путь к выбранному изображению в imageArea на странице pageAddTitle
+            self.ui.imageArea.setText(file_path)
+
+    def add_title_to_database(self):
+        # Получаем наименование и описание тайтла из соответствующих полей
+        title_name = self.ui.nameAddTitle.text()
+        title_description = self.ui.descriptionEdit.toPlainText()
+
+        # Получаем путь к изображению из imageArea
+        image_path = self.ui.imageArea.toPlainText()
+
+        # Загружаем изображение по указанному пути
+        pixmap = QPixmap(image_path)
+        byte_array = QByteArray()
+        buffer = QBuffer(byte_array)
+        buffer.open(QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+        byte_array = buffer.data()
+
+        # Преобразуем QByteArray в bytes
+        image_data = bytes(byte_array)
+
+        connection = psycopg2.connect(
+            host="5.183.188.132",
+            database="stud_group",
+            user="stud_group_usr",
+            password="N3vpU66W9u2jM0Tk"
+        )
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
+                       (title_name, title_description, image_data))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        # Очищаем поля ввода после добавления тайтла
+        self.ui.nameAddTitle.clear()
+        self.ui.descriptionEdit.clear()
+        self.ui.imageArea.clear()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        # Обновляем данные (например, перезагружаем изображения)
+        self.setup_scroll_area()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
@@ -555,19 +879,6 @@ class MainWindow(QMainWindow):
         else:
             self.ui.fullMenu.hide()
             self.ui.icon.show()
-
-    def setup_scroll_area(self):
-        self.image_scroll_area = ImageScrollArea()
-        self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
-
-        for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
-            child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
-
-    def open_desc_page(self, event, widget):
-        if event.button() == Qt.LeftButton:
-            self.clicked_widget = widget
-            self.update_photo_desc()
-            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
     def update_photo_desc(self):
         if hasattr(self, 'clicked_widget'):
@@ -626,15 +937,15 @@ class MainWindow(QMainWindow):
         start_geometry = self.geometry()
         if not self.screen_expanded:
             end_geometry = QApplication.primaryScreen().availableGeometry()
-            self.normal_geometry = start_geometry
+            self.normal_geometry = start_geometry  # Обновляем сохраненную геометрию
         else:
-            end_geometry = self.normal_geometry
+            end_geometry = self.normal_geometry  # Восстанавливаем начальную геометрию
         if start_geometry == end_geometry:
             start_geometry, end_geometry = end_geometry, self.normal_geometry
 
         self.animation.setStartValue(start_geometry)
         self.animation.setEndValue(end_geometry)
-        self.animation.finished.connect(self.on_animation_finished)
+        self.animation.finished.connect(self.on_animation_finished)  # Связываем обработчик события завершения анимации
         self.animation.start()
 
         self.screen_expanded = not self.screen_expanded
