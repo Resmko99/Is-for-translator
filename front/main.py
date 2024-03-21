@@ -341,6 +341,13 @@ class MainWindow(QMainWindow):
         # Привязываем событие mouseDoubleClickEvent к imageAreaEdit
         self.ui.imageAreaEdit.mouseDoubleClickEvent = self.open_image_dialog
 
+        # Привязываем событие mouseDoubleClickEvent к imageArea на странице pageAddTitle
+        self.ui.imageArea.mouseDoubleClickEvent = self.open_image_dialog_add_title
+
+        # Привязываем событие к кнопке "Добавить" на странице pageAddTitle
+        self.ui.addTitleBtn.clicked.connect(self.add_title_to_database)
+        self.ui.addTitleBtn.clicked.connect(self.apply_title_changes)
+
         # Apply styles to the vertical scrollbar of descriptionEdit2
         self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
                     QScrollBar:vertical {
@@ -568,6 +575,51 @@ class MainWindow(QMainWindow):
         if file_path:
             # Отображаем путь к выбранному изображению в imageAreaEdit
             self.ui.imageAreaEdit.setText(file_path)
+
+    def open_image_dialog_add_title(self, event):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            # Отображаем путь к выбранному изображению в imageArea на странице pageAddTitle
+            self.ui.imageArea.setText(file_path)
+
+    def add_title_to_database(self):
+        # Получаем наименование и описание тайтла из соответствующих полей
+        title_name = self.ui.nameAddTitle.text()
+        title_description = self.ui.descriptionEdit.toPlainText()
+
+        # Получаем путь к изображению из imageArea
+        image_path = self.ui.imageArea.toPlainText()
+
+        # Загружаем изображение по указанному пути
+        pixmap = QPixmap(image_path)
+        byte_array = QByteArray()
+        buffer = QBuffer(byte_array)
+        buffer.open(QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+        byte_array = buffer.data()
+
+        # Преобразуем QByteArray в bytes
+        image_data = bytes(byte_array)
+
+        connection = psycopg2.connect(
+            host="localhost",
+            database="Manga",
+            user="postgres",
+            password="1234"
+        )
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO titles ("name", "description", "photo") VALUES (%s, %s, %s)',
+                       (title_name, title_description, image_data))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        # Очищаем поля ввода после добавления тайтла
+        self.ui.nameAddTitle.clear()
+        self.ui.descriptionEdit.clear()
+        self.ui.imageArea.clear()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
