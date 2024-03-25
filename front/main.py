@@ -4,7 +4,7 @@ import os
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem
 
 from googletrans import Translator
@@ -181,8 +181,7 @@ class ImageScrollArea(QWidget):
         self.scroll.setWidget(self.scrollContent)
         self.scroll_area_contents_layout.addWidget(self.scroll)
 
-    def load_images_from_database(self):
-        # Удаляем все дочерние виджеты из scrollLayout
+    def load_images_from_database(self): # Удаляем все дочерние виджеты из scrollLayout
         while self.scrollLayout.count():
             widget = self.scrollLayout.takeAt(0).widget()
             if widget:
@@ -288,6 +287,9 @@ class MainWindow(QMainWindow):
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
 
+        # validator = QRegularExpressionValidator(QRegularExpression("[^0-9]*"), self.text_edit)
+        # self.text_edit.setValidator(validator)
+
         self.normal_geometry = None
 
         page_buttons = [
@@ -313,12 +315,14 @@ class MainWindow(QMainWindow):
             (self.ui.addListTask, self.ui.pageAddTask),
             (self.ui.backTaskBtn, self.ui.pageListTask),
             (self.ui.editListTask, self.ui.pageEditTask),
-            (self.ui.backApplyTaskBtn, self.ui.pageListTask)
+            (self.ui.backApplyTaskBtn, self.ui.pageListTask),
+            (self.ui.backTaskViewBtn, self.ui.pageListTask)
         ]
 
         for button, page in move_buttons:
             button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, page))
 
+        self.ui.tableListTask.doubleClicked.connect(self.view_task)
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
@@ -421,6 +425,13 @@ class MainWindow(QMainWindow):
         self.get_data()
         self.load_edit_users()
 
+    def show_error_message(self, message):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText(message)
+        msg.setWindowTitle("Сообщение об ошибке")
+        msg.exec()
+
     def load_users(self):
         self.ui.employeeAddTask.clear()
         connection = connect()
@@ -453,7 +464,8 @@ class MainWindow(QMainWindow):
         task_text = self.ui.taskEditAdd.toPlainText()
         date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
 
-        if user_id is None or not task_text:
+        if not task_text:
+            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
             return
 
         connection = connect()
@@ -481,6 +493,10 @@ class MainWindow(QMainWindow):
         updated_date = self.ui.dateEditEditTask.date().toString("yyyy-MM-dd")
         updated_user_id = self.ui.employeeEditTask.currentData()
 
+        if not updated_task_text:
+            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            return
+
         try:
             with self.connection.cursor() as cursor:
                 connection = connect()
@@ -497,6 +513,34 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f'Ошибка при обновлении задачи: {e}')
+
+    def view_task(self):
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageUserView)
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+
+        try:
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT t.task_text, t.date
+                    FROM "Task" t
+                    WHERE t.task_id = %s
+                ''', (task_id,))
+                task_details = cursor.fetchone()
+
+                if task_details:
+                    task_text = task_details[0]
+                    date = task_details[1].strftime("%Y-%m-%d")
+
+                    self.ui.taskEditView.setPlainText(task_text)
+                    self.ui.dateEditView.setDate(QDate.fromString(date, "yyyy-MM-dd"))
+
+        except Exception as e:
+            print(f'Ошибка2: {e}')
 
     def edit_task(self):
         selected_index = self.ui.tableListTask.currentIndex()
