@@ -46,13 +46,34 @@ def start(message):
 @bot.callback_query_handler(func=lambda call: call.data == "forgot")
 def forgot(call):
     sent = bot.send_message(call.message.chat.id, 'Введите логин вашей учетной записи:')
-    bot.register_next_step_handler(sent, process_forgot_step)
+    bot.register_next_step_handler(sent, process_forgot_login_step)
+
+def process_forgot_login_step(message):
+    global user_login
+    user_login = message.text
+    user_chat_id = message.chat.id
+    cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"chat_id\" = %s", (user_login, user_chat_id,))
+    result = cursor.fetchone()
+    if not result:
+        bot.reply_to(message, 'Вы не являетесь владельцем данного аккаунта или пользователя с таким логином не существует.')
+    else:
+        sent = bot.send_message(message.chat.id, 'Введите адрес электронной почты, связанный с этим аккаунтом:')
+
+def process_forgot_email_step(message):
+    user_email = message.text
+    cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"email\" = %s", (user_login, user_email))
+    result = cursor.fetchone()
+    if not result:
+        bot.reply_to(message, 'Вы не являетесь владельцем данного аккаунта.')
+    else:
+        process_forgot_step(message)
 
 def process_forgot_step(message):
-    user_login = message.text
+    user_email = message.text
     password = get_unique_password()
     try:
-        cursor.execute("UPDATE \"User\" SET password = %s WHERE login = %s", (password, user_login,))
+        cursor.execute("UPDATE \"User\" SET password = %s WHERE login = %s AND chat_id = %s AND email = %s",
+                       (password, user_login, message.chat.id, user_email))
 
         conn.commit()
         bot.send_message(message.chat.id, f"Ваш новый пароль: {password}")
@@ -98,8 +119,9 @@ def process_email_step(message, user_login, user_password):
     if result:
         bot.reply_to(message, 'Этот адрес электронной почты уже используется. Пожалуйста, введите другой.')
     else:
-        cursor.execute("INSERT INTO \"User\" (login, password, email) VALUES (%s, %s, %s)",
-                       (user_login, user_password, user_email,))
+        user_chat_id = message.chat.id
+        cursor.execute("INSERT INTO \"User\" (login, password, email, chat_id) VALUES (%s, %s, %s, %s)",
+                       (user_login, user_password, user_email, user_chat_id,))
         conn.commit()
         bot.send_message(message.chat.id, 'Вы успешно зарегистрировались!')
 
