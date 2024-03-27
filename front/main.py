@@ -612,15 +612,14 @@ class MainWindow(QMainWindow):
             print(f'Ошибка1: {e}')
 
     def delete_selected_task(self):
-        selected_indexes = self.ui.tableListTask.selectionModel().selectedRows()
-        if not selected_indexes:
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
             return
         try:
-            for index in selected_indexes:
-                task_id = int(index.siblingAtColumn(3).data(Qt.UserRole))
-                connection = connect()
-                with self.connection.cursor() as cursor:
-                    cursor.execute('DELETE FROM "Task" WHERE task_id = %s', (task_id,))
+            task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+            connection = connect()
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM "Task" WHERE task_id = %s', (task_id,))
             connection.commit()
             self.get_data()
         except Exception as e:
@@ -741,6 +740,11 @@ class MainWindow(QMainWindow):
         # Получаем путь к изображению из ImageAreaEdit
         image_path = self.ui.imageAreaEdit.toPlainText()
 
+        if not new_title_name or not new_description or not image_path:
+            self.show_error_message("Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
+            return
+
+
         # Загружаем изображение по указанному пути
         pixmap = QPixmap(image_path)
         byte_array = QByteArray()
@@ -778,6 +782,10 @@ class MainWindow(QMainWindow):
         title_name = self.ui.nameAddTitle.text()
         title_description = self.ui.descriptionEdit.toPlainText()
         image_path = self.ui.imageArea.toPlainText()
+
+        if not title_name or not title_description or not image_path:
+            self.show_error_message("Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
+            return
 
         # Загружаем изображение по указанному пути
         pixmap = QPixmap(image_path)
