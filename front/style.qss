@@ -271,7 +271,7 @@
 
     #comboBox::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #comboBox::drop-down {
@@ -291,7 +291,7 @@
 
     #comboBox_2::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #comboBox_2::drop-down {
@@ -313,7 +313,7 @@
 
     #crewComboBox::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #crewComboBox::drop-down {
@@ -360,7 +360,7 @@
 
     #comboBoxMonth::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #comboBoxMonth::drop-down {
@@ -381,7 +381,7 @@
 
     #comboBoxYear::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #comboBoxYear::drop-down {
@@ -453,7 +453,7 @@
 
     #recipientFile::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #recipientFile::drop-down {
@@ -778,7 +778,7 @@
 
     #nameCrewTranslatorAddTitle::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #nameCrewTranslatorAddTitle::drop-down {
@@ -798,13 +798,13 @@
     }
 
     #dateReleaseAddTitle::down-arrow {
-        image:url('icon/down-arrow.png');
+        image:url(./icon/down-arrow.png);
         width: 10px;
         height: 15px;
     }
 
     #dateReleaseAddTitle::up-arrow {
-        image:url('icon/up-arrow.png');
+        image:url(./icon/up-arrow.png);
         width: 10px;
         height: 15px;
     }
@@ -872,7 +872,7 @@
 
     #nameCrewTranslatorEditTitle::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #nameCrewTranslatorEditTitle::drop-down {
@@ -891,13 +891,13 @@
     }
 
     #dateReleaseEditTitle::down-arrow {
-        image:url('icon/down-arrow.png');
+        image:url(./icon/down-arrow.png);
         width: 10px;
         height: 15px;
     }
 
     #dateReleaseEditTitle::up-arrow {
-        image:url('icon/up-arrow.png');
+        image:url(./icon/up-arrow.png);
         width: 10px;
         height: 15px;
     }
@@ -955,7 +955,7 @@
 
     #pageAddIncome QComboBox::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #pageAddIncome QComboBox::drop-down {
@@ -1009,7 +1009,7 @@
 
     #pageEditIncome QComboBox::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #pageEditIncome QComboBox::drop-down {
@@ -1072,7 +1072,7 @@
 
     #pageAddTask QComboBox::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #pageAddTask QComboBox::drop-down {
@@ -1200,13 +1200,13 @@
     }
 
     #dateEdit::down-arrow {
-        image:url('icon/down-arrow.png');
+        image:url(./icon/down-arrow.png);
         width: 10px;
         height: 15px;
     }
 
     #dateEdit::up-arrow {
-        image:url('icon/up-arrow.png');
+        image:url(./icon/up-arrow.png);
         width: 10px;
         height: 15px;
     }
@@ -1311,7 +1311,7 @@
 
     #pageEditTask QComboBox::down-arrow {
         width: 20px;
-        image: url('icon/down-arrow.png');
+        image: url(./icon/down-arrow.png);
     }
 
     #pageEditTask QComboBox::drop-down {
@@ -1331,13 +1331,13 @@
     }
 
     #dateEditEditTask::down-arrow {
-        image:url('icon/down-arrow.png');
+        image:url(./icon/down-arrow.png);
         width: 10px;
         height: 15px;
     }
 
     #dateEditEditTask::up-arrow {
-        image:url('icon/up-arrow.png');
+        image:url(./icon/up-arrow.png);
         width: 10px;
         height: 15px;
     }
