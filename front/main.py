@@ -366,7 +366,7 @@ class MainWindow(QMainWindow):
                                 border: none;
                                 border-radius: 5px;
                                 width: 15px;
-                                margin-right: 5px;
+                                margin-right: 5px; 
                                 margin-top: 2px;
                                 margin-bottom: 2px;
                             }
