@@ -32,7 +32,6 @@ try:
 except (Exception, psycopg2.Error) as error:
     print("Ошибка при подключении к PostgreSQL:", error)
 
-# Бот приветствует пользователя
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = InlineKeyboardMarkup()
