@@ -192,7 +192,7 @@ class ImageScrollArea(QWidget):
         cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
         rows = cursor.fetchall()
 
-        images_per_row = 5
+        images_per_row = 4
         current_row_layout = None
 
         for i, row in enumerate(rows):
@@ -215,7 +215,7 @@ class ImageScrollArea(QWidget):
             # Преобразование байтов изображения в QPixmap
             pixmap = QPixmap()
             pixmap.loadFromData(bytes(row[1]))
-            pixmap = pixmap.scaled(250, 380, Qt.IgnoreAspectRatio)
+            pixmap = pixmap.scaled(370, 500, Qt.IgnoreAspectRatio)
 
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
@@ -329,8 +329,19 @@ class MainWindow(QMainWindow):
         self.ui.taskAddBtn.clicked.connect(self.apply_task)
         self.screen_expanded = False
 
-        # Установка фильтра событий для главного окна
-        self.open_hand_px = QPixmap(directory + f'/Photo/free-icon-cursor-5340828.png')
+        # Получаем абсолютный путь к каталогу со скриптом
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Получаем абсолютный путь к изображению курсора
+        open_hand_px_path = os.path.join(current_dir, 'Photo', 'free-icon-cursor-5340828.png')
+
+        # Проверяем, существует ли файл изображения курсора
+        if not os.path.exists(open_hand_px_path):
+            print("Файл изображения курсора не найден:", open_hand_px_path)
+            sys.exit(1)
+
+        # Загружаем изображение курсора
+        self.open_hand_px = QPixmap(open_hand_px_path)
         self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
         self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
         self.open_hand_cursor = QCursor(self.scaled_open_hand_px, 0, 0)
@@ -968,8 +979,17 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    with open("style.qss", "r") as style_file:
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    style_file_path = os.path.join(current_dir, "style.qss")
+
+    if not os.path.exists(style_file_path):
+        print("Файл стиля QSS не найден:", style_file_path)
+        sys.exit(1)
+
+    with open(style_file_path, "r") as style_file:
         style_str = style_file.read()
+
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
