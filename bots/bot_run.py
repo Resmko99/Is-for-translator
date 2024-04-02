@@ -2,11 +2,13 @@ import os
 import random
 import string
 import psycopg2
+import uuid
 from psycopg2 import Error
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import configparser
 from telebot import TeleBot
+from telebot import types
 
 # Парсим конфигурационный файл
 config = configparser.ConfigParser()
@@ -37,11 +39,63 @@ def start(message):
     markup = InlineKeyboardMarkup()
     itembtn1 = InlineKeyboardButton('Регистрация', callback_data="reg")
     itembtn2 = InlineKeyboardButton('Восстановить пароль', callback_data="forgot")
-    markup.add(itembtn1, itembtn2)
+    itembtn3 = InlineKeyboardButton('Создать команду',callback_data="team")
+    markup.add(itembtn1, itembtn2, itembtn3)
 
     bot.send_message(message.chat.id, "Привет! Выберите действие:", reply_markup=markup)
 
+   #Создание комманды, для этого используем две функции:
+   #def team для создания комманды, а def process_team_step для вывода об
+   #успешном создании комманды, в ином случае у пользователя не будет создаваться комманда
+@bot.message_handler(commands=['team'])
+def team(message):
 
+    #Берём id чата и запоминаем его
+    user_chat_id = message.chat.id
+
+    #Подхватываем пользователя из базы данных
+    cursor.execute("SELECT * FROM \"User\" WHERE chat_id = %s", (user_chat_id,))
+    result = cursor.fetchone()
+
+    #Проверка зарегестрирован ли пользователь
+    if not result:
+        bot.reply_to(message, 'Пользователь не зарегистрирован.')
+    else:
+        #Индексируем столбцы
+        user_category = result[3]
+        if user_category == 1:
+            #Если пользователь прошёл проверку и он может создать команду
+            sent = bot.send_message(message.chat.id, 'Введите название команды:')
+
+            #Вызываем следующие шаги для регистрации комманды
+            bot.register_next_step_handler(sent, process_team_step)
+        else:
+            #Если не прошёл проверку
+            bot.reply_to(message, 'У вас нет прав на создание команды.')
+
+#Создание команды, присвоение id, названия команды и отправка сообщения об успешном создании
+def process_team_step(message):
+    team_name = message.text
+    user_chat_id = message.chat.id
+
+    team_id = uuid.uuid1() #Присвоение уникального id команде
+
+    #Типичная работа с базой данных
+    try:
+        cursor.execute("INSERT INTO \"Teams\" (team_id, name_team) VALUES (%s, %s)",
+                       (team_id, team_name))
+        conn.commit()
+
+        #Сообщение об успешном создании
+        bot.send_message(message.chat.id, f'Вы создали команду с названием "{team_name}"!')
+    except (Exception, psycopg2.Error) as error:
+        #Если ошибка
+        print("Ошибка при работе с PostgreSQL:", error)
+        bot.send_message(message.chat.id,
+                         "Произошла внутренняя ошибка при попытке создать команду. Попробуйте еще раз.")
+        conn.rollback()
+
+#Восстановление пароля
 @bot.callback_query_handler(func=lambda call: call.data == "forgot")
 def forgot(call):
     sent = bot.send_message(call.message.chat.id, 'Введите логин вашей учетной записи:')
@@ -89,6 +143,7 @@ def get_unique_password():
         if not result:
             return password
 
+#Регистрация
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     if call.message:
@@ -123,5 +178,7 @@ def process_email_step(message, user_login, user_password):
                        (user_login, user_password, user_email, user_chat_id,))
         conn.commit()
         bot.send_message(message.chat.id, 'Вы успешно зарегистрировались!')
+        
+        
 
 bot.polling(none_stop=True)
