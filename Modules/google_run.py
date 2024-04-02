@@ -6,12 +6,12 @@ from tkinter import ttk
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from google.auth.transport.requests import Request
+from google_run.auth.transport.requests import Request
 
-# Scope for full access to the Drive API
+#Настройка скоупа
 SCOPES = ['https://www.googleapis.com/auth/drive']
 tokenPath = 'token.pickle'
-credentialPath = 'credentials.json'   # Path to your 'credentials.json' file
+credentialPath = 'credentials.json'   #Путь к файлу 'credentials.json' где лежат данные пользователя
 
 def authenticate():
     creds = None

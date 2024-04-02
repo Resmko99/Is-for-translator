@@ -12,7 +12,7 @@ from telebot import types
 
 # Парсим конфигурационный файл
 config = configparser.ConfigParser()
-config.read(os.path.join('src', 'config.ini'))
+config.read(os.path.join('Source', 'config.ini'))
 bot_token = config['telegram']['token']
 db_user = config['database']['user']
 db_password = config['database']['password']

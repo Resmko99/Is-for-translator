@@ -8,13 +8,11 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, Q
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem
 
 from googletrans import Translator
-from datetime import datetime
 from functools import partial
-from ui import Ui_MainWindow
-from database import connect, close_db_connect
+from .ui import Ui_MainWindow
+from Modules.database import connect, close_db_connect
 
 import psycopg2
-import itertools
 
 
 class Calender(QWidget):
@@ -246,7 +244,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
-        self.ui.stackedWidget.setCurrentIndex(4)
+        self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
@@ -921,23 +919,4 @@ class MainWindow(QMainWindow):
         if event.button() == Qt.LeftButton:
             self.drag_position = None
             self.resize_direction = None
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    style_file_path = os.path.join(current_dir, "style.qss")
-
-    if not os.path.exists(style_file_path):
-        print("Файл стиля QSS не найден:", style_file_path)
-        sys.exit(1)
-
-    with open(style_file_path, "r") as style_file:
-        style_str = style_file.read()
-
-    app.setStyleSheet(style_str)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
 
