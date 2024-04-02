@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading Ui file 'ui.ui'
+## Form generated from reading Interface file 'ui.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.1
 ##
-## WARNING! All changes made in this file will be lost when recompiling Ui file!
+## WARNING! All changes made in this file will be lost when recompiling Interface file!
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QDate
     QLineEdit, QMainWindow, QPushButton, QSizePolicy,
     QSpacerItem, QStackedWidget, QTableView, QTextEdit,
     QVBoxLayout, QWidget)
-from Ui import resource_rc
+from Interface import resource_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
