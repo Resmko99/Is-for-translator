@@ -1247,6 +1247,7 @@ class Ui_MainWindow(object):
 
         self.imageArea = QTextEdit(self.pageAddTitle)
         self.imageArea.setObjectName(u"imageArea")
+        self.imageArea.setReadOnly(True)
 
         self.verticalLayout_14.addWidget(self.imageArea)
 
@@ -1343,6 +1344,7 @@ class Ui_MainWindow(object):
 
         self.imageAreaEdit = QTextEdit(self.pageEditTitle)
         self.imageAreaEdit.setObjectName(u"imageAreaEdit")
+        self.imageAreaEdit.setReadOnly(True)
 
         self.verticalLayout_16.addWidget(self.imageAreaEdit)
 
@@ -1460,6 +1462,7 @@ class Ui_MainWindow(object):
         self.imagePost.setObjectName(u"imagePost")
         self.imagePost.setMinimumSize(QSize(600, 250))
         self.imagePost.setMaximumSize(QSize(600, 250))
+        self.imagePost.setReadOnly(True)
 
         self.verticalLayout_10.addWidget(self.imagePost)
 
@@ -1769,6 +1772,7 @@ class Ui_MainWindow(object):
         self.fileAdd.setSizePolicy(sizePolicy6)
         self.fileAdd.setMinimumSize(QSize(900, 270))
         self.fileAdd.setMaximumSize(QSize(16777215, 270))
+        self.fileAdd.setReadOnly(True)
 
         self.verticalLayout_27.addWidget(self.fileAdd)
 
@@ -2243,7 +2247,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(17)
+        self.stackedWidget_2.setCurrentIndex(11)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

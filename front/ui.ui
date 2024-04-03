@@ -1569,7 +1569,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>17</number>
+           <number>12</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -2654,6 +2654,9 @@
               </item>
               <item>
                <widget class="QTextEdit" name="imageArea">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Нажмите два раза для добавления изображения</string>
                 </property>
@@ -2829,6 +2832,9 @@
               </item>
               <item>
                <widget class="QTextEdit" name="imageAreaEdit">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Нажмите два раза для добавления изображения</string>
                 </property>
@@ -3067,6 +3073,9 @@
                   <width>600</width>
                   <height>250</height>
                  </size>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                 <property name="placeholderText">
                  <string>Нажмите два раза для добавления изображения</string>
@@ -3715,6 +3724,9 @@
                   <height>270</height>
                  </size>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Файл &quot;.rar&quot; не должен превышать 4гб, &quot;.docx&quot; не должен превышать 100мб</string>
                 </property>
@@ -4036,26 +4048,20 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_92">
-              <property name="text">
-               <string>Изображение команды</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QLineEdit" name="nameCrewAcc">
-              <property name="minimumSize">
-               <size>
-                <width>540</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="1" column="0">
+             <widget class="QComboBox" name="nameCrewAcc">
               <property name="maximumSize">
                <size>
                 <width>540</width>
                 <height>16777215</height>
                </size>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_92">
+              <property name="text">
+               <string>Изображение команды</string>
               </property>
              </widget>
             </item>
