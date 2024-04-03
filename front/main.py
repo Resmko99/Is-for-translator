@@ -192,7 +192,7 @@ class ImageScrollArea(QWidget):
         cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
         rows = cursor.fetchall()
 
-        images_per_row = 5
+        images_per_row = 4
         current_row_layout = None
 
         for i, row in enumerate(rows):
@@ -215,7 +215,7 @@ class ImageScrollArea(QWidget):
             # Преобразование байтов изображения в QPixmap
             pixmap = QPixmap()
             pixmap.loadFromData(bytes(row[1]))
-            pixmap = pixmap.scaled(250, 380, Qt.IgnoreAspectRatio)
+            pixmap = pixmap.scaled(370, 500, Qt.IgnoreAspectRatio)
 
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
