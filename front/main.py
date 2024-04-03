@@ -227,7 +227,7 @@ class ImageScrollArea(QWidget):
 
             text_label = QLabel(row[0])  # Используем текст из базы данных
             image_text_layout.addWidget(text_label)
-            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 14pt "Inter";')
+            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 18px "Inter";')
             text_label.setAlignment(Qt.AlignCenter)
 
             current_row_layout.addWidget(image_text_container)
