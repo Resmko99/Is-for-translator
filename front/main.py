@@ -222,12 +222,12 @@ class ImageScrollArea(QWidget):
             else:
                 label.setText("Image not found")
             label.setAlignment(Qt.AlignCenter)
-            label.setStyleSheet("border: none")
+            label.setStyleSheet("border: none; color: #FFFFFF;")
             image_text_layout.addWidget(label)
 
             text_label = QLabel(row[0])  # Используем текст из базы данных
             image_text_layout.addWidget(text_label)
-            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 14pt "Inter";')
+            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 18px "Inter";')
             text_label.setAlignment(Qt.AlignCenter)
 
             current_row_layout.addWidget(image_text_container)
@@ -282,7 +282,6 @@ class MainWindow(QMainWindow):
         self.ui.scheduleBtn_1.setToolTip("Расписание")
         self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
-        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
@@ -300,7 +299,6 @@ class MainWindow(QMainWindow):
             (self.ui.fileSharingBtn_1, self.ui.fileSharingBtn_2, self.ui.pageFileSharing),
             (self.ui.accountBtn_1, self.ui.accountBtn_2, self.ui.pageAccount),
             (self.ui.aboutUs_1, self.ui.aboutUs_2, self.ui.pageAboutUs),
-            (self.ui.acceptFileBtn_1, self.ui.acceptFileBtn_2, self.ui.pageReceiveFile),
             (self.ui.translateBtn_1, self.ui.translateBtn_2, self.ui.pageTranslator)
         ]
         for button, button_2, page in page_buttons:
@@ -316,7 +314,10 @@ class MainWindow(QMainWindow):
             (self.ui.backTaskBtn, self.ui.pageListTask),
             (self.ui.editListTask, self.ui.pageEditTask),
             (self.ui.backApplyTaskBtn, self.ui.pageListTask),
-            (self.ui.backTaskViewBtn, self.ui.pageListTask)
+            (self.ui.backTaskViewBtn, self.ui.pageListTask),
+            (self.ui.incomeAddBtn, self.ui.pageAddIncome),
+            (self.ui.backAddIncome, self.ui.pageIncome),
+            (self.ui.incomeEditBtn, self.ui.pageEditIncome),
         ]
 
         for button, page in move_buttons:
@@ -329,19 +330,8 @@ class MainWindow(QMainWindow):
         self.ui.taskAddBtn.clicked.connect(self.apply_task)
         self.screen_expanded = False
 
-        # Получаем абсолютный путь к каталогу со скриптом
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Получаем абсолютный путь к изображению курсора
-        open_hand_px_path = os.path.join(current_dir, 'Photo', 'free-icon-cursor-5340828.png')
-
-        # Проверяем, существует ли файл изображения курсора
-        if not os.path.exists(open_hand_px_path):
-            print("Файл изображения курсора не найден:", open_hand_px_path)
-            sys.exit(1)
-
-        # Загружаем изображение курсора
-        self.open_hand_px = QPixmap(open_hand_px_path)
+        # Установка фильтра событий для главного окна
+        self.open_hand_px = QPixmap(directory + f'/Photo/free-icon-cursor-5340828.png')
         self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
         self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
         self.open_hand_cursor = QCursor(self.scaled_open_hand_px, 0, 0)
@@ -646,8 +636,6 @@ class MainWindow(QMainWindow):
         self.ui.textEdit.textChanged.connect(self.start_timer)
         self.ui.comboBox.currentIndexChanged.connect(self.translate_text)
         self.ui.comboBox_2.currentIndexChanged.connect(self.translate_text)
-        self.ui.comboBox.setStyleSheet("background-color: #3D434B; color: white;")
-        self.ui.comboBox_2.setStyleSheet("background-color: #3D434B; color: white;")
 
     def start_timer(self):
         self.translation_timer.stop()
@@ -751,24 +739,29 @@ class MainWindow(QMainWindow):
         # Получаем путь к изображению из ImageAreaEdit
         image_path = self.ui.imageAreaEdit.toPlainText()
 
-        if not new_title_name or not new_description or not image_path:
-            self.show_error_message("Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
-            return
-
-
-        # Загружаем изображение по указанному пути
-        pixmap = QPixmap(image_path)
-        byte_array = QByteArray()
-        buffer = QBuffer(byte_array)
-        buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-        byte_array = buffer.data()
-        image_data = bytes(byte_array)
+        # Проверяем, был ли выбран новый файл изображения
+        if image_path:
+            # Загружаем изображение по указанному пути
+            pixmap = QPixmap(image_path)
+            byte_array = QByteArray()
+            buffer = QBuffer(byte_array)
+            buffer.open(QIODevice.WriteOnly)
+            pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+            byte_array = buffer.data()
+            image_data = bytes(byte_array)
+        else:
+            # Если новое изображение не было выбрано, оставляем текущее изображение в базе данных
+            image_data = None
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                       (new_title_name, new_description, image_data, self.title_id))
+        if image_data is not None:
+            cursor.execute(
+                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
+                (new_title_name, new_description, image_data, self.title_id))
+        else:
+            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
+                           (new_title_name, new_description, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -979,18 +972,10 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    style_file_path = os.path.join(current_dir, "style.qss")
-
-    if not os.path.exists(style_file_path):
-        print("Файл стиля QSS не найден:", style_file_path)
-        sys.exit(1)
-
-    with open(style_file_path, "r") as style_file:
+    with open("style.qss", "r") as style_file:
         style_str = style_file.read()
-
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
+
