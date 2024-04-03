@@ -575,22 +575,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.fileSharingBtn_1)
 
-        self.acceptFileBtn_1 = QPushButton(self.icon)
-        self.acceptFileBtn_1.setObjectName(u"acceptFileBtn_1")
-        icon10 = QIcon()
-        icon10.addFile(u":/icon/icon/free-icon-envelope-2168955.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.acceptFileBtn_1.setIcon(icon10)
-        self.acceptFileBtn_1.setIconSize(QSize(20, 20))
-        self.acceptFileBtn_1.setCheckable(True)
-        self.acceptFileBtn_1.setAutoExclusive(True)
-
-        self.verticalLayout.addWidget(self.acceptFileBtn_1)
-
         self.accountBtn_1 = QPushButton(self.icon)
         self.accountBtn_1.setObjectName(u"accountBtn_1")
-        icon11 = QIcon()
-        icon11.addFile(u":/icon/icon/person.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.accountBtn_1.setIcon(icon11)
+        icon10 = QIcon()
+        icon10.addFile(u":/icon/icon/person.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.accountBtn_1.setIcon(icon10)
         self.accountBtn_1.setIconSize(QSize(20, 20))
         self.accountBtn_1.setCheckable(True)
         self.accountBtn_1.setAutoExclusive(True)
@@ -599,9 +588,9 @@ class Ui_MainWindow(object):
 
         self.translateBtn_1 = QPushButton(self.icon)
         self.translateBtn_1.setObjectName(u"translateBtn_1")
-        icon12 = QIcon()
-        icon12.addFile(u":/icon/icon/education.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.translateBtn_1.setIcon(icon12)
+        icon11 = QIcon()
+        icon11.addFile(u":/icon/icon/education.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.translateBtn_1.setIcon(icon11)
         self.translateBtn_1.setIconSize(QSize(20, 20))
         self.translateBtn_1.setCheckable(True)
         self.translateBtn_1.setAutoExclusive(True)
@@ -617,9 +606,9 @@ class Ui_MainWindow(object):
 
         self.aboutUs_1 = QPushButton(self.icon)
         self.aboutUs_1.setObjectName(u"aboutUs_1")
-        icon13 = QIcon()
-        icon13.addFile(u":/icon/icon/info.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.aboutUs_1.setIcon(icon13)
+        icon12 = QIcon()
+        icon12.addFile(u":/icon/icon/info.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.aboutUs_1.setIcon(icon12)
         self.aboutUs_1.setIconSize(QSize(20, 20))
         self.aboutUs_1.setCheckable(True)
         self.aboutUs_1.setAutoExclusive(True)
@@ -698,18 +687,9 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.fileSharingBtn_2)
 
-        self.acceptFileBtn_2 = QPushButton(self.fullMenu)
-        self.acceptFileBtn_2.setObjectName(u"acceptFileBtn_2")
-        self.acceptFileBtn_2.setIcon(icon10)
-        self.acceptFileBtn_2.setIconSize(QSize(20, 20))
-        self.acceptFileBtn_2.setCheckable(True)
-        self.acceptFileBtn_2.setAutoExclusive(True)
-
-        self.verticalLayout_2.addWidget(self.acceptFileBtn_2)
-
         self.accountBtn_2 = QPushButton(self.fullMenu)
         self.accountBtn_2.setObjectName(u"accountBtn_2")
-        self.accountBtn_2.setIcon(icon11)
+        self.accountBtn_2.setIcon(icon10)
         self.accountBtn_2.setIconSize(QSize(20, 20))
         self.accountBtn_2.setCheckable(True)
         self.accountBtn_2.setAutoExclusive(True)
@@ -718,7 +698,7 @@ class Ui_MainWindow(object):
 
         self.translateBtn_2 = QPushButton(self.fullMenu)
         self.translateBtn_2.setObjectName(u"translateBtn_2")
-        self.translateBtn_2.setIcon(icon12)
+        self.translateBtn_2.setIcon(icon11)
         self.translateBtn_2.setIconSize(QSize(20, 20))
         self.translateBtn_2.setCheckable(True)
         self.translateBtn_2.setAutoExclusive(True)
@@ -734,7 +714,7 @@ class Ui_MainWindow(object):
 
         self.aboutUs_2 = QPushButton(self.fullMenu)
         self.aboutUs_2.setObjectName(u"aboutUs_2")
-        self.aboutUs_2.setIcon(icon13)
+        self.aboutUs_2.setIcon(icon12)
         self.aboutUs_2.setIconSize(QSize(20, 20))
         self.aboutUs_2.setCheckable(True)
         self.aboutUs_2.setAutoExclusive(True)
@@ -782,9 +762,9 @@ class Ui_MainWindow(object):
 
         self.SearchBtn = QPushButton(self.pageTitle)
         self.SearchBtn.setObjectName(u"SearchBtn")
-        icon14 = QIcon()
-        icon14.addFile(u":/icon/icon/free-icon-loupe-216463.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.SearchBtn.setIcon(icon14)
+        icon13 = QIcon()
+        icon13.addFile(u":/icon/icon/free-icon-loupe-216463.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.SearchBtn.setIcon(icon13)
         self.SearchBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_3.addWidget(self.SearchBtn)
@@ -796,10 +776,10 @@ class Ui_MainWindow(object):
         self.pushOpenAdd = QPushButton(self.pageTitle)
         self.pushOpenAdd.setObjectName(u"pushOpenAdd")
         self.pushOpenAdd.setLayoutDirection(Qt.LeftToRight)
-        icon15 = QIcon()
-        icon15.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon15.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Active, QIcon.On)
-        self.pushOpenAdd.setIcon(icon15)
+        icon14 = QIcon()
+        icon14.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon14.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Active, QIcon.On)
+        self.pushOpenAdd.setIcon(icon14)
         self.pushOpenAdd.setIconSize(QSize(20, 20))
         self.pushOpenAdd.setCheckable(True)
         self.pushOpenAdd.setAutoExclusive(True)
@@ -876,9 +856,9 @@ class Ui_MainWindow(object):
         self.taskApplyBtn.setObjectName(u"taskApplyBtn")
         self.taskApplyBtn.setMinimumSize(QSize(140, 30))
         self.taskApplyBtn.setMaximumSize(QSize(140, 30))
-        icon16 = QIcon()
-        icon16.addFile(u":/icon/icon/free-icon-check-mark-8370918.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.taskApplyBtn.setIcon(icon16)
+        icon15 = QIcon()
+        icon15.addFile(u":/icon/icon/free-icon-check-mark-8370918.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.taskApplyBtn.setIcon(icon15)
         self.taskApplyBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_17.addWidget(self.taskApplyBtn)
@@ -887,9 +867,9 @@ class Ui_MainWindow(object):
         self.backApplyTaskBtn.setObjectName(u"backApplyTaskBtn")
         self.backApplyTaskBtn.setMinimumSize(QSize(140, 30))
         self.backApplyTaskBtn.setMaximumSize(QSize(140, 30))
-        icon17 = QIcon()
-        icon17.addFile(u":/icon/icon/free-icon-back-2644908.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.backApplyTaskBtn.setIcon(icon17)
+        icon16 = QIcon()
+        icon16.addFile(u":/icon/icon/free-icon-back-2644908.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.backApplyTaskBtn.setIcon(icon16)
         self.backApplyTaskBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_17.addWidget(self.backApplyTaskBtn)
@@ -1045,6 +1025,16 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_10.addItem(self.horizontalSpacer_18)
 
+        self.incomeEditBtn = QPushButton(self.widget_9)
+        self.incomeEditBtn.setObjectName(u"incomeEditBtn")
+        self.incomeEditBtn.setMinimumSize(QSize(140, 30))
+        self.incomeEditBtn.setMaximumSize(QSize(140, 30))
+        icon17 = QIcon()
+        icon17.addFile(u":/icon/icon/free-icon-pencil-7266923.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.incomeEditBtn.setIcon(icon17)
+
+        self.horizontalLayout_10.addWidget(self.incomeEditBtn)
+
         self.incomeDeleteBtn = QPushButton(self.widget_9)
         self.incomeDeleteBtn.setObjectName(u"incomeDeleteBtn")
         self.incomeDeleteBtn.setMinimumSize(QSize(140, 30))
@@ -1128,9 +1118,7 @@ class Ui_MainWindow(object):
         self.editTitleBtn.setObjectName(u"editTitleBtn")
         self.editTitleBtn.setMinimumSize(QSize(140, 26))
         self.editTitleBtn.setMaximumSize(QSize(140, 30))
-        icon20 = QIcon()
-        icon20.addFile(u":/icon/icon/free-icon-pencil-7266923.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.editTitleBtn.setIcon(icon20)
+        self.editTitleBtn.setIcon(icon17)
 
         self.horizontalLayout_8.addWidget(self.editTitleBtn)
 
@@ -1146,7 +1134,7 @@ class Ui_MainWindow(object):
         self.backBtnDesc.setObjectName(u"backBtnDesc")
         self.backBtnDesc.setMinimumSize(QSize(140, 30))
         self.backBtnDesc.setMaximumSize(QSize(140, 30))
-        self.backBtnDesc.setIcon(icon17)
+        self.backBtnDesc.setIcon(icon16)
         self.backBtnDesc.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_8.addWidget(self.backBtnDesc)
@@ -1312,7 +1300,7 @@ class Ui_MainWindow(object):
         self.backAddTitleBtn.setObjectName(u"backAddTitleBtn")
         self.backAddTitleBtn.setMinimumSize(QSize(140, 30))
         self.backAddTitleBtn.setMaximumSize(QSize(140, 30))
-        self.backAddTitleBtn.setIcon(icon17)
+        self.backAddTitleBtn.setIcon(icon16)
         self.backAddTitleBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_9.addWidget(self.backAddTitleBtn)
@@ -1417,7 +1405,7 @@ class Ui_MainWindow(object):
         self.backEditTitleBtn.setObjectName(u"backEditTitleBtn")
         self.backEditTitleBtn.setMinimumSize(QSize(140, 30))
         self.backEditTitleBtn.setMaximumSize(QSize(140, 30))
-        self.backEditTitleBtn.setIcon(icon17)
+        self.backEditTitleBtn.setIcon(icon16)
         self.backEditTitleBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_11.addWidget(self.backEditTitleBtn)
@@ -1426,7 +1414,7 @@ class Ui_MainWindow(object):
         self.applyEditBtn.setObjectName(u"applyEditBtn")
         self.applyEditBtn.setMinimumSize(QSize(140, 30))
         self.applyEditBtn.setMaximumSize(QSize(140, 30))
-        self.applyEditBtn.setIcon(icon16)
+        self.applyEditBtn.setIcon(icon15)
         self.applyEditBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_11.addWidget(self.applyEditBtn)
@@ -1441,6 +1429,18 @@ class Ui_MainWindow(object):
         self.gridLayout_46.setObjectName(u"gridLayout_46")
         self.verticalLayout_10 = QVBoxLayout()
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.label_3 = QLabel(self.pageSocialNetwork)
+        self.label_3.setObjectName(u"label_3")
+
+        self.verticalLayout_10.addWidget(self.label_3)
+
+        self.lineEdit_6 = QLineEdit(self.pageSocialNetwork)
+        self.lineEdit_6.setObjectName(u"lineEdit_6")
+        self.lineEdit_6.setMinimumSize(QSize(450, 0))
+        self.lineEdit_6.setMaximumSize(QSize(540, 16777215))
+
+        self.verticalLayout_10.addWidget(self.lineEdit_6)
+
         self.label_6 = QLabel(self.pageSocialNetwork)
         self.label_6.setObjectName(u"label_6")
 
@@ -1455,6 +1455,8 @@ class Ui_MainWindow(object):
 
         self.label_85 = QLabel(self.pageSocialNetwork)
         self.label_85.setObjectName(u"label_85")
+        sizePolicy5.setHeightForWidth(self.label_85.sizePolicy().hasHeightForWidth())
+        self.label_85.setSizePolicy(sizePolicy5)
 
         self.verticalLayout_10.addWidget(self.label_85)
 
@@ -1465,50 +1467,6 @@ class Ui_MainWindow(object):
         self.imagePost.setReadOnly(True)
 
         self.verticalLayout_10.addWidget(self.imagePost)
-
-        self.widget_28 = QWidget(self.pageSocialNetwork)
-        self.widget_28.setObjectName(u"widget_28")
-        self.gridLayout_5 = QGridLayout(self.widget_28)
-        self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.vkBtn = QPushButton(self.widget_28)
-        self.vkBtn.setObjectName(u"vkBtn")
-        self.vkBtn.setMinimumSize(QSize(70, 60))
-        self.vkBtn.setMaximumSize(QSize(70, 60))
-        icon21 = QIcon()
-        icon21.addFile(u":/icon/icon/icons8-vk-100.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.vkBtn.setIcon(icon21)
-        self.vkBtn.setIconSize(QSize(45, 45))
-
-        self.gridLayout_5.addWidget(self.vkBtn, 0, 1, 1, 1)
-
-        self.dsBtn = QPushButton(self.widget_28)
-        self.dsBtn.setObjectName(u"dsBtn")
-        self.dsBtn.setMinimumSize(QSize(70, 60))
-        self.dsBtn.setMaximumSize(QSize(70, 60))
-        icon22 = QIcon()
-        icon22.addFile(u":/icon/icon/icons8-discord-100.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.dsBtn.setIcon(icon22)
-        self.dsBtn.setIconSize(QSize(45, 45))
-
-        self.gridLayout_5.addWidget(self.dsBtn, 0, 2, 1, 1)
-
-        self.tgBtn = QPushButton(self.widget_28)
-        self.tgBtn.setObjectName(u"tgBtn")
-        self.tgBtn.setMinimumSize(QSize(70, 60))
-        self.tgBtn.setMaximumSize(QSize(70, 60))
-        icon23 = QIcon()
-        icon23.addFile(u":/icon/icon/icons8-\u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c-100.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.tgBtn.setIcon(icon23)
-        self.tgBtn.setIconSize(QSize(45, 45))
-
-        self.gridLayout_5.addWidget(self.tgBtn, 0, 0, 1, 1)
-
-        self.horizontalSpacer_46 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_46, 0, 3, 1, 1)
-
-
-        self.verticalLayout_10.addWidget(self.widget_28)
 
 
         self.gridLayout_46.addLayout(self.verticalLayout_10, 0, 0, 1, 1)
@@ -1535,7 +1493,7 @@ class Ui_MainWindow(object):
         self.publishBtn.setObjectName(u"publishBtn")
         self.publishBtn.setMinimumSize(QSize(140, 30))
         self.publishBtn.setMaximumSize(QSize(140, 30))
-        self.publishBtn.setIcon(icon16)
+        self.publishBtn.setIcon(icon15)
         self.publishBtn.setIconSize(QSize(20, 20))
 
         self.gridLayout_45.addWidget(self.publishBtn, 0, 1, 1, 1)
@@ -1566,6 +1524,16 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_17.addWidget(self.label_46)
 
+        self.userAddComboBox = QComboBox(self.pageAddIncome)
+        self.userAddComboBox.setObjectName(u"userAddComboBox")
+
+        self.verticalLayout_17.addWidget(self.userAddComboBox)
+
+        self.label_15 = QLabel(self.pageAddIncome)
+        self.label_15.setObjectName(u"label_15")
+
+        self.verticalLayout_17.addWidget(self.label_15)
+
         self.titleAddComboBox = QComboBox(self.pageAddIncome)
         self.titleAddComboBox.setObjectName(u"titleAddComboBox")
 
@@ -1580,16 +1548,6 @@ class Ui_MainWindow(object):
         self.nameChapterAddIncome.setObjectName(u"nameChapterAddIncome")
 
         self.verticalLayout_17.addWidget(self.nameChapterAddIncome)
-
-        self.label_48 = QLabel(self.pageAddIncome)
-        self.label_48.setObjectName(u"label_48")
-
-        self.verticalLayout_17.addWidget(self.label_48)
-
-        self.translatorAddIncome = QLineEdit(self.pageAddIncome)
-        self.translatorAddIncome.setObjectName(u"translatorAddIncome")
-
-        self.verticalLayout_17.addWidget(self.translatorAddIncome)
 
         self.label_49 = QLabel(self.pageAddIncome)
         self.label_49.setObjectName(u"label_49")
@@ -1630,7 +1588,7 @@ class Ui_MainWindow(object):
         self.backAddIncome.setObjectName(u"backAddIncome")
         self.backAddIncome.setMinimumSize(QSize(140, 30))
         self.backAddIncome.setMaximumSize(QSize(140, 30))
-        self.backAddIncome.setIcon(icon17)
+        self.backAddIncome.setIcon(icon16)
         self.backAddIncome.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_12.addWidget(self.backAddIncome)
@@ -1670,10 +1628,20 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_18.addWidget(self.label_51)
 
-        self.titleEditComboBox = QComboBox(self.pageEditIncome)
-        self.titleEditComboBox.setObjectName(u"titleEditComboBox")
+        self.userEditComboBox = QComboBox(self.pageEditIncome)
+        self.userEditComboBox.setObjectName(u"userEditComboBox")
 
-        self.verticalLayout_18.addWidget(self.titleEditComboBox)
+        self.verticalLayout_18.addWidget(self.userEditComboBox)
+
+        self.label_5 = QLabel(self.pageEditIncome)
+        self.label_5.setObjectName(u"label_5")
+
+        self.verticalLayout_18.addWidget(self.label_5)
+
+        self.titleEditcomboBox = QComboBox(self.pageEditIncome)
+        self.titleEditcomboBox.setObjectName(u"titleEditcomboBox")
+
+        self.verticalLayout_18.addWidget(self.titleEditcomboBox)
 
         self.label_52 = QLabel(self.pageEditIncome)
         self.label_52.setObjectName(u"label_52")
@@ -1684,16 +1652,6 @@ class Ui_MainWindow(object):
         self.nameChapterEditIncome.setObjectName(u"nameChapterEditIncome")
 
         self.verticalLayout_18.addWidget(self.nameChapterEditIncome)
-
-        self.label_53 = QLabel(self.pageEditIncome)
-        self.label_53.setObjectName(u"label_53")
-
-        self.verticalLayout_18.addWidget(self.label_53)
-
-        self.translatorEditIncome = QLineEdit(self.pageEditIncome)
-        self.translatorEditIncome.setObjectName(u"translatorEditIncome")
-
-        self.verticalLayout_18.addWidget(self.translatorEditIncome)
 
         self.label_54 = QLabel(self.pageEditIncome)
         self.label_54.setObjectName(u"label_54")
@@ -1734,7 +1692,7 @@ class Ui_MainWindow(object):
         self.backEditIncome.setObjectName(u"backEditIncome")
         self.backEditIncome.setMinimumSize(QSize(140, 30))
         self.backEditIncome.setMaximumSize(QSize(140, 30))
-        self.backEditIncome.setIcon(icon17)
+        self.backEditIncome.setIcon(icon16)
         self.backEditIncome.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_13.addWidget(self.backEditIncome)
@@ -1743,7 +1701,7 @@ class Ui_MainWindow(object):
         self.editIncomeBtn.setObjectName(u"editIncomeBtn")
         self.editIncomeBtn.setMinimumSize(QSize(140, 30))
         self.editIncomeBtn.setMaximumSize(QSize(140, 30))
-        self.editIncomeBtn.setIcon(icon16)
+        self.editIncomeBtn.setIcon(icon15)
         self.editIncomeBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_13.addWidget(self.editIncomeBtn)
@@ -1817,9 +1775,9 @@ class Ui_MainWindow(object):
         self.sendFile.setObjectName(u"sendFile")
         self.sendFile.setMinimumSize(QSize(140, 30))
         self.sendFile.setMaximumSize(QSize(140, 30))
-        icon24 = QIcon()
-        icon24.addFile(u":/icon/icon/free-icon-send-9351602.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.sendFile.setIcon(icon24)
+        icon20 = QIcon()
+        icon20.addFile(u":/icon/icon/free-icon-send-9351602.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.sendFile.setIcon(icon20)
         self.sendFile.setIconSize(QSize(20, 20))
 
         self.gridLayout_48.addWidget(self.sendFile, 0, 1, 1, 1)
@@ -1875,7 +1833,7 @@ class Ui_MainWindow(object):
         self.saveTeamBtn.setObjectName(u"saveTeamBtn")
         self.saveTeamBtn.setMinimumSize(QSize(140, 30))
         self.saveTeamBtn.setMaximumSize(QSize(140, 30))
-        self.saveTeamBtn.setIcon(icon16)
+        self.saveTeamBtn.setIcon(icon15)
         self.saveTeamBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_25.addWidget(self.saveTeamBtn)
@@ -1947,7 +1905,7 @@ class Ui_MainWindow(object):
         self.backTaskBtn.setObjectName(u"backTaskBtn")
         self.backTaskBtn.setMinimumSize(QSize(140, 30))
         self.backTaskBtn.setMaximumSize(QSize(140, 30))
-        self.backTaskBtn.setIcon(icon17)
+        self.backTaskBtn.setIcon(icon16)
         self.backTaskBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_14.addWidget(self.backTaskBtn)
@@ -2062,7 +2020,7 @@ class Ui_MainWindow(object):
         self.backTaskViewBtn.setObjectName(u"backTaskViewBtn")
         self.backTaskViewBtn.setMinimumSize(QSize(140, 30))
         self.backTaskViewBtn.setMaximumSize(QSize(140, 30))
-        self.backTaskViewBtn.setIcon(icon17)
+        self.backTaskViewBtn.setIcon(icon16)
         self.backTaskViewBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_24.addWidget(self.backTaskViewBtn)
@@ -2186,7 +2144,7 @@ class Ui_MainWindow(object):
         self.editListTask.setObjectName(u"editListTask")
         self.editListTask.setMinimumSize(QSize(140, 30))
         self.editListTask.setMaximumSize(QSize(140, 30))
-        self.editListTask.setIcon(icon20)
+        self.editListTask.setIcon(icon17)
 
         self.gridLayout_43.addWidget(self.editListTask, 0, 1, 1, 1)
 
@@ -2207,7 +2165,7 @@ class Ui_MainWindow(object):
         self.cancelPageList.setObjectName(u"cancelPageList")
         self.cancelPageList.setMinimumSize(QSize(140, 30))
         self.cancelPageList.setMaximumSize(QSize(140, 30))
-        self.cancelPageList.setIcon(icon17)
+        self.cancelPageList.setIcon(icon16)
 
         self.horizontalLayout_15.addWidget(self.cancelPageList)
 
@@ -2232,14 +2190,12 @@ class Ui_MainWindow(object):
         self.scheduleBtn_1.toggled.connect(self.scheduleBtn_2.setChecked)
         self.socialNetworksBtn_1.toggled.connect(self.socialNetworksBtn_2.setChecked)
         self.fileSharingBtn_1.toggled.connect(self.fileSharingBtn_2.setChecked)
-        self.acceptFileBtn_1.toggled.connect(self.acceptFileBtn_2.setChecked)
         self.accountBtn_1.toggled.connect(self.accountBtn_2.setChecked)
         self.translateBtn_1.toggled.connect(self.translateBtn_2.setChecked)
         self.aboutUs_1.toggled.connect(self.aboutUs_2.setChecked)
         self.aboutUs_2.toggled.connect(self.aboutUs_1.setChecked)
         self.translateBtn_2.toggled.connect(self.translateBtn_1.setChecked)
         self.accountBtn_2.toggled.connect(self.accountBtn_1.setChecked)
-        self.acceptFileBtn_2.toggled.connect(self.acceptFileBtn_1.setChecked)
         self.fileSharingBtn_2.toggled.connect(self.fileSharingBtn_1.setChecked)
         self.socialNetworksBtn_2.toggled.connect(self.socialNetworksBtn_1.setChecked)
         self.scheduleBtn_2.toggled.connect(self.scheduleBtn_1.setChecked)
@@ -2247,7 +2203,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(11)
+        self.stackedWidget_2.setCurrentIndex(10)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2302,7 +2258,6 @@ class Ui_MainWindow(object):
         self.scheduleBtn_1.setText("")
         self.socialNetworksBtn_1.setText("")
         self.fileSharingBtn_1.setText("")
-        self.acceptFileBtn_1.setText("")
         self.accountBtn_1.setText("")
         self.translateBtn_1.setText("")
         self.aboutUs_1.setText("")
@@ -2312,7 +2267,6 @@ class Ui_MainWindow(object):
         self.scheduleBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435", None))
         self.socialNetworksBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0446. \u0441\u0435\u0442\u0438", None))
         self.fileSharingBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0431\u043c\u0435\u043d \u0444\u0430\u0439\u043b\u0430\u043c\u0438", None))
-        self.acceptFileBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043d\u044f\u0442\u044c \u0444\u0430\u0439\u043b\u044b", None))
         self.accountBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u0410\u043a\u043a\u0430\u0443\u043d\u0442", None))
         self.translateBtn_2.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0435\u0440\u0435\u0432\u043e\u0434\u0447\u0438\u043a", None))
         self.aboutUs_2.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043d\u0430\u0441", None))
@@ -2338,6 +2292,7 @@ class Ui_MainWindow(object):
 
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u0443", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0442\u043e\u0433\u043e\u0432\u0430\u044f \u0441\u0443\u043c\u043c\u0430 \u0434\u043e\u0445\u043e\u0434\u0430", None))
+        self.incomeEditBtn.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
         self.incomeDeleteBtn.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.incomeAddBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.photoDesc.setText("")
@@ -2363,25 +2318,23 @@ class Ui_MainWindow(object):
         self.label_44.setText(QCoreApplication.translate("MainWindow", u"\u0414\u0430\u0442\u0430 \u0432\u044b\u0445\u043e\u0434\u0430", None))
         self.backEditTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.applyEditBtn.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Tocken", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"\u0422\u0435\u043a\u0441\u0442 \u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0446\u0438\u0438", None))
-        self.postEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u0435\u043a\u0441\u0442 \u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0446\u0438\u0438", None))
+        self.postEdit.setPlaceholderText("")
         self.label_85.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0446\u0438\u0438", None))
         self.imagePost.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430 \u0434\u043b\u044f \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f", None))
-        self.vkBtn.setText("")
-        self.dsBtn.setText("")
-        self.tgBtn.setText("")
         self.publishBtn.setText(QCoreApplication.translate("MainWindow", u"\u041e\u043f\u0443\u0431\u043b\u0438\u043a\u043e\u0432\u0430\u0442\u044c", None))
         self.label_45.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_46.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u0442\u0430\u0439\u0442\u043b\u0430", None))
+        self.label_46.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0439\u0442\u043b", None))
         self.label_47.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u0433\u043b\u0430\u0432\u044b", None))
-        self.label_48.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0435\u0440\u0435\u0432\u043e\u0434\u0447\u0438\u043a", None))
         self.label_49.setText(QCoreApplication.translate("MainWindow", u"\u0417\u0430\u0440\u0430\u0431\u043e\u0442\u043d\u0430\u044f \u043f\u043b\u0430\u0442\u0430", None))
         self.backAddIncome.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.addIncomeBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.label_50.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_51.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u0442\u0430\u0439\u0442\u043b\u0430", None))
+        self.label_51.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0439\u0442\u043b", None))
         self.label_52.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u0433\u043b\u0430\u0432\u044b", None))
-        self.label_53.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0435\u0440\u0435\u0432\u043e\u0434\u0447\u0438\u043a", None))
         self.label_54.setText(QCoreApplication.translate("MainWindow", u"\u0417\u0430\u0440\u0430\u0431\u043e\u0442\u043d\u0430\u044f \u043f\u043b\u0430\u0442\u0430", None))
         self.backEditIncome.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.editIncomeBtn.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c", None))

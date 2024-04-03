@@ -222,7 +222,7 @@ class ImageScrollArea(QWidget):
             else:
                 label.setText("Image not found")
             label.setAlignment(Qt.AlignCenter)
-            label.setStyleSheet("border: none")
+            label.setStyleSheet("border: none; color: #FFFFFF;")
             image_text_layout.addWidget(label)
 
             text_label = QLabel(row[0])  # Используем текст из базы данных
@@ -282,7 +282,6 @@ class MainWindow(QMainWindow):
         self.ui.scheduleBtn_1.setToolTip("Расписание")
         self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
-        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
@@ -300,7 +299,6 @@ class MainWindow(QMainWindow):
             (self.ui.fileSharingBtn_1, self.ui.fileSharingBtn_2, self.ui.pageFileSharing),
             (self.ui.accountBtn_1, self.ui.accountBtn_2, self.ui.pageAccount),
             (self.ui.aboutUs_1, self.ui.aboutUs_2, self.ui.pageAboutUs),
-            (self.ui.acceptFileBtn_1, self.ui.acceptFileBtn_2, self.ui.pageReceiveFile),
             (self.ui.translateBtn_1, self.ui.translateBtn_2, self.ui.pageTranslator)
         ]
         for button, button_2, page in page_buttons:
@@ -316,7 +314,10 @@ class MainWindow(QMainWindow):
             (self.ui.backTaskBtn, self.ui.pageListTask),
             (self.ui.editListTask, self.ui.pageEditTask),
             (self.ui.backApplyTaskBtn, self.ui.pageListTask),
-            (self.ui.backTaskViewBtn, self.ui.pageListTask)
+            (self.ui.backTaskViewBtn, self.ui.pageListTask),
+            (self.ui.incomeAddBtn, self.ui.pageAddIncome),
+            (self.ui.backAddIncome, self.ui.pageIncome),
+            (self.ui.incomeEditBtn, self.ui.pageEditIncome),
         ]
 
         for button, page in move_buttons:
