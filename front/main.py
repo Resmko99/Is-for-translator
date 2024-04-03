@@ -318,14 +318,6 @@ class MainWindow(QMainWindow):
             (self.ui.incomeAddBtn, self.ui.pageAddIncome),
             (self.ui.backAddIncome, self.ui.pageIncome),
             (self.ui.incomeEditBtn, self.ui.pageEditIncome),
-            (self.ui.backEditIncome, self.ui.pageIncome)
-            (self.ui.pushOpenAdd, self.ui.pageAddTitle),
-            (self.ui.cancelPageList, self.ui.pageSchedule),
-            (self.ui.addListTask, self.ui.pageAddTask),
-            (self.ui.backTaskBtn, self.ui.pageListTask),
-            (self.ui.editListTask, self.ui.pageEditTask),
-            (self.ui.backApplyTaskBtn, self.ui.pageListTask),
-            (self.ui.backTaskViewBtn, self.ui.pageListTask)
         ]
 
         for button, page in move_buttons:
