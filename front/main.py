@@ -4,7 +4,7 @@ import os
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem
 
 from googletrans import Translator
@@ -15,6 +15,8 @@ from database import connect, close_db_connect
 
 import psycopg2
 import itertools
+
+directory = os.path.abspath(os.curdir)
 
 
 class Calender(QWidget):
@@ -179,8 +181,7 @@ class ImageScrollArea(QWidget):
         self.scroll.setWidget(self.scrollContent)
         self.scroll_area_contents_layout.addWidget(self.scroll)
 
-    def load_images_from_database(self):
-        # Удаляем все дочерние виджеты из scrollLayout
+    def load_images_from_database(self): # Удаляем все дочерние виджеты из scrollLayout
         while self.scrollLayout.count():
             widget = self.scrollLayout.takeAt(0).widget()
             if widget:
@@ -286,6 +287,9 @@ class MainWindow(QMainWindow):
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
 
+        # validator = QRegularExpressionValidator(QRegularExpression("[^0-9]*"), self.text_edit)
+        # self.text_edit.setValidator(validator)
+
         self.normal_geometry = None
 
         page_buttons = [
@@ -311,31 +315,22 @@ class MainWindow(QMainWindow):
             (self.ui.addListTask, self.ui.pageAddTask),
             (self.ui.backTaskBtn, self.ui.pageListTask),
             (self.ui.editListTask, self.ui.pageEditTask),
-            (self.ui.backApplyTaskBtn, self.ui.pageListTask)
+            (self.ui.backApplyTaskBtn, self.ui.pageListTask),
+            (self.ui.backTaskViewBtn, self.ui.pageListTask)
         ]
 
         for button, page in move_buttons:
             button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, page))
 
+        self.ui.tableListTask.doubleClicked.connect(self.view_task)
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.ui.taskAddBtn.clicked.connect(self.apply_task)
         self.screen_expanded = False
 
-        # Получаем абсолютный путь к каталогу со скриптом
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Получаем абсолютный путь к изображению курсора
-        open_hand_px_path = os.path.join(current_dir, 'Photo', 'free-icon-cursor-5340828.png')
-
-        # Проверяем, существует ли файл изображения курсора
-        if not os.path.exists(open_hand_px_path):
-            print("Файл изображения курсора не найден:", open_hand_px_path)
-            sys.exit(1)
-
-        # Загружаем изображение курсора
-        self.open_hand_px = QPixmap(open_hand_px_path)
+        # Установка фильтра событий для главного окна
+        self.open_hand_px = QPixmap(directory + f'/Photo/free-icon-cursor-5340828.png')
         self.scaled_open_hand_px = self.open_hand_px.scaled(16, 16)
         self.scaled_open_hand_px.setMask(self.scaled_open_hand_px.mask())
         self.open_hand_cursor = QCursor(self.scaled_open_hand_px, 0, 0)
@@ -371,7 +366,7 @@ class MainWindow(QMainWindow):
                                 border: none;
                                 border-radius: 5px;
                                 width: 15px;
-                                margin-right: 5px;
+                                margin-right: 5px; 
                                 margin-top: 2px;
                                 margin-bottom: 2px;
                             }
@@ -430,6 +425,13 @@ class MainWindow(QMainWindow):
         self.get_data()
         self.load_edit_users()
 
+    def show_error_message(self, message):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText(message)
+        msg.setWindowTitle("Сообщение об ошибке")
+        msg.exec()
+
     def load_users(self):
         self.ui.employeeAddTask.clear()
         connection = connect()
@@ -462,7 +464,8 @@ class MainWindow(QMainWindow):
         task_text = self.ui.taskEditAdd.toPlainText()
         date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
 
-        if user_id is None or not task_text:
+        if not task_text:
+            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
             return
 
         connection = connect()
@@ -490,6 +493,10 @@ class MainWindow(QMainWindow):
         updated_date = self.ui.dateEditEditTask.date().toString("yyyy-MM-dd")
         updated_user_id = self.ui.employeeEditTask.currentData()
 
+        if not updated_task_text:
+            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            return
+
         try:
             with self.connection.cursor() as cursor:
                 connection = connect()
@@ -506,6 +513,34 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f'Ошибка при обновлении задачи: {e}')
+
+    def view_task(self):
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageUserView)
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+
+        try:
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT t.task_text, t.date
+                    FROM "Task" t
+                    WHERE t.task_id = %s
+                ''', (task_id,))
+                task_details = cursor.fetchone()
+
+                if task_details:
+                    task_text = task_details[0]
+                    date = task_details[1].strftime("%Y-%m-%d")
+
+                    self.ui.taskEditView.setPlainText(task_text)
+                    self.ui.dateEditView.setDate(QDate.fromString(date, "yyyy-MM-dd"))
+
+        except Exception as e:
+            print(f'Ошибка2: {e}')
 
     def edit_task(self):
         selected_index = self.ui.tableListTask.currentIndex()
@@ -577,15 +612,14 @@ class MainWindow(QMainWindow):
             print(f'Ошибка1: {e}')
 
     def delete_selected_task(self):
-        selected_indexes = self.ui.tableListTask.selectionModel().selectedRows()
-        if not selected_indexes:
+        selected_index = self.ui.tableListTask.currentIndex()
+        if not selected_index.isValid():
             return
         try:
-            for index in selected_indexes:
-                task_id = int(index.siblingAtColumn(3).data(Qt.UserRole))
-                connection = connect()
-                with self.connection.cursor() as cursor:
-                    cursor.execute('DELETE FROM "Task" WHERE task_id = %s', (task_id,))
+            task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
+            connection = connect()
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM "Task" WHERE task_id = %s', (task_id,))
             connection.commit()
             self.get_data()
         except Exception as e:
@@ -601,8 +635,6 @@ class MainWindow(QMainWindow):
         self.ui.textEdit.textChanged.connect(self.start_timer)
         self.ui.comboBox.currentIndexChanged.connect(self.translate_text)
         self.ui.comboBox_2.currentIndexChanged.connect(self.translate_text)
-        self.ui.comboBox.setStyleSheet("background-color: #3D434B; color: white;")
-        self.ui.comboBox_2.setStyleSheet("background-color: #3D434B; color: white;")
 
     def start_timer(self):
         self.translation_timer.stop()
@@ -706,19 +738,29 @@ class MainWindow(QMainWindow):
         # Получаем путь к изображению из ImageAreaEdit
         image_path = self.ui.imageAreaEdit.toPlainText()
 
-        # Загружаем изображение по указанному пути
-        pixmap = QPixmap(image_path)
-        byte_array = QByteArray()
-        buffer = QBuffer(byte_array)
-        buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-        byte_array = buffer.data()
-        image_data = bytes(byte_array)
+        # Проверяем, был ли выбран новый файл изображения
+        if image_path:
+            # Загружаем изображение по указанному пути
+            pixmap = QPixmap(image_path)
+            byte_array = QByteArray()
+            buffer = QBuffer(byte_array)
+            buffer.open(QIODevice.WriteOnly)
+            pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+            byte_array = buffer.data()
+            image_data = bytes(byte_array)
+        else:
+            # Если новое изображение не было выбрано, оставляем текущее изображение в базе данных
+            image_data = None
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                       (new_title_name, new_description, image_data, self.title_id))
+        if image_data is not None:
+            cursor.execute(
+                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
+                (new_title_name, new_description, image_data, self.title_id))
+        else:
+            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
+                           (new_title_name, new_description, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -743,6 +785,10 @@ class MainWindow(QMainWindow):
         title_name = self.ui.nameAddTitle.text()
         title_description = self.ui.descriptionEdit.toPlainText()
         image_path = self.ui.imageArea.toPlainText()
+
+        if not title_name or not title_description or not image_path:
+            self.show_error_message("Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
+            return
 
         # Загружаем изображение по указанному пути
         pixmap = QPixmap(image_path)
@@ -925,17 +971,8 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    style_file_path = os.path.join(current_dir, "style.qss")
-
-    if not os.path.exists(style_file_path):
-        print("Файл стиля QSS не найден:", style_file_path)
-        sys.exit(1)
-
-    with open(style_file_path, "r") as style_file:
+    with open("style.qss", "r") as style_file:
         style_str = style_file.read()
-
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
