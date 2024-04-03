@@ -1523,7 +1523,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>10</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -1997,7 +1997,14 @@
           <widget class="QWidget" name="pageIncome">
            <layout class="QGridLayout" name="gridLayout_17">
             <item row="1" column="0">
-             <widget class="QTableView" name="tableIncome"/>
+             <widget class="QTableView" name="tableIncome">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+             </widget>
             </item>
             <item row="0" column="0">
              <widget class="QWidget" name="widget_8" native="true">
@@ -2631,6 +2638,9 @@
               </item>
               <item>
                <widget class="QTextEdit" name="imageArea">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Нажмите два раза для добавления изображения</string>
                 </property>
@@ -2806,6 +2816,9 @@
               </item>
               <item>
                <widget class="QTextEdit" name="imageAreaEdit">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Нажмите два раза для добавления изображения</string>
                 </property>
@@ -2998,29 +3011,9 @@
            <layout class="QGridLayout" name="gridLayout_46">
             <item row="0" column="0">
              <layout class="QVBoxLayout" name="verticalLayout_10">
-              <item>
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Tocken</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_6">
-                <property name="minimumSize">
-                 <size>
-                  <width>450</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>540</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
+              <property name="spacing">
+               <number>10</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_6">
                 <property name="text">
@@ -3030,6 +3023,12 @@
               </item>
               <item>
                <widget class="QTextEdit" name="postEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -3062,6 +3061,12 @@
               </item>
               <item>
                <widget class="QTextEdit" name="imagePost">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>600</width>
@@ -3073,6 +3078,9 @@
                   <width>600</width>
                   <height>250</height>
                  </size>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                 <property name="placeholderText">
                  <string>Нажмите два раза для добавления изображения</string>
@@ -3145,13 +3153,13 @@
                 <widget class="QPushButton" name="publishBtn">
                  <property name="minimumSize">
                   <size>
-                   <width>140</width>
+                   <width>150</width>
                    <height>30</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>140</width>
+                   <width>150</width>
                    <height>30</height>
                   </size>
                  </property>
@@ -3615,6 +3623,9 @@
                   <height>270</height>
                  </size>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Файл &quot;.rar&quot; не должен превышать 4гб, &quot;.docx&quot; не должен превышать 100мб</string>
                 </property>
@@ -3761,7 +3772,63 @@
           </widget>
           <widget class="QWidget" name="pageAccount">
            <layout class="QGridLayout" name="gridLayout_52">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_91">
+              <property name="text">
+               <string>Название вашей команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QComboBox" name="nameCrewAccComboBox">
+              <property name="maximumSize">
+               <size>
+                <width>540</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_92">
+              <property name="text">
+               <string>Изображение команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLineEdit" name="lineEdit_6">
+              <property name="minimumSize">
+               <size>
+                <width>540</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>540</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="5" column="0">
+             <widget class="QLineEdit" name="imageCrewAcc">
+              <property name="minimumSize">
+               <size>
+                <width>650</width>
+                <height>300</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>650</width>
+                <height>300</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
              <widget class="QWidget" name="widget_32" native="true">
               <layout class="QGridLayout" name="gridLayout_7">
                <property name="leftMargin">
@@ -3913,49 +3980,10 @@
               </layout>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_91">
-              <property name="text">
-               <string>Название вашей команды</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0" colspan="2">
-             <widget class="QTextEdit" name="imageCrewAcc">
-              <property name="minimumSize">
-               <size>
-                <width>650</width>
-                <height>300</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>650</width>
-                <height>300</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="label_92">
+             <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Изображение команды</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QLineEdit" name="nameCrewAcc">
-              <property name="minimumSize">
-               <size>
-                <width>540</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>540</width>
-                <height>16777215</height>
-               </size>
+               <string>Token вашего телеграм бота</string>
               </property>
              </widget>
             </item>
@@ -4151,9 +4179,6 @@
               <property name="spacing">
                <number>10</number>
               </property>
-              <item>
-               <widget class="QWidget" name="widget_16" native="true"/>
-              </item>
               <item>
                <widget class="QLabel" name="label_84">
                 <property name="text">

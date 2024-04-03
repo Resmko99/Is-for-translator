@@ -2,10 +2,10 @@ import sys
 import os
 
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
-                            QTimer)
+                            QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
-from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, QRegularExpressionValidator
 
 from googletrans import Translator
 from datetime import datetime
@@ -192,7 +192,7 @@ class ImageScrollArea(QWidget):
         cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
         rows = cursor.fetchall()
 
-        images_per_row = 5
+        images_per_row = 4
         current_row_layout = None
 
         for i, row in enumerate(rows):
@@ -215,19 +215,19 @@ class ImageScrollArea(QWidget):
             # Преобразование байтов изображения в QPixmap
             pixmap = QPixmap()
             pixmap.loadFromData(bytes(row[1]))
-            pixmap = pixmap.scaled(250, 380, Qt.IgnoreAspectRatio)
+            pixmap = pixmap.scaled(370, 500, Qt.IgnoreAspectRatio)
 
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
             else:
                 label.setText("Image not found")
             label.setAlignment(Qt.AlignCenter)
-            label.setStyleSheet("border: none")
+            label.setStyleSheet("border: none; color: #FFFFFF;")
             image_text_layout.addWidget(label)
 
             text_label = QLabel(row[0])  # Используем текст из базы данных
             image_text_layout.addWidget(text_label)
-            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 14pt "Inter";')
+            text_label.setStyleSheet('color: #fff; border: none; margin-top: 2px; font: 18px "Inter";')
             text_label.setAlignment(Qt.AlignCenter)
 
             current_row_layout.addWidget(image_text_container)
@@ -264,6 +264,9 @@ class MainWindow(QMainWindow):
         self.model_table_task = QStandardItemModel()
         self.ui.tableListTask.setModel(self.model_table_task)
 
+        self.model_table_income = QStandardItemModel()
+        self.ui.tableIncome.setModel(self.model_table_income)
+
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
@@ -286,8 +289,8 @@ class MainWindow(QMainWindow):
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
 
-        # validator = QRegularExpressionValidator(QRegularExpression("[^0-9]*"), self.text_edit)
-        # self.text_edit.setValidator(validator)
+        validator = QRegularExpressionValidator(QRegularExpression("[0-9.]*"))
+        self.ui.salaryAddIncome.setValidator(validator)
 
         self.normal_geometry = None
 
@@ -329,6 +332,7 @@ class MainWindow(QMainWindow):
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.ui.taskAddBtn.clicked.connect(self.apply_task)
+        self.ui.addIncomeBtn.clicked.connect(self.apply_income)
         self.screen_expanded = False
 
         # Установка фильтра событий для главного окна
@@ -353,6 +357,10 @@ class MainWindow(QMainWindow):
         self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
         self.ui.editListTask.clicked.connect(self.edit_task)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
+        self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
+        self.ui.incomeEditBtn.clicked.connect(self.edit_income)
+        self.ui.editIncomeBtn.clicked.connect(self.update_task)
+        self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
         self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
@@ -422,10 +430,14 @@ class MainWindow(QMainWindow):
                                 background: none;
                             }
                         """)
-
+        self.load_team_income()
+        self.load_title_income()
         self.load_users()
         self.get_data()
+        self.get_income()
         self.load_edit_users()
+        self.load_edit_team_income()
+        self.load_edit_title_income()
 
     def show_error_message(self, message):
         msg = QMessageBox()
@@ -436,15 +448,18 @@ class MainWindow(QMainWindow):
 
     def load_users(self):
         self.ui.employeeAddTask.clear()
+        self.ui.userAddComboBox.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT user_id, login, password FROM "User"')
         users = cursor.fetchall()
         for user in users:
+            self.ui.userAddComboBox.addItem(f"{user[1]}", userData=user[0])
             self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
 
     def load_edit_users(self):
         self.ui.employeeEditTask.clear()
+        self.ui.userEditComboBox.clear()
         try:
             connection = connect()
             cursor = connection.cursor()
@@ -452,11 +467,15 @@ class MainWindow(QMainWindow):
             users = cursor.fetchall()
             for user in users:
                 self.ui.employeeEditTask.addItem(f"{user[1]}", userData=user[0])
+                self.ui.userEditComboBox.addItem(f"{user[1]}", userData=user[0])
             if users:
                 first_user_id = users[0][0]
                 index = self.ui.employeeEditTask.findData(first_user_id)
+                index_new = self.ui.userEditComboBox.findData(first_user_id)
                 if index != -1:
                     self.ui.employeeEditTask.setCurrentIndex(index)
+                if index_new != -1:
+                    self.ui.userEditComboBox.setCurrentIndex(index_new)
 
         except Exception as e:
             print(f'Ошибка при загрузке пользователей для редактирования: {e}')
@@ -542,7 +561,7 @@ class MainWindow(QMainWindow):
                     self.ui.dateEditView.setDate(QDate.fromString(date, "yyyy-MM-dd"))
 
         except Exception as e:
-            print(f'Ошибка2: {e}')
+            print(f'Ошибка при выводе задач: {e}')
 
     def edit_task(self):
         selected_index = self.ui.tableListTask.currentIndex()
@@ -575,7 +594,7 @@ class MainWindow(QMainWindow):
                         self.ui.employeeEditTask.setCurrentIndex(index)
 
         except Exception as e:
-            print(f'Ошибка2: {e}')
+            print(f'Ошибка при заполнении задач: {e}')
 
     def get_data(self):
         try:
@@ -611,7 +630,7 @@ class MainWindow(QMainWindow):
                 self.ui.tableListTask.setColumnHidden(3, True)
 
         except Exception as e:
-            print(f'Ошибка1: {e}')
+            print(f'Ошибка при выводе: {e}')
 
     def delete_selected_task(self):
         selected_index = self.ui.tableListTask.currentIndex()
@@ -625,7 +644,228 @@ class MainWindow(QMainWindow):
             connection.commit()
             self.get_data()
         except Exception as e:
-            print(f'Ошибка3: {e}')
+            print(f'Ошибка при удалении задач: {e}')
+
+    def load_team_income(self):
+        self.ui.crewAddComboBox.clear()
+        self.ui.crewComboBox.clear()
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
+        teams = cursor.fetchall()
+        for team in teams:
+            self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
+            self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
+
+
+    def load_title_income(self):
+        self.ui.titleAddComboBox.clear()
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT title_id, title_name FROM "Title"')
+        titles = cursor.fetchall()
+        for title in titles:
+            self.ui.titleAddComboBox.addItem(f"{title[1]}", userData=title[0])
+
+    def load_edit_team_income(self):
+        self.ui.crewEditComboBox.clear()
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
+            teams = cursor.fetchall()
+            for team in teams:
+                self.ui.crewEditComboBox.addItem(f"{team[1]}", userData=team[0])
+            if teams:
+                first_team_id = teams[0][0]
+                index = self.ui.crewEditComboBox.findData(first_team_id)
+                if index != -1:
+                    self.ui.crewEditComboBox.setCurrentIndex(index)
+
+        except Exception as e:
+            print(f'Ошибка при загрузке команд для редактирования: {e}')
+
+    def load_edit_title_income(self):
+        self.ui.titleEditcomboBox.clear()
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT title_id, title_name FROM "Title"')
+            titles = cursor.fetchall()
+            for title in titles:
+                self.ui.titleEditcomboBox.addItem(f"{title[1]}", userData=title[0])
+            if titles:
+                first_title_id = titles[0][0]
+                index = self.ui.titleEditcomboBox.findData(first_title_id)
+                if index != -1:
+                    self.ui.titleEditcomboBox.setCurrentIndex(index)
+
+        except Exception as e:
+            print(f'Ошибка при загрузке команд для редактирования: {e}')
+
+    def apply_income(self):
+        team_id = self.ui.crewAddComboBox.currentData()
+        user_id = self.ui.userAddComboBox.currentData()
+        title_id = self.ui.titleAddComboBox.currentData()
+        chapter = self.ui.nameChapterAddIncome.text()
+        money = self.ui.salaryAddIncome.text()
+
+        if not money or not chapter:
+            self.show_error_message("Вы не заполнили поля! Пожалуйста повторите попытку!")
+            return
+
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "Income" (user_id, team_id, money, chapter, title_id) VALUES (%s, %s, %s, %s, %s) '
+                       'RETURNING income_id', (user_id, team_id, money, chapter, title_id))
+        income_id = cursor.fetchone()[0]
+        connection.commit()
+
+        self.ui.nameChapterAddIncome.clear()
+        self.ui.salaryAddIncome.clear()
+        self.load_users()
+        self.load_title_income()
+        self.load_team_income()
+        self.get_income()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageIncome)
+
+
+    def get_income(self):
+        try:
+            total_income = 0
+            selected_team = self.ui.crewComboBox.currentData()
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT t.name_team, u.login, tl.title_name, ic.chapter, ic.money, ic.income_id
+                    FROM "Income" ic
+                    INNER JOIN "User" u ON ic.user_id = u.user_id
+                    INNER JOIN "Teams" t ON ic.team_id = t.team_id
+                    INNER JOIN "Title" tl ON ic.title_id = tl.title_id
+                    WHERE ic.team_id = %s
+                    ORDER BY ic.income_id;
+                ''', (selected_team,))
+                records = cursor.fetchall()
+
+                self.model_table_income.clear()
+                self.model_table_income.setColumnCount(5)
+                self.model_table_income.setHorizontalHeaderLabels(['Команда', 'Пользователь', 'Наименование тайтла', 'Наименование главы', 'Заработок'])
+
+                for record in records:
+                    row = [QStandardItem(str(value)) for value in record[:5]]
+                    income_id_item = QStandardItem()
+                    income_id_item.setData(record[5], Qt.UserRole)
+                    row.append(income_id_item)
+                    total_income += record[4]
+
+                    self.model_table_income.appendRow(row)
+                self.ui.tableIncome.resizeColumnsToContents()
+
+                header = self.ui.tableIncome.horizontalHeader()
+                header.setSectionResizeMode(QHeaderView.Stretch)
+
+                self.ui.tableIncome.setColumnHidden(5, True)
+                self.ui.totalIncomeEdit.setText(str(total_income))
+
+        except Exception as e:
+            print(f'Ошибка: {e}')
+
+    def edit_income(self):
+        selected_index = self.ui.tableIncome.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
+
+        try:
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT t.team_id, u.user_id, tl.title_id, ic.chapter, ic.money, ic.income_id
+                    FROM "Income" ic
+                    INNER JOIN "User" u ON ic.user_id = u.user_id
+                    INNER JOIN "Teams" t ON ic.team_id = t.team_id
+                    INNER JOIN "Title" tl ON ic.title_id = tl.title_id
+                    WHERE ic.income_id = %s
+                    ORDER BY ic.income_id;
+                ''', (income_id,))
+                income_details = cursor.fetchone()
+
+                if income_details:
+                    team_id = income_details[0]
+                    user_id = income_details[1]
+                    title_id = income_details[2]
+                    chapter = income_details[3]
+                    money = income_details[4]
+
+                    self.ui.crewEditComboBox.currentData(team_id)
+                    self.ui.userEditComboBox.currentData(user_id)
+                    self.ui.titleEditcomboBox.currentData(title_id)
+                    self.ui.nameChapterEditIncome.setText(chapter)
+                    self.ui.salaryEditIncome.setText(str(money))
+
+                    index_one = self.ui.crewEditComboBox.findData(team_id)
+                    if index_one != -1:
+                        self.ui.crewEditComboBox.setCurrentIndex(index_one)
+
+                    index_two = self.ui.userEditComboBox.findData(user_id)
+                    if index_two != -1:
+                        self.ui.userEditComboBox.setCurrentIndex(index_two)
+
+                    index_three = self.ui.titleEditcomboBox.findData(title_id)
+                    if index_three != -1:
+                        self.ui.titleEditcomboBox.setCurrentIndex(index_three)
+
+        except Exception as e:
+            print(f'Ошибка при заполнении задач3: {e}')
+
+
+    def update_task(self):
+        selected_index = self.ui.tableIncome.currentIndex()
+        if not selected_index.isValid():
+            return
+
+        income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
+
+        edit_team_id = self.ui.crewEditComboBox.currentData()
+        edit_user_id = self.ui.userEditComboBox.currentData()
+        edit_title_id = self.ui.titleEditcomboBox.currentData()
+        edit_chapter = self.ui.nameChapterEditIncome.text()
+        edit_money = self.ui.salaryEditIncome.text()
+
+        if not edit_chapter or not edit_money:
+            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            return
+
+        try:
+            with self.connection.cursor() as cursor:
+                connection = connect()
+                cursor = connection.cursor()
+                cursor.execute(
+                    'UPDATE "Income" SET user_id = %s, team_id = %s, money = %s, chapter = %s, title_id = %s '
+                    'WHERE income_id = %s',
+                    (edit_user_id, edit_team_id, edit_money, edit_chapter, edit_title_id, income_id))
+                connection.commit()
+
+            self.get_income()
+            self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageIncome)
+
+        except Exception as e:
+            print(f'Ошибка4: {e}')
+
+    def delete_selected_income(self):
+        selected_index = self.ui.tableIncome.currentIndex()
+        if not selected_index.isValid():
+            return
+        try:
+            income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
+            connection = connect()
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM "Income" WHERE income_id = %s', (income_id,))
+            connection.commit()
+            self.get_income()
+        except Exception as e:
+            print(f'Ошибка при удалении задач: {e}')
 
     def on_text_edit_changed(self):
         text = self.ui.textEdit.toPlainText()
@@ -637,8 +877,6 @@ class MainWindow(QMainWindow):
         self.ui.textEdit.textChanged.connect(self.start_timer)
         self.ui.comboBox.currentIndexChanged.connect(self.translate_text)
         self.ui.comboBox_2.currentIndexChanged.connect(self.translate_text)
-        self.ui.comboBox.setStyleSheet("background-color: #3D434B; color: white;")
-        self.ui.comboBox_2.setStyleSheet("background-color: #3D434B; color: white;")
 
     def start_timer(self):
         self.translation_timer.stop()
@@ -742,24 +980,29 @@ class MainWindow(QMainWindow):
         # Получаем путь к изображению из ImageAreaEdit
         image_path = self.ui.imageAreaEdit.toPlainText()
 
-        if not new_title_name or not new_description or not image_path:
-            self.show_error_message("Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
-            return
-
-
-        # Загружаем изображение по указанному пути
-        pixmap = QPixmap(image_path)
-        byte_array = QByteArray()
-        buffer = QBuffer(byte_array)
-        buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-        byte_array = buffer.data()
-        image_data = bytes(byte_array)
+        # Проверяем, был ли выбран новый файл изображения
+        if image_path:
+            # Загружаем изображение по указанному пути
+            pixmap = QPixmap(image_path)
+            byte_array = QByteArray()
+            buffer = QBuffer(byte_array)
+            buffer.open(QIODevice.WriteOnly)
+            pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
+            byte_array = buffer.data()
+            image_data = bytes(byte_array)
+        else:
+            # Если новое изображение не было выбрано, оставляем текущее изображение в базе данных
+            image_data = None
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                       (new_title_name, new_description, image_data, self.title_id))
+        if image_data is not None:
+            cursor.execute(
+                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
+                (new_title_name, new_description, image_data, self.title_id))
+        else:
+            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
+                           (new_title_name, new_description, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
