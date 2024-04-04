@@ -1523,7 +1523,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>12</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3772,10 +3772,10 @@
           </widget>
           <widget class="QWidget" name="pageAccount">
            <layout class="QGridLayout" name="gridLayout_52">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_91">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Название вашей команды</string>
+               <string>Token вашего телеграм бота</string>
               </property>
              </widget>
             </item>
@@ -3786,13 +3786,6 @@
                 <width>540</width>
                 <height>16777215</height>
                </size>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_92">
-              <property name="text">
-               <string>Изображение команды</string>
               </property>
              </widget>
             </item>
@@ -3813,22 +3806,32 @@
              </widget>
             </item>
             <item row="5" column="0">
-             <widget class="QLineEdit" name="imageCrewAcc">
-              <property name="minimumSize">
-               <size>
-                <width>650</width>
-                <height>300</height>
-               </size>
+             <widget class="QLabel" name="label_35">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="maximumSize">
                <size>
-                <width>650</width>
-                <height>300</height>
+                <width>200</width>
+                <height>250</height>
                </size>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="8" column="0">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_91">
+              <property name="text">
+               <string>Название вашей команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
              <widget class="QWidget" name="widget_32" native="true">
               <layout class="QGridLayout" name="gridLayout_7">
                <property name="leftMargin">
@@ -3980,10 +3983,10 @@
               </layout>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_3">
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_92">
               <property name="text">
-               <string>Token вашего телеграм бота</string>
+               <string>Изображение команды</string>
               </property>
              </widget>
             </item>
