@@ -200,8 +200,10 @@ class ImageScrollArea(QWidget):
         connection = connect()
         cursor = connection.cursor()
 
-        if search_text:  # Если есть текст для поиска, выполняем запрос с использованием LIKE
-            cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "title_name" LIKE %s ORDER BY "title_id" ASC', ('%' + search_text + '%',))
+        if search_text:
+            cursor.execute(
+                'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "title_name" ILIKE %s ORDER BY "title_id" ASC',
+                ('%' + search_text + '%',))
         else:
             cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
 
