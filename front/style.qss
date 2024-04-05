@@ -621,15 +621,6 @@
         background: none;
     }
 
-    #nameCrewAcc {
-        background-color: #010409;
-        border: 1px solid #FFCC33;
-        border-radius: 10px;
-        color: #FFFFFF;
-        font: 18px "Inter";
-        height: 25px;
-    }
-
     #imageCrewAcc {
         background-color: #010409;
         border: 1px solid #FFCC33;
@@ -665,11 +656,11 @@
     }
 
     #addTeamBtn {
-        margin-right: 3px;
+        margin-right: 10px;
     }
 
     #deleteTeamBtn {
-        margin-right: 3px;
+        margin-right: 10px;
     }
 
     #widget_35 QPushButton {
@@ -1842,4 +1833,139 @@
 
     #dateEditView::up-button {
         border: transparent;
+    }
+
+    #nameCrewAccComboBox QAbstractItemView {
+        background-color: #3D434B;
+        color: #FFFFFF;
+        font: 18px "Inter";
+    }
+
+    #nameCrewAccComboBox QScrollBar:vertical {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        width: 15px;
+        margin-right: 5px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #nameCrewAccComboBox QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+
+    #nameCrewAccComboBox QScrollBar::add-line:vertical,
+    #nameCrewAccComboBox QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    #nameCrewAccComboBox QScrollBar::add-page:vertical,
+    #nameCrewAccComboBox QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    #nameCrewAccComboBox {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        font: 18px "Inter";
+        height: 25px;
+    }
+
+    #nameCrewAccComboBox::down-arrow {
+        width: 20px;
+        image: url(./icon/down-arrow.png);
+    }
+
+    #nameCrewAccComboBox::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #lineEdit_6 {
+        color: #fff;
+        font: 18px "Inter";
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        height: 25px;
+    }
+
+    #tableIncome {
+        background-color: #010409;
+        color: #fff;
+        font: 18px "Inter";
+        border: 1px solid #FFCC33;
+        gridline-color: transparent;
+    }
+
+    #tableIncome::item {
+        border: 1px solid #FFCC33;
+    }
+
+    #tableIncome::item:selected {
+        background-color: #transparent;
+        color: #fff;
+    }
+
+    #tableIncome::section {
+        color: white;
+        background-color: transparent;
+        font: 18px "Inter";
+    }
+
+    #tableIncome QHeaderView{
+        background-color: transparent;
+    }
+
+    #tableIncome QHeaderView::section {
+        color: white;
+        background-color: #24282E;
+        border-radius: 10px;
+        font: 18px "Inter";
+    }
+
+    #tableIncome QTableCornerButton::section {
+         background: transparent;
+         border: 1px solid #FFCC33;
+         border-radius: 5px;
+         margin: 2px;
+    }
+
+    #widget_16 QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+        width: 140px;
+    }
+
+    #widget_16 QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+        width: 140px;
+    }
+
+    #addLogo {
+        margin-left: 10px;
+    }
+
+    #editLogo {
+        margin-left: 10px;
+    }
+
+    #widget_16  {
+        margin-top: 20px;
     }
