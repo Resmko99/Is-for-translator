@@ -334,12 +334,10 @@ class MainWindow(QMainWindow):
             (self.ui.cancelPageList, self.ui.pageSchedule),
             (self.ui.addListTask, self.ui.pageAddTask),
             (self.ui.backTaskBtn, self.ui.pageListTask),
-            (self.ui.editListTask, self.ui.pageEditTask),
             (self.ui.backApplyTaskBtn, self.ui.pageListTask),
             (self.ui.backTaskViewBtn, self.ui.pageListTask),
             (self.ui.incomeAddBtn, self.ui.pageAddIncome),
             (self.ui.backAddIncome, self.ui.pageIncome),
-            (self.ui.incomeEditBtn, self.ui.pageEditIncome),
             (self.ui.backEditIncome, self.ui.pageIncome)
         ]
 
@@ -378,7 +376,7 @@ class MainWindow(QMainWindow):
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
-        self.ui.editIncomeBtn.clicked.connect(self.update_task)
+        self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
@@ -585,10 +583,12 @@ class MainWindow(QMainWindow):
             print(f'Ошибка при выводе задач: {e}')
 
     def edit_task(self):
+        self.ui.tableListTask.clearSelection()
         selected_index = self.ui.tableListTask.currentIndex()
         if not selected_index.isValid():
             return
 
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTask)
         task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
 
         try:
@@ -613,6 +613,7 @@ class MainWindow(QMainWindow):
                     index = self.ui.employeeEditTask.findData(user_id)
                     if index != -1:
                         self.ui.employeeEditTask.setCurrentIndex(index)
+                    self.ui.tableListTask.clearSelection()
 
         except Exception as e:
             print(f'Ошибка при заполнении задач: {e}')
@@ -791,10 +792,13 @@ class MainWindow(QMainWindow):
             print(f'Ошибка: {e}')
 
     def edit_income(self):
+
         selected_index = self.ui.tableIncome.currentIndex()
         if not selected_index.isValid():
             return
 
+
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditIncome)
         income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
 
         try:
@@ -836,10 +840,11 @@ class MainWindow(QMainWindow):
                     if index_three != -1:
                         self.ui.titleEditcomboBox.setCurrentIndex(index_three)
 
+
         except Exception as e:
             print(f'Ошибка при заполнении задач3: {e}')
 
-    def update_task(self):
+    def update_income(self):
         selected_index = self.ui.tableIncome.currentIndex()
         if not selected_index.isValid():
             return
@@ -853,7 +858,7 @@ class MainWindow(QMainWindow):
         edit_money = self.ui.salaryEditIncome.text()
 
         if not edit_chapter or not edit_money:
-            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            self.show_error_message("Вы не заполнили поля! Пожалуйста повторите попытку!")
             return
 
         try:
