@@ -1523,7 +1523,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>12</number>
+           <number>13</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3626,9 +3626,6 @@
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
                 <property name="placeholderText">
                  <string>Файл &quot;.rar&quot; не должен превышать 4гб, &quot;.docx&quot; не должен превышать 100мб</string>
                 </property>
@@ -3775,10 +3772,10 @@
           </widget>
           <widget class="QWidget" name="pageAccount">
            <layout class="QGridLayout" name="gridLayout_52">
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_91">
               <property name="text">
-               <string>Token вашего телеграм бота</string>
+               <string>Название вашей команды</string>
               </property>
              </widget>
             </item>
@@ -3808,33 +3805,21 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_35">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>250</height>
-               </size>
-              </property>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
               <property name="text">
-               <string/>
+               <string>Token вашего телеграм бота</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_91">
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_92">
               <property name="text">
-               <string>Название вашей команды</string>
+               <string>Изображение команды</string>
               </property>
              </widget>
             </item>
-            <item row="9" column="0">
+            <item row="7" column="0">
              <widget class="QWidget" name="widget_32" native="true">
               <layout class="QGridLayout" name="gridLayout_7">
                <property name="leftMargin">
@@ -3986,10 +3971,79 @@
               </layout>
              </widget>
             </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="logoAcc1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>250</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="pageUserAccount">
+           <layout class="QGridLayout" name="gridLayout_5">
             <item row="4" column="0">
-             <widget class="QLabel" name="label_92">
+             <widget class="QLabel" name="label_35">
+              <property name="text">
+               <string>Состав команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QComboBox" name="nameUserAccComboBox">
+              <property name="maximumSize">
+               <size>
+                <width>540</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QTableView" name="tableTeamAccUser"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_93">
               <property name="text">
                <string>Изображение команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_95">
+              <property name="text">
+               <string>Название вашей команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_36">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>250</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>

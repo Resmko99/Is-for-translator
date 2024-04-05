@@ -456,6 +456,18 @@ class MainWindow(QMainWindow):
         self.load_edit_users()
         self.load_edit_team_income()
         self.load_edit_title_income()
+        self.load_account_teams()
+
+    def load_account_teams(self):
+        self.ui.nameCrewAccComboBox.clear()
+        self.ui.nameCrewAccComboBox.clear()
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
+        teams = cursor.fetchall()
+        for team in teams:
+            self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
+            self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
 
     def show_error_message(self, message):
         msg = QMessageBox()
