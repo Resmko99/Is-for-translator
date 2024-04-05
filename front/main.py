@@ -1056,13 +1056,20 @@ class MainWindow(QMainWindow):
             # Загружаем изображение
             original_image = cv2.imread(image_path)
 
-            # Сжимаем изображение
-            compressed_image, _ = self.fractal_compress(original_image)
+            # Проверяем успешность загрузки изображения
+            if original_image is not None:
+                # Сжимаем изображение
+                compressed_image, _ = self.fractal_compress(original_image)
 
-            # Преобразуем сжатое изображение в байтовый массив
-            buffer = BytesIO()
-            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
-            image_data = buffer.getvalue()
+                # Преобразуем сжатое изображение в байтовый массив
+                buffer = BytesIO()
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+                image_data = buffer.getvalue()
+            else:
+                # Если изображение не было загружено успешно, обработка ошибки или вывод сообщения об ошибке
+                print(f"Ошибка загрузки изображения по пути: {image_path}")
+                # Можно также вывести сообщение об ошибке пользователю через интерфейс
+                return
         else:
             image_data = None
 
@@ -1076,7 +1083,7 @@ class MainWindow(QMainWindow):
             cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
                            (new_title_name, new_description, self.title_id))
         connection.commit()
-        close_db_connect(connection, cursor)
+        close_db_connect(connection)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
@@ -1103,27 +1110,33 @@ class MainWindow(QMainWindow):
 
         if not title_name or not title_description or not image_path:
             self.show_error_message(
-                "Вы не заполнили поле, пожалуйста, заполните все необходимые поля и повторите попытку!")
+                "Вы не заполнили все необходимые поля, пожалуйста, заполните их и повторите попытку!")
             return
 
         # Загружаем изображение
         original_image = cv2.imread(image_path)
 
-        # Сжимаем изображение
-        compressed_image, _ = self.fractal_compress(original_image)
+        # Проверяем успешность загрузки изображения
+        if original_image is not None:
+            # Сжимаем изображение
+            compressed_image, _ = self.fractal_compress(original_image)
 
-        # Преобразуем сжатое изображение в байтовый массив
-        buffer = BytesIO()
-        buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
-        image_data = buffer.getvalue()
+            # Преобразуем сжатое изображение в байтовый массив
+            buffer = BytesIO()
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+            image_data = buffer.getvalue()
+        else:
+            # Если изображение не было загружено успешно, обработка ошибки или вывод сообщения об ошибке
+            print(f"Ошибка загрузки изображения по пути: {image_path}")
+            # Можно также вывести сообщение об ошибке пользователю через интерфейс
+            return
 
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
                        (title_name, title_description, psycopg2.Binary(image_data)))
         connection.commit()
-        cursor.close()
-        connection.close()
+        close_db_connect(connection)
 
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
