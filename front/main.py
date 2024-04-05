@@ -1050,8 +1050,12 @@ class MainWindow(QMainWindow):
     def load_image(self, path):
         try:
             with Image.open(path) as img:
+                # Преобразуем изображение в RGB, если оно не в этом формате
+                img = img.convert('RGB')
                 img_np = np.array(img)
-            return img_np
+                # Преобразуем цветовое пространство из RGB в BGR для OpenCV
+                img_np_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            return img_np_bgr
         except Exception as e:
             print(f"Error loading image from '{path}': {e}")
             return None
