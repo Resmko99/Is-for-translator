@@ -5,6 +5,8 @@ from io import BytesIO
 import cv2
 import time
 
+import numpy as np
+from PIL import Image
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
@@ -1045,6 +1047,15 @@ class MainWindow(QMainWindow):
 
         return decompressed_image
 
+    def load_image(self, path):
+        try:
+            with Image.open(path) as img:
+                img_np = np.array(img)
+            return img_np
+        except Exception as e:
+            print(f"Error loading image from '{path}': {e}")
+            return None
+
     def apply_title_changes(self):
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
@@ -1054,9 +1065,8 @@ class MainWindow(QMainWindow):
 
         if image_path:
             # Загружаем изображение
-            original_image = cv2.imread(image_path)
+            original_image = self.load_image(image_path)
 
-            # Проверяем успешность загрузки изображения
             if original_image is not None:
                 # Сжимаем изображение
                 compressed_image, _ = self.fractal_compress(original_image)
@@ -1066,10 +1076,7 @@ class MainWindow(QMainWindow):
                 buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
                 image_data = buffer.getvalue()
             else:
-                # Если изображение не было загружено успешно, обработка ошибки или вывод сообщения об ошибке
-                print(f"Ошибка загрузки изображения по пути: {image_path}")
-                # Можно также вывести сообщение об ошибке пользователю через интерфейс
-                return
+                print("Ошибка загрузки изображения.")
         else:
             image_data = None
 
@@ -1110,13 +1117,12 @@ class MainWindow(QMainWindow):
 
         if not title_name or not title_description or not image_path:
             self.show_error_message(
-                "Вы не заполнили все необходимые поля, пожалуйста, заполните их и повторите попытку!")
+                "Вы не заполнили поле, пожалуйста, заполните все необходимые поля и повторите попытку!")
             return
 
         # Загружаем изображение
-        original_image = cv2.imread(image_path)
+        original_image = self.load_image(image_path)
 
-        # Проверяем успешность загрузки изображения
         if original_image is not None:
             # Сжимаем изображение
             compressed_image, _ = self.fractal_compress(original_image)
@@ -1126,17 +1132,15 @@ class MainWindow(QMainWindow):
             buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
             image_data = buffer.getvalue()
         else:
-            # Если изображение не было загружено успешно, обработка ошибки или вывод сообщения об ошибке
-            print(f"Ошибка загрузки изображения по пути: {image_path}")
-            # Можно также вывести сообщение об ошибке пользователю через интерфейс
-            return
+            print("Ошибка загрузки изображения.")
 
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
                        (title_name, title_description, psycopg2.Binary(image_data)))
         connection.commit()
-        close_db_connect(connection, cursor)
+        cursor.close()
+        connection.close()
 
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
