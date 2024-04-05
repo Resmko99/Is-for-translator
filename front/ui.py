@@ -1880,6 +1880,44 @@ class Ui_MainWindow(object):
         self.gridLayout_52.addWidget(self.label_3, 2, 0, 1, 1)
 
         self.stackedWidget_2.addWidget(self.pageAccount)
+        self.pageUserAccount = QWidget()
+        self.pageUserAccount.setObjectName(u"pageUserAccount")
+        self.gridLayout_5 = QGridLayout(self.pageUserAccount)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.label_95 = QLabel(self.pageUserAccount)
+        self.label_95.setObjectName(u"label_95")
+
+        self.gridLayout_5.addWidget(self.label_95, 0, 0, 1, 1)
+
+        self.label_93 = QLabel(self.pageUserAccount)
+        self.label_93.setObjectName(u"label_93")
+
+        self.gridLayout_5.addWidget(self.label_93, 2, 0, 1, 1)
+
+        self.nameUserAccComboBox = QComboBox(self.pageUserAccount)
+        self.nameUserAccComboBox.setObjectName(u"nameUserAccComboBox")
+        self.nameUserAccComboBox.setMaximumSize(QSize(540, 16777215))
+
+        self.gridLayout_5.addWidget(self.nameUserAccComboBox, 1, 0, 1, 1)
+
+        self.tableTeamAccUser = QTableView(self.pageUserAccount)
+        self.tableTeamAccUser.setObjectName(u"tableTeamAccUser")
+
+        self.gridLayout_5.addWidget(self.tableTeamAccUser, 5, 0, 1, 1)
+
+        self.imageUserAcc = QLineEdit(self.pageUserAccount)
+        self.imageUserAcc.setObjectName(u"imageUserAcc")
+        self.imageUserAcc.setMinimumSize(QSize(650, 300))
+        self.imageUserAcc.setMaximumSize(QSize(650, 300))
+
+        self.gridLayout_5.addWidget(self.imageUserAcc, 3, 0, 1, 1)
+
+        self.label_35 = QLabel(self.pageUserAccount)
+        self.label_35.setObjectName(u"label_35")
+
+        self.gridLayout_5.addWidget(self.label_35, 4, 0, 1, 1)
+
+        self.stackedWidget_2.addWidget(self.pageUserAccount)
         self.pageAddTask = QWidget()
         self.pageAddTask.setObjectName(u"pageAddTask")
         self.gridLayout_23 = QGridLayout(self.pageAddTask)
@@ -2204,7 +2242,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(3)
+        self.stackedWidget_2.setCurrentIndex(13)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2349,6 +2387,9 @@ class Ui_MainWindow(object):
         self.deleteTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.saveTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Token \u0432\u0430\u0448\u0435\u0433\u043e \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c \u0431\u043e\u0442\u0430", None))
+        self.label_95.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
+        self.label_93.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
+        self.label_35.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0441\u0442\u0430\u0432 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.taskAddBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.backTaskBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.label_55.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0435\u0440\u0438\u043e\u0434", None))

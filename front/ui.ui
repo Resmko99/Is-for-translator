@@ -1523,7 +1523,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>13</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3984,6 +3984,60 @@
              <widget class="QLabel" name="label_3">
               <property name="text">
                <string>Token вашего телеграм бота</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="pageUserAccount">
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_95">
+              <property name="text">
+               <string>Название вашей команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_93">
+              <property name="text">
+               <string>Изображение команды</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QComboBox" name="nameUserAccComboBox">
+              <property name="maximumSize">
+               <size>
+                <width>540</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QTableView" name="tableTeamAccUser"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLineEdit" name="imageUserAcc">
+              <property name="minimumSize">
+               <size>
+                <width>650</width>
+                <height>300</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>650</width>
+                <height>300</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_35">
+              <property name="text">
+               <string>Состав команды</string>
               </property>
              </widget>
             </item>

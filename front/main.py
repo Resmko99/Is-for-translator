@@ -5,7 +5,8 @@ from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent
                             QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
-from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, QRegularExpressionValidator
+from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
+    QRegularExpressionValidator
 
 from googletrans import Translator
 from datetime import datetime
@@ -98,6 +99,7 @@ class Calender(QWidget):
         date = QDate(year, month, day)
         self.ui.dateEdit.setDate(date)
 
+
 class RoundedImageLabel(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -123,11 +125,12 @@ class RoundedImageLabel(QLabel):
 
 
 class ImageScrollArea(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, search_text=None, parent=None):
         super().__init__(parent)
-        self.setup_ui()
+        self.loaded = False
+        self.setup_ui(search_text)
 
-    def setup_ui(self):
+    def setup_ui(self, search_text):
         self.scroll_area_contents_layout = QVBoxLayout(self)
         self.scroll_area_contents_layout.setAlignment(Qt.AlignTop)
 
@@ -175,22 +178,38 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        self.load_images_from_database()
+        if search_text:  # Если есть текст для поиска, передаем его в функцию load_images_from_database
+            self.load_images_from_database(search_text)
+        else:
+            self.load_images_from_database()  # Иначе загружаем все тайтлы
 
         self.scrollLayout.addStretch()
         self.scroll.setWidget(self.scrollContent)
         self.scroll_area_contents_layout.addWidget(self.scroll)
 
-    def load_images_from_database(self): # Удаляем все дочерние виджеты из scrollLayout
+    def clear_titles(self):
         while self.scrollLayout.count():
             widget = self.scrollLayout.takeAt(0).widget()
             if widget:
                 widget.deleteLater()
 
+    def load_images_from_database(self, search_text=None):
+        # Очищаем существующие тайтлы перед загрузкой новых
+        self.clear_titles()
+
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
+
+        if search_text:
+            cursor.execute(
+                'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "title_name" ILIKE %s ORDER BY "title_id" ASC',
+                ('%' + search_text + '%',))
+        else:
+            cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
+
         rows = cursor.fetchall()
+
+        self.loaded = True
 
         images_per_row = 4
         current_row_layout = None
@@ -315,12 +334,10 @@ class MainWindow(QMainWindow):
             (self.ui.cancelPageList, self.ui.pageSchedule),
             (self.ui.addListTask, self.ui.pageAddTask),
             (self.ui.backTaskBtn, self.ui.pageListTask),
-            (self.ui.editListTask, self.ui.pageEditTask),
             (self.ui.backApplyTaskBtn, self.ui.pageListTask),
             (self.ui.backTaskViewBtn, self.ui.pageListTask),
             (self.ui.incomeAddBtn, self.ui.pageAddIncome),
             (self.ui.backAddIncome, self.ui.pageIncome),
-            (self.ui.incomeEditBtn, self.ui.pageEditIncome),
             (self.ui.backEditIncome, self.ui.pageIncome)
         ]
 
@@ -359,7 +376,7 @@ class MainWindow(QMainWindow):
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
-        self.ui.editIncomeBtn.clicked.connect(self.update_task)
+        self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
@@ -430,6 +447,7 @@ class MainWindow(QMainWindow):
                                 background: none;
                             }
                         """)
+        self.ui.SearchBtn.clicked.connect(self.search_titles)
         self.load_team_income()
         self.load_title_income()
         self.load_users()
@@ -494,9 +512,10 @@ class MainWindow(QMainWindow):
         cursor.execute('INSERT INTO "Task" (date, task_text) VALUES (%s, %s) RETURNING task_id', (date, task_text))
         task_id = cursor.fetchone()[0]
 
-        cursor.execute('INSERT INTO "User_task" (user_id, task_id) OVERRIDING SYSTEM VALUE VALUES (%s, %s) RETURNING user_task_id', (user_id, task_id))
+        cursor.execute(
+            'INSERT INTO "User_task" (user_id, task_id) OVERRIDING SYSTEM VALUE VALUES (%s, %s) RETURNING user_task_id',
+            (user_id, task_id))
         connection.commit()
-
 
         self.ui.employeeAddTask.clear()
         self.ui.taskEditAdd.clear()
@@ -564,10 +583,12 @@ class MainWindow(QMainWindow):
             print(f'Ошибка при выводе задач: {e}')
 
     def edit_task(self):
+        self.ui.tableListTask.clearSelection()
         selected_index = self.ui.tableListTask.currentIndex()
         if not selected_index.isValid():
             return
 
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTask)
         task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
 
         try:
@@ -592,6 +613,7 @@ class MainWindow(QMainWindow):
                     index = self.ui.employeeEditTask.findData(user_id)
                     if index != -1:
                         self.ui.employeeEditTask.setCurrentIndex(index)
+                    self.ui.tableListTask.clearSelection()
 
         except Exception as e:
             print(f'Ошибка при заполнении задач: {e}')
@@ -656,7 +678,6 @@ class MainWindow(QMainWindow):
         for team in teams:
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
-
 
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
@@ -729,7 +750,6 @@ class MainWindow(QMainWindow):
         self.get_income()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageIncome)
 
-
     def get_income(self):
         try:
             total_income = 0
@@ -749,7 +769,8 @@ class MainWindow(QMainWindow):
 
                 self.model_table_income.clear()
                 self.model_table_income.setColumnCount(5)
-                self.model_table_income.setHorizontalHeaderLabels(['Команда', 'Пользователь', 'Наименование тайтла', 'Наименование главы', 'Заработок'])
+                self.model_table_income.setHorizontalHeaderLabels(
+                    ['Команда', 'Пользователь', 'Наименование тайтла', 'Наименование главы', 'Заработок'])
 
                 for record in records:
                     row = [QStandardItem(str(value)) for value in record[:5]]
@@ -771,10 +792,13 @@ class MainWindow(QMainWindow):
             print(f'Ошибка: {e}')
 
     def edit_income(self):
+
         selected_index = self.ui.tableIncome.currentIndex()
         if not selected_index.isValid():
             return
 
+
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditIncome)
         income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
 
         try:
@@ -816,11 +840,11 @@ class MainWindow(QMainWindow):
                     if index_three != -1:
                         self.ui.titleEditcomboBox.setCurrentIndex(index_three)
 
+
         except Exception as e:
             print(f'Ошибка при заполнении задач3: {e}')
 
-
-    def update_task(self):
+    def update_income(self):
         selected_index = self.ui.tableIncome.currentIndex()
         if not selected_index.isValid():
             return
@@ -834,7 +858,7 @@ class MainWindow(QMainWindow):
         edit_money = self.ui.salaryEditIncome.text()
 
         if not edit_chapter or not edit_money:
-            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            self.show_error_message("Вы не заполнили поля! Пожалуйста повторите попытку!")
             return
 
         try:
@@ -911,12 +935,16 @@ class MainWindow(QMainWindow):
         else:
             print("Ошибка: Один из выбранных языков не распознается.")
 
-    def setup_scroll_area(self):
-        self.image_scroll_area = ImageScrollArea()
+    def setup_scroll_area(self, search_text=None):
+        self.image_scroll_area = ImageScrollArea(search_text)
         self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
         for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
             child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
+
+    def search_titles(self):
+        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст из SearchEdit
+        self.setup_scroll_area(search_text)  # Вызываем setup_scroll_area с передачей текста для поиска
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
@@ -1012,7 +1040,8 @@ class MainWindow(QMainWindow):
 
     def open_image_dialog(self, event):
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)", options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
         if file_path:
             self.ui.imageAreaEdit.setText(file_path)
 
@@ -1029,7 +1058,8 @@ class MainWindow(QMainWindow):
         image_path = self.ui.imageArea.toPlainText()
 
         if not title_name or not title_description or not image_path:
-            self.show_error_message("Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
+            self.show_error_message(
+                "Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
             return
 
         # Загружаем изображение по указанному пути
@@ -1219,4 +1249,3 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
