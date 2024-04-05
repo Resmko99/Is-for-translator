@@ -1,8 +1,12 @@
 import sys
 import os
+from io import BytesIO
+
 import cv2
 import time
 
+import numpy as np
+from PIL import Image
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
@@ -1043,6 +1047,19 @@ class MainWindow(QMainWindow):
 
         return decompressed_image
 
+    def load_image(self, path):
+        try:
+            with Image.open(path) as img:
+                # Преобразуем изображение в RGB, если оно не в этом формате
+                img = img.convert('RGB')
+                img_np = np.array(img)
+                # Преобразуем цветовое пространство из RGB в BGR для OpenCV
+                img_np_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            return img_np_bgr
+        except Exception as e:
+            print(f"Error loading image from '{path}': {e}")
+            return None
+
     def apply_title_changes(self):
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
@@ -1052,19 +1069,18 @@ class MainWindow(QMainWindow):
 
         if image_path:
             # Загружаем изображение
-            original_image = cv2.imread(image_path)
+            original_image = self.load_image(image_path)
 
-            # Сжимаем изображение
-            compressed_image, _ = self.fractal_compress(original_image)
+            if original_image is not None:
+                # Сжимаем изображение
+                compressed_image, _ = self.fractal_compress(original_image)
 
-            # Сохраняем сжатое изображение
-            self.compressed_image_path = os.path.splitext(image_path)[0] + '_compressed.jpg'
-            cv2.imwrite(self.compressed_image_path, compressed_image,
-                        [int(cv2.IMWRITE_JPEG_QUALITY), 70])  # Качество JPEG 70%
-
-            # Читаем сжатое изображение обратно
-            with open(self.compressed_image_path, 'rb') as file:
-                image_data = file.read()
+                # Преобразуем сжатое изображение в байтовый массив
+                buffer = BytesIO()
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+                image_data = buffer.getvalue()
+            else:
+                print("Ошибка загрузки изображения.")
         else:
             image_data = None
 
@@ -1073,14 +1089,12 @@ class MainWindow(QMainWindow):
         if image_data is not None:
             cursor.execute(
                 'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                (new_title_name, new_description, image_data, self.title_id))
+                (new_title_name, new_description, psycopg2.Binary(image_data), self.title_id))
         else:
             cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
                            (new_title_name, new_description, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
-
-        os.remove(self.compressed_image_path)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
@@ -1111,28 +1125,26 @@ class MainWindow(QMainWindow):
             return
 
         # Загружаем изображение
-        original_image = cv2.imread(image_path)
+        original_image = self.load_image(image_path)
 
-        # Сжимаем изображение
-        compressed_image, _ = self.fractal_compress(original_image)
+        if original_image is not None:
+            # Сжимаем изображение
+            compressed_image, _ = self.fractal_compress(original_image)
 
-        # Сохраняем сжатое изображение
-        self.compressed_image_path = os.path.splitext(image_path)[0] + '_compressed.jpg'
-        cv2.imwrite(self.compressed_image_path, compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
-
-        # Читаем сжатое изображение обратно
-        with open(self.compressed_image_path, 'rb') as file:
-            image_data = file.read()
+            # Преобразуем сжатое изображение в байтовый массив
+            buffer = BytesIO()
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+            image_data = buffer.getvalue()
+        else:
+            print("Ошибка загрузки изображения.")
 
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
-                       (title_name, title_description, image_data))
+                       (title_name, title_description, psycopg2.Binary(image_data)))
         connection.commit()
         cursor.close()
         connection.close()
-
-        os.remove(self.compressed_image_path)
 
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
