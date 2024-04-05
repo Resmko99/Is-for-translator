@@ -1878,12 +1878,50 @@ class Ui_MainWindow(object):
 
         self.gridLayout_52.addWidget(self.widget_32, 9, 0, 1, 1)
 
-        self.label_92 = QLabel(self.pageAccount)
-        self.label_92.setObjectName(u"label_92")
+        self.label_3 = QLabel(self.pageAccount)
+        self.label_3.setObjectName(u"label_3")
 
         self.gridLayout_52.addWidget(self.label_92, 4, 0, 1, 1)
 
         self.stackedWidget_2.addWidget(self.pageAccount)
+        self.pageUserAccount = QWidget()
+        self.pageUserAccount.setObjectName(u"pageUserAccount")
+        self.gridLayout_5 = QGridLayout(self.pageUserAccount)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.label_95 = QLabel(self.pageUserAccount)
+        self.label_95.setObjectName(u"label_95")
+
+        self.gridLayout_5.addWidget(self.label_95, 0, 0, 1, 1)
+
+        self.label_93 = QLabel(self.pageUserAccount)
+        self.label_93.setObjectName(u"label_93")
+
+        self.gridLayout_5.addWidget(self.label_93, 2, 0, 1, 1)
+
+        self.nameUserAccComboBox = QComboBox(self.pageUserAccount)
+        self.nameUserAccComboBox.setObjectName(u"nameUserAccComboBox")
+        self.nameUserAccComboBox.setMaximumSize(QSize(540, 16777215))
+
+        self.gridLayout_5.addWidget(self.nameUserAccComboBox, 1, 0, 1, 1)
+
+        self.tableTeamAccUser = QTableView(self.pageUserAccount)
+        self.tableTeamAccUser.setObjectName(u"tableTeamAccUser")
+
+        self.gridLayout_5.addWidget(self.tableTeamAccUser, 5, 0, 1, 1)
+
+        self.imageUserAcc = QLineEdit(self.pageUserAccount)
+        self.imageUserAcc.setObjectName(u"imageUserAcc")
+        self.imageUserAcc.setMinimumSize(QSize(650, 300))
+        self.imageUserAcc.setMaximumSize(QSize(650, 300))
+
+        self.gridLayout_5.addWidget(self.imageUserAcc, 3, 0, 1, 1)
+
+        self.label_35 = QLabel(self.pageUserAccount)
+        self.label_35.setObjectName(u"label_35")
+
+        self.gridLayout_5.addWidget(self.label_35, 4, 0, 1, 1)
+
+        self.stackedWidget_2.addWidget(self.pageUserAccount)
         self.pageAddTask = QWidget()
         self.pageAddTask.setObjectName(u"pageAddTask")
         self.gridLayout_23 = QGridLayout(self.pageAddTask)

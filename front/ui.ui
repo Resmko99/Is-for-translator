@@ -3626,6 +3626,9 @@
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                 <property name="placeholderText">
                  <string>Файл &quot;.rar&quot; не должен превышать 4гб, &quot;.docx&quot; не должен превышать 100мб</string>
                 </property>
