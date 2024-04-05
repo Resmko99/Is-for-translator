@@ -5,22 +5,31 @@ import psycopg2
 import uuid
 from psycopg2 import Error
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import configparser
+from telebot.async_telebot import AsyncTeleBot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+import asyncio
 from telebot import TeleBot
 from telebot import types
+from typing import Dict, Any
 
-# Парсим конфигурационный файл
+
+
+# Создаем объект configparser
 config = configparser.ConfigParser()
-config.read(os.path.join('Source', 'config.ini'))
-bot_token = config['telegram']['token']
-db_user = config['database']['user']
-db_password = config['database']['password']
-db_host = config['database']['host']
-db_name = config['database']['name']
+
+# Читаем файл config.ini
+config.read(os.path.join(os.path.dirname(__file__), '..', 'Source', 'config.ini'))
+
+# Получаем значения из файла
+bot_token = config.get('telegram', 'token')
+db_user = config.get('database', 'user')
+db_password = config.get('database', 'password')
+db_host = config.get('database', 'host')
+db_name = config.get('database', 'name')
 
 # Создаем бота
-bot = TeleBot(bot_token)
+bot = AsyncTeleBot(bot_token)
 
 # Выполняем подключение к базе данных
 try:
@@ -34,151 +43,144 @@ try:
 except (Exception, psycopg2.Error) as error:
     print("Ошибка при подключении к PostgreSQL:", error)
 
+user_steps: Dict[str, Dict[str, Any]] = {}
+
 @bot.message_handler(commands=['start'])
-def start(message):
-    markup = InlineKeyboardMarkup()
-    itembtn1 = InlineKeyboardButton('Регистрация', callback_data="reg")
-    itembtn2 = InlineKeyboardButton('Восстановить пароль', callback_data="forgot")
-    itembtn3 = InlineKeyboardButton('Создать команду',callback_data="team")
-    markup.add(itembtn1, itembtn2, itembtn3)
+async def start_command(message):
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Регистрация")
+    button2 = types.KeyboardButton(text="Восстановить пароль")
+    button3 = types.KeyboardButton(text="Создать команду")
+    keyboard.add(button1, button2, button3)
+    await bot.send_message(message.chat.id, "Привет! Выберите действие:", reply_markup=keyboard)
 
-    bot.send_message(message.chat.id, "Привет! Выберите действие:", reply_markup=markup)
+user_steps: Dict[str, Dict[str, Any]] = {}
 
-   #Создание комманды, для этого используем две функции:
-   #def team для создания комманды, а def process_team_step для вывода об
-   #успешном создании комманды, в ином случае у пользователя не будет создаваться комманда
-@bot.message_handler(commands=['team'])
-def team(message):
 
-    #Берём id чата и запоминаем его
-    user_chat_id = message.chat.id
-
-    #Подхватываем пользователя из базы данных
-    cursor.execute("SELECT * FROM \"User\" WHERE chat_id = %s", (user_chat_id,))
-    result = cursor.fetchone()
-
-    #Проверка зарегестрирован ли пользователь
-    if not result:
-        bot.reply_to(message, 'Пользователь не зарегистрирован.')
+@bot.message_handler(func=lambda message: True)
+async def echo_all(message):
+    user_chat_id = str(message.chat.id)
+    if user_chat_id in user_steps:  # Если существует chat_id в user_steps
+        await process_next_step(message)  # Обрабатываем следующий шаг
     else:
-        #Индексируем столбцы
-        user_category = result[3]
-        if user_category == 1:
-            #Если пользователь прошёл проверку и он может создать команду
-            sent = bot.send_message(message.chat.id, 'Введите название команды:')
+        if message.text == 'Регистрация':
+            user_steps[user_chat_id] = {'step': 'Регистрация логин'}
+            await bot.send_message(user_chat_id, 'Введите ваш логин:')
+        elif message.text == 'Восстановить пароль':
+            user_steps[user_chat_id] = {'step': 'Восстановить логин'}
+            await bot.send_message(user_chat_id, 'Введите логин вашей учетной записи для восстановления:')
+        elif message.text == 'Создать команду':
+            user_steps[user_chat_id] = {'step': 'Введите логин'}
+            await bot.send_message(user_chat_id, 'Пожалуйста, введите ваш логин для проверки возможности создания команды:')
 
-            #Вызываем следующие шаги для регистрации комманды
-            bot.register_next_step_handler(sent, process_team_step)
+async def process_next_step(message):
+    user_chat_id = str(message.chat.id)
+    user_info = user_steps[user_chat_id]
+    user_step = user_info['step']
+
+    if user_step == 'Восстановить логин':
+        user_login = message.text
+        user_info['login'] = user_login
+        cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"chat_id\" = %s",
+                       (user_login, message.chat.id,))
+        result = cursor.fetchone()
+        if not result:
+            await bot.reply_to(message,
+                               'Вы не являетесь владельцем данного аккаунта или пользователя с таким логином не существует.')
         else:
-            #Если не прошёл проверку
-            bot.reply_to(message, 'У вас нет прав на создание команды.')
+            user_info['step'] = 'Восстановить email'
+            await bot.send_message(user_chat_id, 'Введите адрес электронной почты, связанный с этим аккаунтом:')
 
-#Создание команды, присвоение id, названия команды и отправка сообщения об успешном создании
-def process_team_step(message):
-    team_name = message.text
-    user_chat_id = message.chat.id
+    elif user_step == 'Восстановить email':
+        user_email = message.text
+        user_info['email'] = user_email
+        cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"email\" = %s AND \"chat_id\" = %s",
+                       (user_info['login'], user_email, user_chat_id,))
+        result = cursor.fetchone()
+        if not result:
+            await bot.reply_to(message, 'Вы не являетесь владельцем данного аккаунта.')
+        else:
+            password = get_unique_password()
+            try:
+                cursor.execute("UPDATE \"User\" SET password = %s WHERE login = %s AND chat_id = %s AND email = %s",
+                               (password, user_info['login'], user_chat_id, user_email,))
+                conn.commit()
+                del user_steps[user_chat_id]
+                await bot.send_message(user_chat_id, f"Ваш новый пароль: {password}")
+            except (Exception, psycopg2.Error) as error:
+                print("Ошибка при работе с PostgreSQL:", error)
+                await bot.send_message(user_chat_id,
+                                       "Произошла внутренняя ошибка при попытке обновить пароль. Повторите попытку.")
+                conn.rollback()
 
-    team_id = uuid.uuid1() #Присвоение уникального id команде
+    elif user_step == 'Регистрация логин':
+        user_login = message.text
+        cursor.execute("SELECT * FROM \"User\" WHERE login = %s", (user_login,))
+        result = cursor.fetchone()
+        if result:
+            await bot.reply_to(message, 'Этот логин уже занят. Пожалуйста, введите другой логин.')
+        else:
+            user_info['login'] = user_login
+            user_info['step'] = 'Регистрация пароль'
+            await bot.send_message(user_chat_id, 'Введите ваш пароль:')
 
-    #Типичная работа с базой данных
-    try:
-        cursor.execute("INSERT INTO \"Teams\" (team_id, name_team) VALUES (%s, %s)",
-                       (team_id, team_name))
-        conn.commit()
+    elif user_step == 'Регистрация пароль':
+        user_password = message.text
+        user_info['password'] = user_password
+        user_info['step'] = 'Регистрация email'
+        await bot.send_message(user_chat_id, 'Введите адрес вашей электронной почты:')
 
-        #Сообщение об успешном создании
-        bot.send_message(message.chat.id, f'Вы создали команду с названием "{team_name}"!')
-    except (Exception, psycopg2.Error) as error:
-        #Если ошибка
-        print("Ошибка при работе с PostgreSQL:", error)
-        bot.send_message(message.chat.id,
-                         "Произошла внутренняя ошибка при попытке создать команду. Попробуйте еще раз.")
-        conn.rollback()
+    elif user_step == 'Регистрация email':
+        user_email = message.text
+        cursor.execute("SELECT * FROM \"User\" WHERE email = %s", (user_email,))
+        result = cursor.fetchone()
+        if result:
+            await bot.reply_to(message, 'Этот адрес электронной почты уже используется. Пожалуйста, введите другой.')
+        else:
+            cursor.execute("INSERT INTO \"User\" (login, password, email, chat_id) VALUES (%s, %s, %s, %s)",
+                           (user_info['login'], user_info['password'], user_email, user_chat_id,))
+            conn.commit()
+            del user_steps[user_chat_id]
+            await bot.send_message(user_chat_id, 'Вы успешно зарегистрировались!')
 
-#Восстановление пароля
-@bot.callback_query_handler(func=lambda call: call.data == "forgot")
-def forgot(call):
-    sent = bot.send_message(call.message.chat.id, 'Введите логин вашей учетной записи:')
-    bot.register_next_step_handler(sent, process_forgot_login_step)
+    elif user_step == 'Введите логин':
+        user_login = message.text
+        cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s", (user_login,))
+        user = cursor.fetchone()
+        if not user:
+            await bot.send_message(user_chat_id, 'Пользователь не определен. Введите логин.')
+        else:
+            user_category = user[6]  # Если 'category' это седьмой столбец в таблице.
+            if user_category not in [1, 2]:  # Если категория не равна 1 или 2
+                await bot.send_message(user_chat_id, 'У вас нет прав на создание команды.')
+            else:
+                user_step = 'Создание название команды'
 
-def process_forgot_login_step(message):
-    global user_login
-    user_login = message.text
-    user_chat_id = message.chat.id
-    cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"chat_id\" = %s", (user_login, user_chat_id,))
-    result = cursor.fetchone()
-    if not result:
-        bot.reply_to(message, 'Вы не являетесь владельцем данного аккаунта или пользователя с таким логином не существует.')
-    else:
-        sent = bot.send_message(message.chat.id, 'Введите адрес электронной почты, связанный с этим аккаунтом:')
-
-def process_forgot_email_step(message):
-    user_email = message.text
-    cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"email\" = %s", (user_login, user_email))
-    result = cursor.fetchone()
-    if not result:
-        bot.reply_to(message, 'Вы не являетесь владельцем данного аккаунта.')
-    else:
-        process_forgot_step(message)
-
-def process_forgot_step(message):
-    user_email = message.text
-    password = get_unique_password()
-    try:
-        cursor.execute("UPDATE \"User\" SET password = %s WHERE login = %s AND chat_id = %s AND email = %s",
-                       (password, user_login, message.chat.id, user_email))
-
-        conn.commit()
-        bot.send_message(message.chat.id, f"Ваш новый пароль: {password}")
-    except (Exception, psycopg2.Error) as error:
-        print("Ошибка при работе с PostgreSQL:", error)
-        bot.send_message(message.chat.id, "Произошла внутренняя ошибка при попытке обновить пароль. Повторите попытку.")
-        conn.rollback()
+    elif user_step == 'Создание название команды':
+        team_name = message.text
+        team_id = uuid.uuid1()
+        try:
+            cursor.execute("INSERT INTO \"Teams\" (team_id, name_team) VALUES (%s, %s)",
+                           (str(team_id), team_name))  # Преобразуйте UUID в строку
+            conn.commit()
+            del user_steps[user_chat_id]
+            await bot.send_message(user_chat_id, f'Вы создали команду с названием "{team_name}"!')
+        except (Exception, psycopg2.Error) as error:
+            print("Ошибка при работе с PostgreSQL:", error)
+            await bot.send_message(user_chat_id,
+                                   "Произошла ошибка при попытке создать команду. Попробуйте еще раз.")
 
 def get_unique_password():
     while True:
         password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
         cursor.execute("SELECT * FROM \"User\" WHERE password = %s", (password,))
-        result = cursor.fetchone()
-        if not result:
+        if not cursor.fetchone():
             return password
 
-#Регистрация
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    if call.message:
-        if call.data == "reg":
-            sent = bot.send_message(call.message.chat.id, 'Введите ваш логин:')
-            bot.register_next_step_handler(sent, process_login_step)
 
-def process_login_step(message):
-    user_login = message.text
-    cursor.execute("SELECT * FROM \"User\" WHERE login = %s", (user_login,))
-    result = cursor.fetchone()
-    if result:
-        bot.reply_to(message, 'Этот логин уже занят. Пожалуйста, введите другой логин.')
-    else:
-        sent = bot.send_message(message.chat.id, 'Введите ваш пароль:')
-        bot.register_next_step_handler(sent, process_password_step, user_login)
 
-def process_password_step(message, user_login):
-    user_password = message.text
-    sent = bot.send_message(message.chat.id, 'Введите адрес вашей электронной почты:')
-    bot.register_next_step_handler(sent, process_email_step, user_login, user_password)
+async def main() :
+    await bot.polling(none_stop=True)
 
-def process_email_step(message, user_login, user_password):
-    user_email = message.text
-    cursor.execute("SELECT * FROM \"User\" WHERE email = %s", (user_email,))
-    result = cursor.fetchone()
-    if result:
-        bot.reply_to(message, 'Этот адрес электронной почты уже используется. Пожалуйста, введите другой.')
-    else:
-        user_chat_id = message.chat.id
-        cursor.execute("INSERT INTO \"User\" (login, password, email, chat_id) VALUES (%s, %s, %s, %s)",
-                       (user_login, user_password, user_email, user_chat_id,))
-        conn.commit()
-        bot.send_message(message.chat.id, 'Вы успешно зарегистрировались!')
-        
-        
-
-bot.polling(none_stop=True)
+if __name__ == "__main__" :
+    asyncio.run(main())
