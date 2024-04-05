@@ -1,5 +1,7 @@
 import sys
 import os
+import cv2
+import time
 
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer, QRegularExpression)
@@ -996,25 +998,57 @@ class MainWindow(QMainWindow):
     def switch_to_page_desc(self):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
+    def fractal_compress(self, image, scale=2):
+        height, width = image.shape[:2]
+        compressed_height = height // scale if height % scale == 0 else height // scale + 1
+        compressed_width = width // scale if width % scale == 0 else width // scale + 1
+        compressed_image = cv2.resize(image, (compressed_width, compressed_height), interpolation=cv2.INTER_AREA)
+
+        start_time = time.time()  # Засекаем начало сжатия
+
+        for y in range(0, height, scale):
+            for x in range(0, width, scale):
+                block = image[y:min(y + scale, height), x:min(x + scale, width)]
+
+                # Применяем интерполяцию INTER_AREA
+                block = cv2.resize(block, (1, 1), interpolation=cv2.INTER_AREA)
+                compressed_image[y // scale, x // scale] = block[0, 0]
+
+        end_time = time.time()  # Засекаем окончание сжатия
+        compression_time = end_time - start_time  # Вычисляем время сжатия
+
+        return compressed_image, compression_time
+
+    def fractal_decompress(self, compressed_image, scale=6):
+        height, width = compressed_image.shape[:2]
+        decompressed_image = cv2.resize(compressed_image, (width * scale, height * scale),
+                                        interpolation=cv2.INTER_NEAREST)
+
+        return decompressed_image
+
     def apply_title_changes(self):
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
 
-        # Получаем путь к изображению из ImageAreaEdit
+        # Получаем путь к изображению
         image_path = self.ui.imageAreaEdit.toPlainText()
 
-        # Проверяем, был ли выбран новый файл изображения
         if image_path:
-            # Загружаем изображение по указанному пути
-            pixmap = QPixmap(image_path)
-            byte_array = QByteArray()
-            buffer = QBuffer(byte_array)
-            buffer.open(QIODevice.WriteOnly)
-            pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-            byte_array = buffer.data()
-            image_data = bytes(byte_array)
+            # Загружаем изображение
+            original_image = cv2.imread(image_path)
+
+            # Сжимаем изображение
+            compressed_image, _ = self.fractal_compress(original_image)
+
+            # Сохраняем сжатое изображение
+            self.compressed_image_path = os.path.splitext(image_path)[0] + '_compressed.jpg'
+            cv2.imwrite(self.compressed_image_path, compressed_image,
+                        [int(cv2.IMWRITE_JPEG_QUALITY), 70])  # Качество JPEG 70%
+
+            # Читаем сжатое изображение обратно
+            with open(self.compressed_image_path, 'rb') as file:
+                image_data = file.read()
         else:
-            # Если новое изображение не было выбрано, оставляем текущее изображение в базе данных
             image_data = None
 
         connection = connect()
@@ -1028,6 +1062,8 @@ class MainWindow(QMainWindow):
                            (new_title_name, new_description, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
+
+        os.remove(self.compressed_image_path)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
@@ -1054,17 +1090,22 @@ class MainWindow(QMainWindow):
 
         if not title_name or not title_description or not image_path:
             self.show_error_message(
-                "Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
+                "Вы не заполнили поле, пожалуйста, заполните все необходимые поля и повторите попытку!")
             return
 
-        # Загружаем изображение по указанному пути
-        pixmap = QPixmap(image_path)
-        byte_array = QByteArray()
-        buffer = QBuffer(byte_array)
-        buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-        byte_array = buffer.data()
-        image_data = bytes(byte_array)
+        # Загружаем изображение
+        original_image = cv2.imread(image_path)
+
+        # Сжимаем изображение
+        compressed_image, _ = self.fractal_compress(original_image)
+
+        # Сохраняем сжатое изображение
+        self.compressed_image_path = os.path.splitext(image_path)[0] + '_compressed.jpg'
+        cv2.imwrite(self.compressed_image_path, compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
+
+        # Читаем сжатое изображение обратно
+        with open(self.compressed_image_path, 'rb') as file:
+            image_data = file.read()
 
         connection = connect()
         cursor = connection.cursor()
@@ -1073,6 +1114,8 @@ class MainWindow(QMainWindow):
         connection.commit()
         cursor.close()
         connection.close()
+
+        os.remove(self.compressed_image_path)
 
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
