@@ -42,6 +42,20 @@ def create_folder(drive_service, folder_name):
     folder = drive_service.files().create(body=folder_metadata, fields='id').execute()
     return folder.get('id')
 
+def select_folder(drive_service):
+    results = drive_service.files().list(q="mimeType='application/vnd.google-apps.folder'",
+                                         spaces='drive',
+                                         fields='nextPageToken, files(id, name)').execute()
+    items = results.get('files', [])
+    if not items:
+        print('Нет папок.')
+    else:
+        print('Папки:')
+        for item in items:
+            print('{0} ({1})'.format(item['name'], item['id']))
+    folder_id = input("Введите ID папки, в которую хотите загрузить файл: ")
+    return folder_id
+
 
 def upload_file(drive_service, file_path, folder_id, progress_var):
     file_metadata = {
