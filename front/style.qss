@@ -656,11 +656,11 @@
     }
 
     #addTeamBtn {
-        margin-right: 3px;
+        margin-right: 10px;
     }
 
     #deleteTeamBtn {
-        margin-right: 3px;
+        margin-right: 10px;
     }
 
     #widget_35 QPushButton {
@@ -1938,4 +1938,34 @@
          border: 1px solid #FFCC33;
          border-radius: 5px;
          margin: 2px;
+    }
+
+    #widget_16 QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+        width: 140px;
+    }
+
+    #widget_16 QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+        width: 140px;
+    }
+
+    #addLogo {
+        margin-left: 10px;
+    }
+
+    #editLogo {
+        margin-left: 10px;
+    }
+
+    #widget_16  {
+        margin-top: 20px;
     }

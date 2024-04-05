@@ -1523,7 +1523,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>13</number>
+           <number>12</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3772,23 +3772,6 @@
           </widget>
           <widget class="QWidget" name="pageAccount">
            <layout class="QGridLayout" name="gridLayout_52">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_91">
-              <property name="text">
-               <string>Название вашей команды</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QComboBox" name="nameCrewAccComboBox">
-              <property name="maximumSize">
-               <size>
-                <width>540</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QLineEdit" name="lineEdit_6">
               <property name="minimumSize">
@@ -3805,6 +3788,13 @@
               </property>
              </widget>
             </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_91">
+              <property name="text">
+               <string>Название вашей команды</string>
+              </property>
+             </widget>
+            </item>
             <item row="2" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
@@ -3812,14 +3802,111 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_92">
+            <item row="6" column="0">
+             <widget class="QLabel" name="logoAcc1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>250</height>
+               </size>
+              </property>
               <property name="text">
-               <string>Изображение команды</string>
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="7" column="0">
+            <item row="5" column="0">
+             <widget class="QWidget" name="widget_16" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_16">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>3</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_92">
+                 <property name="text">
+                  <string>Изображение команды</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="addLogo">
+                 <property name="minimumSize">
+                  <size>
+                   <width>140</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Добавить</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/icon/icon/free-icon-add-7222864.png</normaloff>:/icon/icon/free-icon-add-7222864.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="editLogo">
+                 <property name="minimumSize">
+                  <size>
+                   <width>140</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Удалить</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_27">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QComboBox" name="nameCrewAccComboBox">
+              <property name="maximumSize">
+               <size>
+                <width>540</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
              <widget class="QWidget" name="widget_32" native="true">
               <layout class="QGridLayout" name="gridLayout_7">
                <property name="leftMargin">
@@ -3969,25 +4056,6 @@
                 <widget class="QTableView" name="tableTeamAcc"/>
                </item>
               </layout>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="logoAcc1">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>250</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
              </widget>
             </item>
            </layout>
