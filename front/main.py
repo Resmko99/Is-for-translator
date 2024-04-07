@@ -1040,6 +1040,13 @@ class MainWindow(QMainWindow):
 
         return compressed_image, compression_time
 
+    def fractal_decompress(self, compressed_image, scale=6):
+        height, width = compressed_image.shape[:2]
+        decompressed_image = cv2.resize(compressed_image, (width * scale, height * scale),
+                                        interpolation=cv2.INTER_NEAREST)
+
+        return decompressed_image
+
     def load_image(self, path):
         try:
             with Image.open(path) as img:
@@ -1068,14 +1075,10 @@ class MainWindow(QMainWindow):
                 # Сжимаем изображение
                 compressed_image, _ = self.fractal_compress(original_image)
 
-                # Сохраняем сжатое изображение
-                self.compressed_image_path = os.path.splitext(image_path)[0] + '_compressed.jpg'
-                cv2.imwrite(self.compressed_image_path, compressed_image,
-                            [int(cv2.IMWRITE_JPEG_QUALITY), 90])  # Качество JPEG 70%
-
-                # Читаем сжатое изображение обратно
-                with open(self.compressed_image_path, 'rb') as file:
-                    image_data = file.read()
+                # Преобразуем сжатое изображение в байтовый массив
+                buffer = BytesIO()
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
+                image_data = buffer.getvalue()
             else:
                 print("Ошибка загрузки изображения.")
         else:
@@ -1085,15 +1088,13 @@ class MainWindow(QMainWindow):
         cursor = connection.cursor()
         if image_data is not None:
             cursor.execute(
-                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s WHERE title_id = %s',
-                (new_title_name, new_description, image_data, self.title_id))
+                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), self.title_id))
         else:
-            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s WHERE title_id = %s',
+            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
                            (new_title_name, new_description, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
-
-        os.remove(self.compressed_image_path)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
@@ -1130,25 +1131,20 @@ class MainWindow(QMainWindow):
             # Сжимаем изображение
             compressed_image, _ = self.fractal_compress(original_image)
 
-            # Сохраняем сжатое изображение
-            self.compressed_image_path = os.path.splitext(image_path)[0] + '_compressed.jpg'
-            cv2.imwrite(self.compressed_image_path, compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
-
-            # Читаем сжатое изображение обратно
-            with open(self.compressed_image_path, 'rb') as file:
-                image_data = file.read()
+            # Преобразуем сжатое изображение в байтовый массив
+            buffer = BytesIO()
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
+            image_data = buffer.getvalue()
         else:
             print("Ошибка загрузки изображения.")
 
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
-                       (title_name, title_description, image_data))
+                       (title_name, title_description, psycopg2.Binary(image_data)))
         connection.commit()
         cursor.close()
         connection.close()
-
-        os.remove(self.compressed_image_path)
 
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
