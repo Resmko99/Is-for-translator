@@ -773,6 +773,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
+        self.comboboxTitle = QComboBox(self.pageTitle)
+        self.comboboxTitle.setObjectName(u"comboboxTitle")
+        self.comboboxTitle.setMaximumSize(QSize(540, 16777215))
+
+        self.horizontalLayout_3.addWidget(self.comboboxTitle)
+
         self.pushOpenAdd = QPushButton(self.pageTitle)
         self.pushOpenAdd.setObjectName(u"pushOpenAdd")
         self.pushOpenAdd.setLayoutDirection(Qt.LeftToRight)
@@ -2274,7 +2280,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(12)
+        self.stackedWidget_2.setCurrentIndex(14)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

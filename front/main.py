@@ -453,6 +453,37 @@ class MainWindow(QMainWindow):
                                 background: none;
                             }
                         """)
+
+        self.ui.textEditDesc.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
         self.ui.SearchBtn.clicked.connect(self.search_titles)
         self.load_team_income()
         self.load_title_income()
@@ -1050,8 +1081,12 @@ class MainWindow(QMainWindow):
     def load_image(self, path):
         try:
             with Image.open(path) as img:
+                # Преобразуем изображение в RGB, если оно не в этом формате
+                img = img.convert('RGB')
                 img_np = np.array(img)
-            return img_np
+                # Преобразуем цветовое пространство из RGB в BGR для OpenCV
+                img_np_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            return img_np_bgr
         except Exception as e:
             print(f"Error loading image from '{path}': {e}")
             return None
@@ -1073,7 +1108,7 @@ class MainWindow(QMainWindow):
 
                 # Преобразуем сжатое изображение в байтовый массив
                 buffer = BytesIO()
-                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
                 image_data = buffer.getvalue()
             else:
                 print("Ошибка загрузки изображения.")
@@ -1129,7 +1164,7 @@ class MainWindow(QMainWindow):
 
             # Преобразуем сжатое изображение в байтовый массив
             buffer = BytesIO()
-            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
             image_data = buffer.getvalue()
         else:
             print("Ошибка загрузки изображения.")
