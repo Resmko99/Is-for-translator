@@ -453,8 +453,39 @@ class MainWindow(QMainWindow):
                                 background: none;
                             }
                         """)
+
+        self.ui.textEditDesc.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
         self.ui.SearchBtn.clicked.connect(self.search_titles)
-        self.load_team_income()
+        self.load_team()
         self.load_title_income()
         self.load_users()
         self.get_data()
@@ -463,6 +494,24 @@ class MainWindow(QMainWindow):
         self.load_edit_team_income()
         self.load_edit_title_income()
         self.load_account_teams()
+        self.load_edit_teams()
+
+    def load_edit_teams(self):
+        self.ui.nameCrewTranslatorEditTitle.clear()
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT team_id, name_team FROM "Teams"')
+            teams = cursor.fetchall()
+            for team in teams:
+                self.ui.nameCrewTranslatorEditTitle.addItem(f"{team[1]}", userData=team[0])
+            if teams:
+                first_team_id = teams[0][0]
+                index = self.ui.nameCrewTranslatorEditTitle.findData(first_team_id)
+                if index != -1:
+                    self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
+        except Exception as e:
+            print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
     def load_account_teams(self):
         self.ui.nameCrewAccComboBox.clear()
@@ -686,9 +735,10 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f'Ошибка при удалении задач: {e}')
 
-    def load_team_income(self):
+    def load_team(self):
         self.ui.crewAddComboBox.clear()
         self.ui.crewComboBox.clear()
+        self.ui.nameCrewTranslatorAddTitle.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
@@ -696,6 +746,8 @@ class MainWindow(QMainWindow):
         for team in teams:
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
+            self.ui.nameCrewTranslatorAddTitle.addItem(f"{team[1]}", userData=team[0])
+
 
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
@@ -764,7 +816,7 @@ class MainWindow(QMainWindow):
         self.ui.salaryAddIncome.clear()
         self.load_users()
         self.load_title_income()
-        self.load_team_income()
+        self.load_team()
         self.get_income()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageIncome)
 
@@ -1006,15 +1058,20 @@ class MainWindow(QMainWindow):
     def open_edit_title_page(self):
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT "title_name", "description" FROM "Title" WHERE title_id = %s', (self.title_id,))
+        cursor.execute('SELECT title_name, description, team_id FROM "Title" WHERE title_id = %s', (self.title_id,))
         row = cursor.fetchone()
         close_db_connect(connection, cursor)
 
         if row:
-            title_name, title_description = row
+            title_name, title_description, team_id = row
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
             self.ui.nameEditTitle.setText(title_name)
             self.ui.descriptionEdit_2.setText(title_description)
+
+            index = self.ui.nameCrewTranslatorEditTitle.findData(team_id)
+            if index != -1:
+                self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
+
 
     def switch_to_page_desc(self):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
@@ -1061,6 +1118,7 @@ class MainWindow(QMainWindow):
             return None
 
     def apply_title_changes(self):
+        team_id = self.ui.nameCrewTranslatorEditTitle.currentData()
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
 
@@ -1077,7 +1135,7 @@ class MainWindow(QMainWindow):
 
                 # Преобразуем сжатое изображение в байтовый массив
                 buffer = BytesIO()
-                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
                 image_data = buffer.getvalue()
             else:
                 print("Ошибка загрузки изображения.")
@@ -1088,11 +1146,11 @@ class MainWindow(QMainWindow):
         cursor = connection.cursor()
         if image_data is not None:
             cursor.execute(
-                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                (new_title_name, new_description, psycopg2.Binary(image_data), self.title_id))
+                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, self.title_id))
         else:
-            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
-                           (new_title_name, new_description, self.title_id))
+            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s, team_id = %s WHERE title_id = %s',
+                           (new_title_name, new_description, team_id,  self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -1115,6 +1173,7 @@ class MainWindow(QMainWindow):
             self.ui.imageArea.setText(file_path)
 
     def add_title_to_database(self):
+        comboxBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
         title_name = self.ui.nameAddTitle.text()
         title_description = self.ui.descriptionEdit.toPlainText()
         image_path = self.ui.imageArea.toPlainText()
@@ -1133,15 +1192,15 @@ class MainWindow(QMainWindow):
 
             # Преобразуем сжатое изображение в байтовый массив
             buffer = BytesIO()
-            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 70])[1])
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
             image_data = buffer.getvalue()
         else:
             print("Ошибка загрузки изображения.")
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
-                       (title_name, title_description, psycopg2.Binary(image_data)))
+        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id) VALUES (%s, %s, %s, %s)',
+                       (title_name, title_description, psycopg2.Binary(image_data), comboxBox_team))
         connection.commit()
         cursor.close()
         connection.close()
@@ -1151,6 +1210,7 @@ class MainWindow(QMainWindow):
         self.ui.imageArea.clear()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.setup_scroll_area()
+        self.load_team()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
