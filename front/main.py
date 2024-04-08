@@ -1067,7 +1067,6 @@ class MainWindow(QMainWindow):
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
             self.ui.nameEditTitle.setText(title_name)
             self.ui.descriptionEdit_2.setText(title_description)
-            self.load_edit_teams()
 
             index = self.ui.nameCrewTranslatorEditTitle.findData(team_id)
             if index != -1:
