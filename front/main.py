@@ -384,6 +384,7 @@ class MainWindow(QMainWindow):
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
+        self.ui.addLogo.clicked.connect(self.add_logo_button_clicked)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
         self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
@@ -1171,6 +1172,24 @@ class MainWindow(QMainWindow):
                                                    options=options)
         if file_path:
             self.ui.imageArea.setText(file_path)
+
+
+    def open_file_explorer(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            self.ui.imageAreaEdit.setText(file_path)
+            self.set_image_to_label(file_path)
+
+    def set_image_to_label(self, image_path):
+        pixmap = QPixmap(image_path)
+        pixmap_resized = pixmap.scaled(250, 300)  # Изменение размера изображения до 250x300 пикселей
+        self.ui.label_37.setPixmap(pixmap_resized)
+        self.ui.label_37.setScaledContents(True)
+
+    def add_logo_button_clicked(self):
+        self.open_file_explorer()
 
     def add_title_to_database(self):
         comboxBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
