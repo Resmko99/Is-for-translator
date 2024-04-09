@@ -204,15 +204,16 @@
 
     #SearchBtn {
         border: none;
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         margin-left: 5px;
     }
 
     #SearchBtn:hover {
         background-color: #45464F;
         border-radius: 10px;
-
+        width: 35px;
+        height: 35px;
     }
 
     #SearchEdit {
@@ -1253,6 +1254,111 @@
         background: none;
     }
 
+    #userAddComboBox QAbstractItemView {
+        background-color: #3D434B;
+        color: #FFFFFF;
+        font: 18px "Inter";
+    }
+
+    #userAddComboBox QScrollBar:vertical {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        width: 15px;
+        margin-right: 5px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #userAddComboBox QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+
+    #userAddComboBox QScrollBar::add-line:vertical,
+    #userAddComboBox QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    #userAddComboBox QScrollBar::add-page:vertical,
+    #userAddComboBox QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    #userEditComboBox QAbstractItemView {
+        background-color: #3D434B;
+        color: #FFFFFF;
+        font: 18px "Inter";
+    }
+
+    #userEditComboBox QScrollBar:vertical {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        width: 15px;
+        margin-right: 5px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #userEditComboBox QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+
+    #userEditComboBox QScrollBar::add-line:vertical,
+    #userEditComboBox QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    #userEditComboBox QScrollBar::add-page:vertical,
+    #userEditComboBox QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    #titleEditcomboBox QAbstractItemView {
+        background-color: #3D434B;
+        color: #FFFFFF;
+        font: 18px "Inter";
+    }
+
+    #titleEditcomboBox QScrollBar:vertical {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        width: 15px;
+        margin-right: 5px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #titleEditcomboBox QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+
+    #titleEditcomboBox QScrollBar::add-line:vertical,
+    #titleEditcomboBox QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    #titleEditcomboBox QScrollBar::add-page:vertical,
+    #titleEditcomboBox QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
     #pageEditIncome QLabel {
         color: #fff;
         font: 18px "Inter";
@@ -1968,4 +2074,67 @@
 
     #widget_16  {
         margin-top: 20px;
+    }
+
+    #comboboxTitle {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        font: 18px "Inter";
+        height: 25px;
+        width: 540px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    #comboboxTitle::down-arrow {
+        width: 20px;
+        image: url(./icon/down-arrow.png);
+    }
+
+    #comboboxTitle::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #comboboxTitle QAbstractItemView {
+        background-color: #3D434B;
+        color: #FFFFFF;
+        font: 18px "Inter";
+    }
+
+    #comboboxTitle QScrollBar:vertical {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        width: 15px;
+        margin-right: 5px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #comboboxTitle QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+
+    #comboboxTitle QScrollBar::add-line:vertical,
+    #comboboxTitle QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    #comboboxTitle QScrollBar::add-page:vertical,
+    #comboboxTitle QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    #label_37 {
+        border-radius: 10px;
+        border: 1px solid #FFCC33;
     }

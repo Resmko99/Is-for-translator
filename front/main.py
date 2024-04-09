@@ -1,6 +1,12 @@
 import sys
 import os
+from io import BytesIO
 
+import cv2
+import time
+
+import numpy as np
+from PIL import Image
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
@@ -266,7 +272,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
-        self.ui.stackedWidget.setCurrentIndex(4)
+        self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
@@ -378,6 +384,7 @@ class MainWindow(QMainWindow):
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
+        self.ui.addLogo.clicked.connect(self.add_logo_button_clicked)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
         self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
@@ -447,8 +454,39 @@ class MainWindow(QMainWindow):
                                 background: none;
                             }
                         """)
+
+        self.ui.textEditDesc.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
         self.ui.SearchBtn.clicked.connect(self.search_titles)
-        self.load_team_income()
+        self.load_team()
         self.load_title_income()
         self.load_users()
         self.get_data()
@@ -457,6 +495,24 @@ class MainWindow(QMainWindow):
         self.load_edit_team_income()
         self.load_edit_title_income()
         self.load_account_teams()
+        self.load_edit_teams()
+
+    def load_edit_teams(self):
+        self.ui.nameCrewTranslatorEditTitle.clear()
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT team_id, name_team FROM "Teams"')
+            teams = cursor.fetchall()
+            for team in teams:
+                self.ui.nameCrewTranslatorEditTitle.addItem(f"{team[1]}", userData=team[0])
+            if teams:
+                first_team_id = teams[0][0]
+                index = self.ui.nameCrewTranslatorEditTitle.findData(first_team_id)
+                if index != -1:
+                    self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
+        except Exception as e:
+            print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
     def load_account_teams(self):
         self.ui.nameCrewAccComboBox.clear()
@@ -680,9 +736,10 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f'Ошибка при удалении задач: {e}')
 
-    def load_team_income(self):
+    def load_team(self):
         self.ui.crewAddComboBox.clear()
         self.ui.crewComboBox.clear()
+        self.ui.nameCrewTranslatorAddTitle.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
@@ -690,6 +747,8 @@ class MainWindow(QMainWindow):
         for team in teams:
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
+            self.ui.nameCrewTranslatorAddTitle.addItem(f"{team[1]}", userData=team[0])
+
 
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
@@ -758,7 +817,7 @@ class MainWindow(QMainWindow):
         self.ui.salaryAddIncome.clear()
         self.load_users()
         self.load_title_income()
-        self.load_team_income()
+        self.load_team()
         self.get_income()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageIncome)
 
@@ -1000,49 +1059,99 @@ class MainWindow(QMainWindow):
     def open_edit_title_page(self):
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT "title_name", "description" FROM "Title" WHERE title_id = %s', (self.title_id,))
+        cursor.execute('SELECT title_name, description, team_id FROM "Title" WHERE title_id = %s', (self.title_id,))
         row = cursor.fetchone()
         close_db_connect(connection, cursor)
 
         if row:
-            title_name, title_description = row
+            title_name, title_description, team_id = row
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
             self.ui.nameEditTitle.setText(title_name)
             self.ui.descriptionEdit_2.setText(title_description)
 
+            index = self.ui.nameCrewTranslatorEditTitle.findData(team_id)
+            if index != -1:
+                self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
+
+
     def switch_to_page_desc(self):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
+    def fractal_compress(self, image, scale=2):
+        height, width = image.shape[:2]
+        compressed_height = height // scale if height % scale == 0 else height // scale + 1
+        compressed_width = width // scale if width % scale == 0 else width // scale + 1
+        compressed_image = cv2.resize(image, (compressed_width, compressed_height), interpolation=cv2.INTER_AREA)
+
+        start_time = time.time()  # Засекаем начало сжатия
+
+        for y in range(0, height, scale):
+            for x in range(0, width, scale):
+                block = image[y:min(y + scale, height), x:min(x + scale, width)]
+
+                # Применяем интерполяцию INTER_AREA
+                block = cv2.resize(block, (1, 1), interpolation=cv2.INTER_AREA)
+                compressed_image[y // scale, x // scale] = block[0, 0]
+
+        end_time = time.time()  # Засекаем окончание сжатия
+        compression_time = end_time - start_time  # Вычисляем время сжатия
+
+        return compressed_image, compression_time
+
+    def fractal_decompress(self, compressed_image, scale=6):
+        height, width = compressed_image.shape[:2]
+        decompressed_image = cv2.resize(compressed_image, (width * scale, height * scale),
+                                        interpolation=cv2.INTER_NEAREST)
+
+        return decompressed_image
+
+    def load_image(self, path):
+        try:
+            with Image.open(path) as img:
+                # Преобразуем изображение в RGB, если оно не в этом формате
+                img = img.convert('RGB')
+                img_np = np.array(img)
+                # Преобразуем цветовое пространство из RGB в BGR для OpenCV
+                img_np_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            return img_np_bgr
+        except Exception as e:
+            print(f"Error loading image from '{path}': {e}")
+            return None
+
     def apply_title_changes(self):
+        team_id = self.ui.nameCrewTranslatorEditTitle.currentData()
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
 
-        # Получаем путь к изображению из ImageAreaEdit
+        # Получаем путь к изображению
         image_path = self.ui.imageAreaEdit.toPlainText()
 
-        # Проверяем, был ли выбран новый файл изображения
         if image_path:
-            # Загружаем изображение по указанному пути
-            pixmap = QPixmap(image_path)
-            byte_array = QByteArray()
-            buffer = QBuffer(byte_array)
-            buffer.open(QIODevice.WriteOnly)
-            pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-            byte_array = buffer.data()
-            image_data = bytes(byte_array)
+            # Загружаем изображение
+            original_image = self.load_image(image_path)
+
+            if original_image is not None:
+                # Сжимаем изображение
+                compressed_image, _ = self.fractal_compress(original_image)
+
+                # Преобразуем сжатое изображение в байтовый массив
+                buffer = BytesIO()
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
+                image_data = buffer.getvalue()
+            else:
+                print("Ошибка загрузки изображения.")
         else:
-            # Если новое изображение не было выбрано, оставляем текущее изображение в базе данных
             image_data = None
 
         connection = connect()
         cursor = connection.cursor()
         if image_data is not None:
             cursor.execute(
-                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                (new_title_name, new_description, image_data, self.title_id))
+                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, self.title_id))
         else:
-            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
-                           (new_title_name, new_description, self.title_id))
+            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s, team_id = %s WHERE title_id = %s',
+                           (new_title_name, new_description, team_id,  self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -1064,29 +1173,77 @@ class MainWindow(QMainWindow):
         if file_path:
             self.ui.imageArea.setText(file_path)
 
+
+    def open_file_explorer(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            self.ui.imageAreaEdit.setText(file_path)
+            self.set_image_to_label(file_path)
+
+    def set_rounded_pixmap(self, pixmap):
+        rounded_pixmap = self.rounded_pixmap(pixmap)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+
+    def rounded_pixmap(self, pixmap):
+        rounded_pixmap = QPixmap(pixmap.size())
+        rounded_pixmap.fill(Qt.transparent)
+        painter = QPainter(rounded_pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.white)
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(pixmap.rect(), 10, 10)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+        painter.drawPixmap(0, 0, pixmap)
+        painter.end()
+        return rounded_pixmap
+
+    def set_image_to_label(self, image_path):
+        # Загрузка изображения
+        pixmap = QPixmap(image_path)
+        pixmap_resized = pixmap.scaled(250, 300)  # Изменение размера изображения до 250x300 пикселей
+
+        # Применение стилей к QLabel (self.ui.label_37)
+        self.ui.label_37.setContentsMargins(10, 10, 10, 10)  # Установка отступов
+
+        # Установка изображения с закругленными углами
+        rounded_pixmap = self.rounded_pixmap(pixmap_resized)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+        self.ui.label_37.setScaledContents(True)  # Разрешение масштабирования содержимого QLabel
+
+    def add_logo_button_clicked(self):
+        self.open_file_explorer()
+
     def add_title_to_database(self):
+        comboxBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
         title_name = self.ui.nameAddTitle.text()
         title_description = self.ui.descriptionEdit.toPlainText()
         image_path = self.ui.imageArea.toPlainText()
 
         if not title_name or not title_description or not image_path:
             self.show_error_message(
-                "Вы не заполнили поле, пожалуйста заполните все необходимые поля и повторите попытку!")
+                "Вы не заполнили поле, пожалуйста, заполните все необходимые поля и повторите попытку!")
             return
 
-        # Загружаем изображение по указанному пути
-        pixmap = QPixmap(image_path)
-        byte_array = QByteArray()
-        buffer = QBuffer(byte_array)
-        buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")  # Сохраняем изображение в байтовый массив в формате PNG
-        byte_array = buffer.data()
-        image_data = bytes(byte_array)
+        # Загружаем изображение
+        original_image = self.load_image(image_path)
+
+        if original_image is not None:
+            # Сжимаем изображение
+            compressed_image, _ = self.fractal_compress(original_image)
+
+            # Преобразуем сжатое изображение в байтовый массив
+            buffer = BytesIO()
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
+            image_data = buffer.getvalue()
+        else:
+            print("Ошибка загрузки изображения.")
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
-                       (title_name, title_description, image_data))
+        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id) VALUES (%s, %s, %s, %s)',
+                       (title_name, title_description, psycopg2.Binary(image_data), comboxBox_team))
         connection.commit()
         cursor.close()
         connection.close()
@@ -1096,6 +1253,7 @@ class MainWindow(QMainWindow):
         self.ui.imageArea.clear()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.setup_scroll_area()
+        self.load_team()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
