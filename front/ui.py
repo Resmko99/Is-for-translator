@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1483, 915)
+        MainWindow.resize(1511, 875)
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1849,29 +1849,35 @@ class Ui_MainWindow(object):
         self.widget_17.setObjectName(u"widget_17")
         self.gridLayout_6 = QGridLayout(self.widget_17)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
-        self.verticalLayout_15 = QVBoxLayout()
-        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
-        self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_20 = QVBoxLayout()
+        self.verticalLayout_20.setSpacing(6)
+        self.verticalLayout_20.setObjectName(u"verticalLayout_20")
+        self.verticalLayout_20.setContentsMargins(0, 0, 0, 0)
         self.label_92 = QLabel(self.widget_17)
         self.label_92.setObjectName(u"label_92")
-        sizePolicy5.setHeightForWidth(self.label_92.sizePolicy().hasHeightForWidth())
-        self.label_92.setSizePolicy(sizePolicy5)
+        sizePolicy.setHeightForWidth(self.label_92.sizePolicy().hasHeightForWidth())
+        self.label_92.setSizePolicy(sizePolicy)
 
-        self.verticalLayout_15.addWidget(self.label_92)
+        self.verticalLayout_20.addWidget(self.label_92)
 
+        self.verticalLayout_15 = QVBoxLayout()
+        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
         self.label_37 = QLabel(self.widget_17)
         self.label_37.setObjectName(u"label_37")
-        sizePolicy5.setHeightForWidth(self.label_37.sizePolicy().hasHeightForWidth())
-        self.label_37.setSizePolicy(sizePolicy5)
-        self.label_37.setMinimumSize(QSize(250, 380))
-        self.label_37.setMaximumSize(QSize(250, 380))
+        sizePolicy.setHeightForWidth(self.label_37.sizePolicy().hasHeightForWidth())
+        self.label_37.setSizePolicy(sizePolicy)
+        self.label_37.setMinimumSize(QSize(310, 390))
+        self.label_37.setMaximumSize(QSize(310, 390))
 
         self.verticalLayout_15.addWidget(self.label_37)
 
         self.horizontalLayout_16 = QHBoxLayout()
+        self.horizontalLayout_16.setSpacing(0)
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.addLogo = QPushButton(self.widget_17)
         self.addLogo.setObjectName(u"addLogo")
+        sizePolicy.setHeightForWidth(self.addLogo.sizePolicy().hasHeightForWidth())
+        self.addLogo.setSizePolicy(sizePolicy)
         self.addLogo.setMinimumSize(QSize(140, 30))
         self.addLogo.setIcon(icon19)
 
@@ -1879,6 +1885,8 @@ class Ui_MainWindow(object):
 
         self.editLogo = QPushButton(self.widget_17)
         self.editLogo.setObjectName(u"editLogo")
+        sizePolicy.setHeightForWidth(self.editLogo.sizePolicy().hasHeightForWidth())
+        self.editLogo.setSizePolicy(sizePolicy)
         self.editLogo.setMinimumSize(QSize(140, 30))
         self.editLogo.setIcon(icon18)
 
@@ -1892,7 +1900,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_15.addItem(self.verticalSpacer_20)
 
 
-        self.gridLayout_6.addLayout(self.verticalLayout_15, 0, 0, 1, 1)
+        self.verticalLayout_20.addLayout(self.verticalLayout_15)
+
+
+        self.gridLayout_6.addLayout(self.verticalLayout_20, 0, 0, 1, 1)
 
         self.verticalLayout_13 = QVBoxLayout()
         self.verticalLayout_13.setSpacing(6)
@@ -1929,6 +1940,10 @@ class Ui_MainWindow(object):
 
 
         self.gridLayout_6.addLayout(self.verticalLayout_13, 0, 1, 1, 1)
+
+        self.horizontalSpacer_31 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_6.addItem(self.horizontalSpacer_31, 0, 2, 1, 1)
 
 
         self.gridLayout_52.addWidget(self.widget_17, 0, 0, 1, 1)
