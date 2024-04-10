@@ -1804,8 +1804,10 @@ class Ui_MainWindow(object):
 
         self.label_37 = QLabel(self.widget_17)
         self.label_37.setObjectName(u"label_37")
+        sizePolicy5.setHeightForWidth(self.label_37.sizePolicy().hasHeightForWidth())
+        self.label_37.setSizePolicy(sizePolicy5)
         self.label_37.setMinimumSize(QSize(270, 350))
-        self.label_37.setMaximumSize(QSize(200, 16777215))
+        self.label_37.setMaximumSize(QSize(16777215, 16777215))
 
         self.gridLayout_6.addWidget(self.label_37, 1, 0, 8, 1)
 
@@ -1951,8 +1953,10 @@ class Ui_MainWindow(object):
 
         self.label_36 = QLabel(self.widget_18)
         self.label_36.setObjectName(u"label_36")
+        sizePolicy5.setHeightForWidth(self.label_36.sizePolicy().hasHeightForWidth())
+        self.label_36.setSizePolicy(sizePolicy5)
         self.label_36.setMinimumSize(QSize(270, 350))
-        self.label_36.setMaximumSize(QSize(200, 16777215))
+        self.label_36.setMaximumSize(QSize(16777215, 16777215))
 
         self.gridLayout_25.addWidget(self.label_36, 0, 0, 4, 1)
 
