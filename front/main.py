@@ -1,3 +1,4 @@
+import configparser
 import sys
 import os
 from io import BytesIO
@@ -280,6 +281,10 @@ class MainWindow(QMainWindow):
         self.ui.titleBtn_2.setChecked(True)
         self.ui.dateEdit.dateChanged.connect(self.get_data)
 
+        # Проверяем наличие файла конфигурации
+        if os.path.exists('config.ini'):
+            self.load_saved_credentials()
+
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
@@ -486,6 +491,7 @@ class MainWindow(QMainWindow):
                                  }
                              """)
         self.ui.SearchBtn.clicked.connect(self.search_titles)
+        self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
         self.load_team()
         self.load_title_income()
         self.load_users()
@@ -496,6 +502,70 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
+
+    def login_button_clicked(self):
+        login = self.ui.lineEdit.text()
+        password = self.ui.lineEdit_2.text()
+
+        # Проверяем наличие пользователя с указанным логином/email и паролем в базе данных
+        if self.check_credentials(login, password):
+            # Если пользователь найден, переключаемся на страницу с индексом 4
+            self.ui.stackedWidget.setCurrentIndex(4)
+            self.save_login(login, password)
+        else:
+            # Если пользователь не найден, выводим сообщение об ошибке или другую обратную связь
+            self.show_error_message("Неправильный логин/email или пароль")
+
+    def check_credentials(self, login, password):
+        # Реализуйте проверку наличия пользователя в базе данных по логину/email и паролю
+        connection = connect()  # Пример подключения к базе данных
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                       (login, login, password))
+        user_exists = cursor.fetchone() is not None
+        close_db_connect(connection, cursor)
+        return user_exists
+
+    def save_login(self, username, password):
+        encrypted_username = self.encrypt_data(username)
+        encrypted_password = self.encrypt_data(password)
+
+        config = configparser.ConfigParser()
+        config['Account'] = {'username': encrypted_username, 'password': encrypted_password}
+
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def load_saved_credentials(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            encrypted_username = config['Account']['username']
+            encrypted_password = config['Account']['password']
+            username = self.decrypt_data(encrypted_username)
+            password = self.decrypt_data(encrypted_password)
+
+            if self.check_credentials(username, password):
+                self.ui.stackedWidget.setCurrentIndex(4)
+
+    def encrypt_data(self, data):
+        # Пример простого алгоритма шифрования XOR
+        key = 'SecretKey123!@#'  # Ключ для шифрования (можно выбрать любую строку)
+        encrypted = []
+        for char in data:
+            encrypted_char = chr(ord(char) ^ ord(key[len(encrypted) % len(key)]))
+            encrypted.append(encrypted_char)
+        return ''.join(encrypted)
+
+    def decrypt_data(self, encrypted_data):
+        # Пример простого алгоритма дешифрования XOR
+        key = 'SecretKey123!@#'  # Ключ для дешифрования
+        decrypted = []
+        for char in encrypted_data:
+            decrypted_char = chr(ord(char) ^ ord(key[len(decrypted) % len(key)]))
+            decrypted.append(decrypted_char)
+        return ''.join(decrypted)
 
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
