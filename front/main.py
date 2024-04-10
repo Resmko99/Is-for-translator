@@ -1,3 +1,5 @@
+import base64
+import configparser
 import sys
 import os
 from io import BytesIO
@@ -13,6 +15,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, Q
                                QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
+from cryptography.fernet import Fernet
 
 from googletrans import Translator
 from datetime import datetime
@@ -272,7 +275,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
-        self.ui.stackedWidget.setCurrentIndex(4)
+        self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
@@ -384,6 +387,7 @@ class MainWindow(QMainWindow):
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
+        self.ui.addLogo.clicked.connect(self.add_logo_button_clicked)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
         self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
@@ -453,8 +457,46 @@ class MainWindow(QMainWindow):
                                 background: none;
                             }
                         """)
+
+        self.ui.textEditDesc.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
         self.ui.SearchBtn.clicked.connect(self.search_titles)
-        self.load_team_income()
+        self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
+
+        # Генерируем ключ для шифрования, если его нет
+        self.generate_key()
+        # Проверяем сохраненные учетные данные при запуске приложения
+        self.load_saved_credentials()
+
+        self.load_team()
         self.load_title_income()
         self.load_users()
         self.get_data()
@@ -463,6 +505,89 @@ class MainWindow(QMainWindow):
         self.load_edit_team_income()
         self.load_edit_title_income()
         self.load_account_teams()
+        self.load_edit_teams()
+
+
+    def login_button_clicked(self):
+        login = self.ui.lineEdit.text()
+        password = self.ui.lineEdit_2.text()
+
+        encrypted_login = self.encrypt_data(login)
+        encrypted_password = self.encrypt_data(password)
+
+        self.save_credentials(encrypted_login, encrypted_password)
+
+        if self.check_credentials(login, password):
+            self.ui.stackedWidget.setCurrentIndex(4)
+        else:
+            self.show_error_message("Неправильный логин/email или пароль")
+
+    def check_credentials(self, login, password):
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                       (login, login, password))
+        user_exists = cursor.fetchone() is not None
+        close_db_connect(connection, cursor)
+        return user_exists
+
+    def load_saved_credentials(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            encrypted_login = config['Account']['username']
+            encrypted_password = config['Account']['password']
+            login = self.decrypt_data(encrypted_login)
+            password = self.decrypt_data(encrypted_password)
+
+            if self.check_credentials(login, password):
+                self.ui.stackedWidget.setCurrentIndex(4)
+
+    def save_credentials(self, encrypted_login, encrypted_password):
+        config = configparser.ConfigParser()
+        config['Account'] = {'username': encrypted_login, 'password': encrypted_password}
+
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def generate_key(self):
+        key_file = 'secret.key'
+        if not os.path.exists(key_file):
+            key = Fernet.generate_key()
+            with open(key_file, 'wb') as keyfile:
+                keyfile.write(key)
+
+    def encrypt_data(self, data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        encrypted_data = fernet.encrypt(data.encode())
+        return encrypted_data.decode()
+
+    def decrypt_data(self, encrypted_data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data.encode())
+        return decrypted_data.decode()
+
+    def load_edit_teams(self):
+        self.ui.nameCrewTranslatorEditTitle.clear()
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT team_id, name_team FROM "Teams"')
+            teams = cursor.fetchall()
+            for team in teams:
+                self.ui.nameCrewTranslatorEditTitle.addItem(f"{team[1]}", userData=team[0])
+            if teams:
+                first_team_id = teams[0][0]
+                index = self.ui.nameCrewTranslatorEditTitle.findData(first_team_id)
+                if index != -1:
+                    self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
+        except Exception as e:
+            print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
     def load_account_teams(self):
         self.ui.nameCrewAccComboBox.clear()
@@ -686,9 +811,10 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f'Ошибка при удалении задач: {e}')
 
-    def load_team_income(self):
+    def load_team(self):
         self.ui.crewAddComboBox.clear()
         self.ui.crewComboBox.clear()
+        self.ui.nameCrewTranslatorAddTitle.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
@@ -696,6 +822,8 @@ class MainWindow(QMainWindow):
         for team in teams:
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
+            self.ui.nameCrewTranslatorAddTitle.addItem(f"{team[1]}", userData=team[0])
+
 
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
@@ -764,7 +892,7 @@ class MainWindow(QMainWindow):
         self.ui.salaryAddIncome.clear()
         self.load_users()
         self.load_title_income()
-        self.load_team_income()
+        self.load_team()
         self.get_income()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageIncome)
 
@@ -1006,15 +1134,20 @@ class MainWindow(QMainWindow):
     def open_edit_title_page(self):
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT "title_name", "description" FROM "Title" WHERE title_id = %s', (self.title_id,))
+        cursor.execute('SELECT title_name, description, team_id FROM "Title" WHERE title_id = %s', (self.title_id,))
         row = cursor.fetchone()
         close_db_connect(connection, cursor)
 
         if row:
-            title_name, title_description = row
+            title_name, title_description, team_id = row
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
             self.ui.nameEditTitle.setText(title_name)
             self.ui.descriptionEdit_2.setText(title_description)
+
+            index = self.ui.nameCrewTranslatorEditTitle.findData(team_id)
+            if index != -1:
+                self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
+
 
     def switch_to_page_desc(self):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
@@ -1061,6 +1194,7 @@ class MainWindow(QMainWindow):
             return None
 
     def apply_title_changes(self):
+        team_id = self.ui.nameCrewTranslatorEditTitle.currentData()
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
 
@@ -1088,11 +1222,11 @@ class MainWindow(QMainWindow):
         cursor = connection.cursor()
         if image_data is not None:
             cursor.execute(
-                'UPDATE "Title" SET "title_name" = %s, "description" = %s, "icon_title" = %s WHERE title_id = %s',
-                (new_title_name, new_description, psycopg2.Binary(image_data), self.title_id))
+                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, self.title_id))
         else:
-            cursor.execute('UPDATE "Title" SET "title_name" = %s, "description" = %s WHERE title_id = %s',
-                           (new_title_name, new_description, self.title_id))
+            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s, team_id = %s WHERE title_id = %s',
+                           (new_title_name, new_description, team_id,  self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -1114,7 +1248,50 @@ class MainWindow(QMainWindow):
         if file_path:
             self.ui.imageArea.setText(file_path)
 
+
+    def open_file_explorer(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            self.ui.imageAreaEdit.setText(file_path)
+            self.set_image_to_label(file_path)
+
+    def set_rounded_pixmap(self, pixmap):
+        rounded_pixmap = self.rounded_pixmap(pixmap)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+
+    def rounded_pixmap(self, pixmap):
+        rounded_pixmap = QPixmap(pixmap.size())
+        rounded_pixmap.fill(Qt.transparent)
+        painter = QPainter(rounded_pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.white)
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(pixmap.rect(), 10, 10)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+        painter.drawPixmap(0, 0, pixmap)
+        painter.end()
+        return rounded_pixmap
+
+    def set_image_to_label(self, image_path):
+        # Загрузка изображения
+        pixmap = QPixmap(image_path)
+        pixmap_resized = pixmap.scaled(250, 300)  # Изменение размера изображения до 250x300 пикселей
+
+        # Применение стилей к QLabel (self.ui.label_37)
+        self.ui.label_37.setContentsMargins(10, 10, 10, 10)  # Установка отступов
+
+        # Установка изображения с закругленными углами
+        rounded_pixmap = self.rounded_pixmap(pixmap_resized)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+        self.ui.label_37.setScaledContents(True)  # Разрешение масштабирования содержимого QLabel
+
+    def add_logo_button_clicked(self):
+        self.open_file_explorer()
+
     def add_title_to_database(self):
+        comboxBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
         title_name = self.ui.nameAddTitle.text()
         title_description = self.ui.descriptionEdit.toPlainText()
         image_path = self.ui.imageArea.toPlainText()
@@ -1140,8 +1317,8 @@ class MainWindow(QMainWindow):
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO "Title" ("title_name", "description", "icon_title") VALUES (%s, %s, %s)',
-                       (title_name, title_description, psycopg2.Binary(image_data)))
+        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id) VALUES (%s, %s, %s, %s)',
+                       (title_name, title_description, psycopg2.Binary(image_data), comboxBox_team))
         connection.commit()
         cursor.close()
         connection.close()
@@ -1151,6 +1328,7 @@ class MainWindow(QMainWindow):
         self.ui.imageArea.clear()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.setup_scroll_area()
+        self.load_team()
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
