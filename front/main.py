@@ -187,10 +187,10 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        if search_text:  # Если есть текст для поиска, передаем его в функцию load_images_from_database
+        if search_text:
             self.load_images_from_database(search_text)
         else:
-            self.load_images_from_database()  # Иначе загружаем все тайтлы
+            self.load_images_from_database()
 
         self.scrollLayout.addStretch()
         self.scroll.setWidget(self.scrollContent)
@@ -203,7 +203,6 @@ class ImageScrollArea(QWidget):
                 widget.deleteLater()
 
     def load_images_from_database(self, search_text=None):
-        # Очищаем существующие тайтлы перед загрузкой новых
         self.clear_titles()
 
         connection = connect()
@@ -313,7 +312,6 @@ class MainWindow(QMainWindow):
         self.ui.scheduleBtn_1.setToolTip("Расписание")
         self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
-        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
@@ -512,7 +510,6 @@ class MainWindow(QMainWindow):
             self.ui.editListTask.clicked.connect(self.edit_task)
         else:
             self.ui.editListTask.setEnabled(False)
-
 
     def login_button_clicked(self):
         login = self.ui.lineEdit.text()
