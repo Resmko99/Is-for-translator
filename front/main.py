@@ -1,3 +1,5 @@
+import base64
+import configparser
 import sys
 import os
 from io import BytesIO
@@ -13,6 +15,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, Q
                                QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
+from cryptography.fernet import Fernet
 
 from googletrans import Translator
 from datetime import datetime
@@ -272,7 +275,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
-        self.ui.stackedWidget.setCurrentIndex(4)
+        self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
@@ -310,6 +313,7 @@ class MainWindow(QMainWindow):
         self.ui.scheduleBtn_1.setToolTip("Расписание")
         self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
+        self.ui.acceptFileBtn_1.setToolTip("Принять файлы")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
         self.ui.aboutUs_1.setToolTip("О нас")
@@ -384,6 +388,7 @@ class MainWindow(QMainWindow):
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
+        self.ui.addLogo.clicked.connect(self.add_logo_button_clicked)
 
         self.ui.stackedWidget_2.currentChanged.connect(self.load_description)
         self.ui.deleteTitleBtn.clicked.connect(self.delete_title)
@@ -485,6 +490,11 @@ class MainWindow(QMainWindow):
                                  }
                              """)
         self.ui.SearchBtn.clicked.connect(self.search_titles)
+        self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
+
+        self.generate_key()
+        self.load_saved_credentials()
+
         self.load_team()
         self.load_title_income()
         self.load_users()
@@ -502,6 +512,71 @@ class MainWindow(QMainWindow):
             self.ui.editListTask.clicked.connect(self.edit_task)
         else:
             self.ui.editListTask.setEnabled(False)
+
+
+    def login_button_clicked(self):
+        login = self.ui.lineEdit.text()
+        password = self.ui.lineEdit_2.text()
+
+        encrypted_login = self.encrypt_data(login)
+        encrypted_password = self.encrypt_data(password)
+
+        self.save_credentials(encrypted_login, encrypted_password)
+
+        if self.check_credentials(login, password):
+            self.ui.stackedWidget.setCurrentIndex(4)
+        else:
+            self.show_error_message("Неправильный логин/email или пароль")
+
+    def check_credentials(self, login, password):
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                       (login, login, password))
+        user_exists = cursor.fetchone() is not None
+        close_db_connect(connection, cursor)
+        return user_exists
+
+    def load_saved_credentials(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            encrypted_login = config['Account']['username']
+            encrypted_password = config['Account']['password']
+            login = self.decrypt_data(encrypted_login)
+            password = self.decrypt_data(encrypted_password)
+
+            if self.check_credentials(login, password):
+                self.ui.stackedWidget.setCurrentIndex(4)
+
+    def save_credentials(self, encrypted_login, encrypted_password):
+        config = configparser.ConfigParser()
+        config['Account'] = {'username': encrypted_login, 'password': encrypted_password}
+
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def generate_key(self):
+        key_file = 'secret.key'
+        if not os.path.exists(key_file):
+            key = Fernet.generate_key()
+            with open(key_file, 'wb') as keyfile:
+                keyfile.write(key)
+
+    def encrypt_data(self, data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        encrypted_data = fernet.encrypt(data.encode())
+        return encrypted_data.decode()
+
+    def decrypt_data(self, encrypted_data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data.encode())
+        return decrypted_data.decode()
 
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
@@ -629,11 +704,11 @@ class MainWindow(QMainWindow):
             print(f'Ошибка при обновлении задачи: {e}')
 
     def view_task(self):
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageUserView)
         selected_index = self.ui.tableListTask.currentIndex()
         if not selected_index.isValid():
             return
 
-        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageUserView)
         task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
 
         try:
@@ -657,6 +732,7 @@ class MainWindow(QMainWindow):
             print(f'Ошибка при выводе задач: {e}')
 
     def edit_task(self):
+        self.ui.tableListTask.clearSelection()
         selected_index = self.ui.tableListTask.currentIndex()
         if not selected_index.isValid():
             return
@@ -686,10 +762,10 @@ class MainWindow(QMainWindow):
                     index = self.ui.employeeEditTask.findData(user_id)
                     if index != -1:
                         self.ui.employeeEditTask.setCurrentIndex(index)
+                    self.ui.tableListTask.clearSelection()
 
         except Exception as e:
             print(f'Ошибка при заполнении задач: {e}')
-
 
     def get_data(self):
         try:
@@ -1177,6 +1253,48 @@ class MainWindow(QMainWindow):
                                                    options=options)
         if file_path:
             self.ui.imageArea.setText(file_path)
+
+
+    def open_file_explorer(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
+                                                   options=options)
+        if file_path:
+            self.ui.imageAreaEdit.setText(file_path)
+            self.set_image_to_label(file_path)
+
+    def set_rounded_pixmap(self, pixmap):
+        rounded_pixmap = self.rounded_pixmap(pixmap)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+
+    def rounded_pixmap(self, pixmap):
+        rounded_pixmap = QPixmap(pixmap.size())
+        rounded_pixmap.fill(Qt.transparent)
+        painter = QPainter(rounded_pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.white)
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(pixmap.rect(), 10, 10)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+        painter.drawPixmap(0, 0, pixmap)
+        painter.end()
+        return rounded_pixmap
+
+    def set_image_to_label(self, image_path):
+        # Загрузка изображения
+        pixmap = QPixmap(image_path)
+        pixmap_resized = pixmap.scaled(250, 300)  # Изменение размера изображения до 250x300 пикселей
+
+        # Применение стилей к QLabel (self.ui.label_37)
+        self.ui.label_37.setContentsMargins(10, 10, 10, 10)  # Установка отступов
+
+        # Установка изображения с закругленными углами
+        rounded_pixmap = self.rounded_pixmap(pixmap_resized)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+        self.ui.label_37.setScaledContents(True)  # Разрешение масштабирования содержимого QLabel
+
+    def add_logo_button_clicked(self):
+        self.open_file_explorer()
 
     def add_title_to_database(self):
         comboxBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
