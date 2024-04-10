@@ -378,7 +378,7 @@ class MainWindow(QMainWindow):
         self.init_translator_ui()
         self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
         self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
-        self.ui.editListTask.clicked.connect(self.edit_task)
+        self.ui.tableListTask.clicked.connect(self.state_edit_button)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
@@ -495,6 +495,13 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
+
+    def state_edit_button(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if selected_index.isValid():
+            self.ui.editListTask.clicked.connect(self.edit_task)
+        else:
+            self.ui.editListTask.setEnabled(False)
 
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
@@ -622,11 +629,11 @@ class MainWindow(QMainWindow):
             print(f'Ошибка при обновлении задачи: {e}')
 
     def view_task(self):
-        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageUserView)
         selected_index = self.ui.tableListTask.currentIndex()
         if not selected_index.isValid():
             return
 
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageUserView)
         task_id = int(self.model_table_task.item(selected_index.row(), 3).data(Qt.UserRole))
 
         try:
@@ -650,7 +657,6 @@ class MainWindow(QMainWindow):
             print(f'Ошибка при выводе задач: {e}')
 
     def edit_task(self):
-        self.ui.tableListTask.clearSelection()
         selected_index = self.ui.tableListTask.currentIndex()
         if not selected_index.isValid():
             return
@@ -680,10 +686,10 @@ class MainWindow(QMainWindow):
                     index = self.ui.employeeEditTask.findData(user_id)
                     if index != -1:
                         self.ui.employeeEditTask.setCurrentIndex(index)
-                    self.ui.tableListTask.clearSelection()
 
         except Exception as e:
             print(f'Ошибка при заполнении задач: {e}')
+
 
     def get_data(self):
         try:
