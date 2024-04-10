@@ -1868,6 +1868,25 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_15.addWidget(self.label_37)
 
+        self.horizontalLayout_16 = QHBoxLayout()
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.addLogo = QPushButton(self.widget_17)
+        self.addLogo.setObjectName(u"addLogo")
+        self.addLogo.setMinimumSize(QSize(140, 30))
+        self.addLogo.setIcon(icon19)
+
+        self.horizontalLayout_16.addWidget(self.addLogo)
+
+        self.editLogo = QPushButton(self.widget_17)
+        self.editLogo.setObjectName(u"editLogo")
+        self.editLogo.setMinimumSize(QSize(140, 30))
+        self.editLogo.setIcon(icon18)
+
+        self.horizontalLayout_16.addWidget(self.editLogo)
+
+
+        self.verticalLayout_15.addLayout(self.horizontalLayout_16)
+
         self.verticalSpacer_20 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_15.addItem(self.verticalSpacer_20)
@@ -1903,29 +1922,6 @@ class Ui_MainWindow(object):
         self.lineEdit_6.setMaximumSize(QSize(540, 16777215))
 
         self.verticalLayout_13.addWidget(self.lineEdit_6)
-
-        self.horizontalLayout_16 = QHBoxLayout()
-        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
-        self.addLogo = QPushButton(self.widget_17)
-        self.addLogo.setObjectName(u"addLogo")
-        self.addLogo.setMinimumSize(QSize(140, 30))
-        self.addLogo.setIcon(icon19)
-
-        self.horizontalLayout_16.addWidget(self.addLogo)
-
-        self.editLogo = QPushButton(self.widget_17)
-        self.editLogo.setObjectName(u"editLogo")
-        self.editLogo.setMinimumSize(QSize(140, 30))
-        self.editLogo.setIcon(icon18)
-
-        self.horizontalLayout_16.addWidget(self.editLogo)
-
-        self.horizontalSpacer_31 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_16.addItem(self.horizontalSpacer_31)
-
-
-        self.verticalLayout_13.addLayout(self.horizontalLayout_16)
 
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
@@ -2485,10 +2481,10 @@ class Ui_MainWindow(object):
         self.deleteTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.label_92.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.label_37.setText("")
-        self.label_91.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Token \u0432\u0430\u0448\u0435\u0433\u043e \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c \u0431\u043e\u0442\u0430", None))
         self.addLogo.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.editLogo.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
+        self.label_91.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Token \u0432\u0430\u0448\u0435\u0433\u043e \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c \u0431\u043e\u0442\u0430", None))
         self.saveTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.label_36.setText("")
         self.label_93.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))

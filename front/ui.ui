@@ -3974,6 +3974,44 @@
                   </widget>
                  </item>
                  <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_16">
+                   <item>
+                    <widget class="QPushButton" name="addLogo">
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Добавить</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="resource.qrc">
+                       <normaloff>:/icon/icon/free-icon-add-7222864.png</normaloff>:/icon/icon/free-icon-add-7222864.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="editLogo">
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Удалить</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="resource.qrc">
+                       <normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
                   <spacer name="verticalSpacer_20">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
@@ -4044,57 +4082,6 @@
                     </size>
                    </property>
                   </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_16">
-                   <item>
-                    <widget class="QPushButton" name="addLogo">
-                     <property name="minimumSize">
-                      <size>
-                       <width>140</width>
-                       <height>30</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Добавить</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="resource.qrc">
-                       <normaloff>:/icon/icon/free-icon-add-7222864.png</normaloff>:/icon/icon/free-icon-add-7222864.png</iconset>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="editLogo">
-                     <property name="minimumSize">
-                      <size>
-                       <width>140</width>
-                       <height>30</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Удалить</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="resource.qrc">
-                       <normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</normaloff>:/icon/icon/free-icon-minus-button-4315581 копия.png</iconset>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_31">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
                  </item>
                  <item>
                   <spacer name="verticalSpacer_3">
