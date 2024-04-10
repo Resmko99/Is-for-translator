@@ -1,6 +1,8 @@
 import sys
 import os
 from io import BytesIO
+import pickle
+
 
 import cv2
 import time
@@ -11,18 +13,32 @@ from PIL import Image
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
                             QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog,
+                               QProgressBar)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
+from PySide6.QtUiTools import QUiLoader
+
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+from google.oauth2.service_account import Credentials
+
+
 
 from googletrans import Translator
 from functools import partial
-from .ui import Ui_MainWindow
+from Interface.ui import Ui_MainWindow
 from Modules.database import connect, close_db_connect
 
 import psycopg2
 
 directory = os.path.abspath(os.curdir)
+#Настройка скоупа
+SCOPES = ['https://www.googleapis.com/auth/drive']
+tokenPath = 'token.pickle'
+credentialPath = 'credentials.json'   #Путь к файлу 'credentials.json' где лежат данные пользователя
 
 
 class Calender(QWidget):
@@ -495,6 +511,55 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
+
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+
+        loader = QUiLoader()
+        self.ui = loader.load('ui.ui', self)
+
+        self.drive_service = None
+        self.file_path = None
+        self.folder_id = None
+
+        self.ui.fileAdd.clicked.connect(self.browse_file)  # Выбор файла
+        self.ui.recipientFile.activated.connect(self.upload_to_drive)  # Загрузка файла
+        self.ui.sendFile.clicked.connect(self.select_folder)  # Выбор папки
+
+    def browse_file(self):
+        self.file_path, _ = QFileDialog.getOpenFileName()
+        if self.file_path:
+            print(f"Выбран файл: {self.file_path}")
+
+    def upload_to_drive(self):
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+        self.folder_id, _ = QInputDialog.getText(
+            self, 'Ввод', 'Введите ID вашей папки:')
+        media = MediaFileUpload(self.file_path)
+        request = self.drive_service.files().create(
+            media_body=media,
+            body={
+                'name': 'Тестовый файл',
+                'parents': [self.folder_id]
+            }
+        )
+        request.execute()
+
+    def select_folder(self):
+        self.folder_id, _ = QInputDialog.getText(
+            self, 'Ввод', 'Введите ID вашей папки:')
+        if self.folder_id:
+            print(f"Выбрана папка: {self.folder_id}")
+
+    def authenticate(self):
+        credentials = Credentials.from_service_account_file('/Source/credentials.json')
+        return build('drive', 'v3', credentials=credentials)
+
+
+
+
+
 
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
@@ -1403,6 +1468,7 @@ class MainWindow(QMainWindow):
                         new_geometry.setBottom(frame_geometry.top() + self.minimumHeight())
 
                 self.setGeometry(new_geometry)
+
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
