@@ -381,7 +381,7 @@ class MainWindow(QMainWindow):
         self.init_translator_ui()
         self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
         self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
-        self.ui.editListTask.clicked.connect(self.edit_task)
+        self.ui.tableListTask.clicked.connect(self.state_edit_button)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
@@ -491,9 +491,7 @@ class MainWindow(QMainWindow):
         self.ui.SearchBtn.clicked.connect(self.search_titles)
         self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
 
-        # Генерируем ключ для шифрования, если его нет
         self.generate_key()
-        # Проверяем сохраненные учетные данные при запуске приложения
         self.load_saved_credentials()
 
         self.load_team()
@@ -506,6 +504,23 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
+        self.load_title_teams()
+
+    def load_title_teams(self):
+        self.ui.comboboxTitle.clear()
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT team_id, name_team FROM "Teams"')
+        teams = cursor.fetchall()
+        for team in teams:
+            self.ui.comboboxTitle.addItem(f"{team[1]}", userData=team[0])
+
+    def state_edit_button(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if selected_index.isValid():
+            self.ui.editListTask.clicked.connect(self.edit_task)
+        else:
+            self.ui.editListTask.setEnabled(False)
 
 
     def login_button_clicked(self):
@@ -1257,10 +1272,6 @@ class MainWindow(QMainWindow):
             self.ui.imageAreaEdit.setText(file_path)
             self.set_image_to_label(file_path)
 
-    def set_rounded_pixmap(self, pixmap):
-        rounded_pixmap = self.rounded_pixmap(pixmap)
-        self.ui.label_37.setPixmap(rounded_pixmap)
-
     def rounded_pixmap(self, pixmap):
         rounded_pixmap = QPixmap(pixmap.size())
         rounded_pixmap.fill(Qt.transparent)
@@ -1270,20 +1281,19 @@ class MainWindow(QMainWindow):
         painter.setPen(Qt.NoPen)
         painter.drawRoundedRect(pixmap.rect(), 10, 10)
         painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
-        painter.drawPixmap(0, 0, pixmap)
+        painter.drawPixmap(10, 10, pixmap)
         painter.end()
         return rounded_pixmap
 
     def set_image_to_label(self, image_path):
         # Загрузка изображения
         pixmap = QPixmap(image_path)
-        pixmap_resized = pixmap.scaled(250, 300)  # Изменение размера изображения до 250x300 пикселей
 
         # Применение стилей к QLabel (self.ui.label_37)
         self.ui.label_37.setContentsMargins(10, 10, 10, 10)  # Установка отступов
 
         # Установка изображения с закругленными углами
-        rounded_pixmap = self.rounded_pixmap(pixmap_resized)
+        rounded_pixmap = self.rounded_pixmap(pixmap)
         self.ui.label_37.setPixmap(rounded_pixmap)
         self.ui.label_37.setScaledContents(True)  # Разрешение масштабирования содержимого QLabel
 
