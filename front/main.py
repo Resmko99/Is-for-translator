@@ -1,4 +1,3 @@
-import base64
 import configparser
 import sys
 import os
@@ -9,7 +8,7 @@ import time
 
 import numpy as np
 from PIL import Image
-from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
+from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
                             QTimer, QRegularExpression)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
                                QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
@@ -18,13 +17,11 @@ from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandar
 from cryptography.fernet import Fernet
 
 from googletrans import Translator
-from datetime import datetime
 from functools import partial
 from ui import Ui_MainWindow
 from database import connect, close_db_connect
 
 import psycopg2
-import itertools
 
 directory = os.path.abspath(os.curdir)
 
@@ -134,12 +131,14 @@ class RoundedImageLabel(QLabel):
 
 
 class ImageScrollArea(QWidget):
-    def __init__(self, search_text=None, parent=None):
+    def __init__(self, team_id=None, search_text=None, parent=None):
         super().__init__(parent)
+        self.team_id = team_id
+        self.search_text = search_text
         self.loaded = False
-        self.setup_ui(search_text)
+        self.setup_ui()
 
-    def setup_ui(self, search_text):
+    def setup_ui(self):
         self.scroll_area_contents_layout = QVBoxLayout(self)
         self.scroll_area_contents_layout.setAlignment(Qt.AlignTop)
 
@@ -187,10 +186,10 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        if search_text:  # Если есть текст для поиска, передаем его в функцию load_images_from_database
-            self.load_images_from_database(search_text)
+        if self.team_id is not None:
+            self.load_images_from_database(team_id=self.team_id, search_text=self.search_text)
         else:
-            self.load_images_from_database()  # Иначе загружаем все тайтлы
+            self.load_images_from_database(search_text=self.search_text)  # Иначе загружаем все тайтлы
 
         self.scrollLayout.addStretch()
         self.scroll.setWidget(self.scrollContent)
@@ -202,17 +201,25 @@ class ImageScrollArea(QWidget):
             if widget:
                 widget.deleteLater()
 
-    def load_images_from_database(self, search_text=None):
+    def load_images_from_database(self, team_id=None, search_text=None):
         # Очищаем существующие тайтлы перед загрузкой новых
         self.clear_titles()
 
         connection = connect()
         cursor = connection.cursor()
 
-        if search_text:
+        if team_id is not None and search_text is not None:
+            cursor.execute(
+                'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "team_id" = %s AND "title_name" ILIKE %s ORDER BY "title_id" ASC',
+                (team_id, f'%{search_text}%'))
+        elif team_id is not None:
+            cursor.execute(
+                'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "team_id" = %s ORDER BY "title_id" ASC',
+                (team_id,))
+        elif search_text is not None:
             cursor.execute(
                 'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "title_name" ILIKE %s ORDER BY "title_id" ASC',
-                ('%' + search_text + '%',))
+                (f'%{search_text}%',))
         else:
             cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
 
@@ -370,7 +377,11 @@ class MainWindow(QMainWindow):
         self.current_cursor = self.open_hand_cursor
 
         self.installEventFilter(self)
-        self.setup_scroll_area()
+
+        self.load_title_teams()
+        self.ui.comboboxTitle.currentIndexChanged.connect(self.load_titles_by_team)
+        self.load_titles_by_team()
+
         self.setup_calender_widget()
         self.get_data()
 
@@ -488,7 +499,7 @@ class MainWindow(QMainWindow):
                                      background: none;
                                  }
                              """)
-        self.ui.SearchBtn.clicked.connect(self.search_titles)
+        self.ui.SearchBtn.clicked.connect(self.load_titles_by_team)
         self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
 
         self.generate_key()
@@ -504,7 +515,6 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
-        self.load_title_teams()
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
@@ -514,6 +524,15 @@ class MainWindow(QMainWindow):
         teams = cursor.fetchall()
         for team in teams:
             self.ui.comboboxTitle.addItem(f"{team[1]}", userData=team[0])
+
+    def load_titles_by_team(self):
+        team_id = self.ui.comboboxTitle.currentData()  # Получаем ID выбранной команды
+        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст для поиска
+        self.setup_scroll_area(team_id, search_text)  # Вызываем setup_scroll_area с передачей team_id и search_text
+
+    def search_titles(self):
+        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст из SearchEdit
+        self.setup_scroll_area(search_text)  # Вызываем setup_scroll_area с передачей текста для поиска
 
     def state_edit_button(self):
         selected_index = self.ui.tableListTask.currentIndex()
@@ -1096,16 +1115,13 @@ class MainWindow(QMainWindow):
         else:
             print("Ошибка: Один из выбранных языков не распознается.")
 
-    def setup_scroll_area(self, search_text=None):
-        self.image_scroll_area = ImageScrollArea(search_text)
+    def setup_scroll_area(self, team_id=None, search_text=None):
+        # Убедитесь, что image_scroll_area является атрибутом вашего класса
+        self.image_scroll_area = ImageScrollArea(team_id=team_id, search_text=search_text)
         self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
         for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
             child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
-
-    def search_titles(self):
-        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст из SearchEdit
-        self.setup_scroll_area(search_text)  # Вызываем setup_scroll_area с передачей текста для поиска
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
