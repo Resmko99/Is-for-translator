@@ -526,13 +526,9 @@ class MainWindow(QMainWindow):
             self.ui.comboboxTitle.addItem(f"{team[1]}", userData=team[0])
 
     def load_titles_by_team(self):
-        team_id = self.ui.comboboxTitle.currentData()  # Получаем ID выбранной команды
-        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст для поиска
-        self.setup_scroll_area(team_id, search_text)  # Вызываем setup_scroll_area с передачей team_id и search_text
-
-    def search_titles(self):
-        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст из SearchEdit
-        self.setup_scroll_area(search_text)  # Вызываем setup_scroll_area с передачей текста для поиска
+        team_id = self.ui.comboboxTitle.currentData()
+        search_text = self.ui.SearchEdit.text().strip()
+        self.setup_scroll_area(team_id, search_text)
 
     def state_edit_button(self):
         selected_index = self.ui.tableListTask.currentIndex()
