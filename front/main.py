@@ -523,13 +523,15 @@ class MainWindow(QMainWindow):
         self.load_account_teams()
         self.load_edit_teams()
 
-        self.drive_service = None
         self.file_path = None
         self.folder_id = None
 
-        self.ui.recipientFile.activated.connect(self.get_folders)  # Загрузка файла
         self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
         self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+    def post_init(self):
+        self.drive_service = self.authenticate()  # Переместить сюда
+        self.get_folders()
 
     def file_add_double_click(self, event):
         if event.button() == Qt.LeftButton:
@@ -541,6 +543,10 @@ class MainWindow(QMainWindow):
             self.ui.fileAdd.setText(f"Выбран файл: {self.file_path}")
 
     def get_folders(self):
+        self.ui.recipientFile.clear()
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+
         if not self.drive_service:
             self.drive_service = self.authenticate()
 
@@ -558,7 +564,6 @@ class MainWindow(QMainWindow):
         if not items:
             print('No folders found.')
         else:
-            self.ui.recipientFile.clear()
             print('Folders:')
             for item in items:
                 print(u'{0} ({1})'.format(item['name'], item['id']))
@@ -1596,4 +1601,5 @@ if __name__ == "__main__":
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
+    window.post_init()
     sys.exit(app.exec())
