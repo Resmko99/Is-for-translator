@@ -1,4 +1,5 @@
 import sys
+import configparser
 import os
 from io import BytesIO
 import pickle
@@ -17,7 +18,8 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, Q
                                QProgressBar)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
-from PySide6.QtUiTools import QUiLoader
+from cryptography.fernet import Fernet
+
 
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -512,17 +514,14 @@ class MainWindow(QMainWindow):
         self.load_account_teams()
         self.load_edit_teams()
 
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
-
-        loader = QUiLoader()
-        self.ui = loader.load('ui.ui', self)
+        #loader = QUiLoader()
+        #self.ui = loader.load('ui.ui', self)
 
         self.drive_service = None
         self.file_path = None
         self.folder_id = None
 
-        self.ui.fileAdd.clicked.connect(self.browse_file)  # Выбор файла
+        self.ui.fileAdd.mouseDoubleClickEvent = self.browse_file # Выбор файла
         self.ui.recipientFile.activated.connect(self.upload_to_drive)  # Загрузка файла
         self.ui.sendFile.clicked.connect(self.select_folder)  # Выбор папки
 
@@ -545,21 +544,85 @@ class MainWindow(QMainWindow):
             }
         )
         request.execute()
-
     def select_folder(self):
         self.folder_id, _ = QInputDialog.getText(
             self, 'Ввод', 'Введите ID вашей папки:')
         if self.folder_id:
             print(f"Выбрана папка: {self.folder_id}")
-
     def authenticate(self):
         credentials = Credentials.from_service_account_file('/Source/credentials.json')
         return build('drive', 'v3', credentials=credentials)
 
+    def state_edit_button(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if selected_index.isValid():
+            self.ui.editListTask.clicked.connect(self.edit_task)
+        else:
+            self.ui.editListTask.setEnabled(False)
 
+    def login_button_clicked(self):
+        login = self.ui.lineEdit.text()
+        password = self.ui.lineEdit_2.text()
 
+        encrypted_login = self.encrypt_data(login)
+        encrypted_password = self.encrypt_data(password)
 
+        self.save_credentials(encrypted_login, encrypted_password)
 
+        if self.check_credentials(login, password):
+            self.ui.stackedWidget.setCurrentIndex(4)
+        else:
+            self.show_error_message("Неправильный логин/email или пароль")
+
+    def check_credentials(self, login, password):
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                       (login, login, password))
+        user_exists = cursor.fetchone() is not None
+        close_db_connect(connection, cursor)
+        return user_exists
+
+    def load_saved_credentials(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            encrypted_login = config['Account']['username']
+            encrypted_password = config['Account']['password']
+            login = self.decrypt_data(encrypted_login)
+            password = self.decrypt_data(encrypted_password)
+
+            if self.check_credentials(login, password):
+                self.ui.stackedWidget.setCurrentIndex(4)
+
+    def save_credentials(self, encrypted_login, encrypted_password):
+        config = configparser.ConfigParser()
+        config['Account'] = {'username': encrypted_login, 'password': encrypted_password}
+
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def generate_key(self):
+        key_file = 'secret.key'
+        if not os.path.exists(key_file):
+            key = Fernet.generate_key()
+            with open(key_file, 'wb') as keyfile:
+                keyfile.write(key)
+
+    def encrypt_data(self, data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        encrypted_data = fernet.encrypt(data.encode())
+        return encrypted_data.decode()
+
+    def decrypt_data(self, encrypted_data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data.encode())
+        return decrypted_data.decode()
 
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
@@ -1118,7 +1181,7 @@ class MainWindow(QMainWindow):
             close_db_connect(connection, cursor)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.setup_scroll_area()
+        self.load_titles_by_team()
 
     def open_edit_title_page(self):
         connection = connect()
@@ -1221,7 +1284,7 @@ class MainWindow(QMainWindow):
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
-        self.setup_scroll_area()
+        self.load_titles_by_team()
 
     def open_image_dialog(self, event):
         options = QFileDialog.Options()
@@ -1316,7 +1379,7 @@ class MainWindow(QMainWindow):
         self.ui.descriptionEdit.clear()
         self.ui.imageArea.clear()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.setup_scroll_area()
+        self.load_titles_by_team()
         self.load_team()
 
     def setup_calender_widget(self):
