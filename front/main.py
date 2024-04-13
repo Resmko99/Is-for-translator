@@ -9,12 +9,19 @@ import time
 import numpy as np
 from PIL import Image
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
-                            QTimer, QRegularExpression)
+                            QTimer, QRegularExpression, QStandardPaths)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
 from cryptography.fernet import Fernet
+
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+from google.oauth2.service_account import Credentials
+
 
 from googletrans import Translator
 from functools import partial
@@ -515,6 +522,87 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
+
+        self.file_path = None
+        self.folder_id = None
+
+        self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
+        self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+    def post_init(self):
+        self.drive_service = self.authenticate()  # Переместить сюда
+        self.get_folders()
+
+    def file_add_double_click(self, event):
+        if event.button() == Qt.LeftButton:
+            self.browse_file()
+
+    def browse_file(self):
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+
+        if file_path:
+            self.ui.fileAdd.setText(f"Выбран файл: {file_path}")
+
+    def get_folders(self):
+        self.ui.recipientFile.clear()
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+
+        try:
+            results = self.drive_service.files().list(
+                q="mimeType='application/vnd.google-apps.folder'",
+                spaces='drive',
+                fields='nextPageToken, files(id, name)'
+            ).execute()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return
+
+        items = results.get('files', [])
+        if not items:
+            print('No folders found.')
+        else:
+            print('Folders:')
+            for item in items:
+                print(u'{0} ({1})'.format(item['name'], item['id']))
+                self.ui.recipientFile.addItem(item['name'], item['id'])
+
+    def upload_to_drive(self):
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+        if not self.file_path:
+            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
+            return
+
+        folder_id = self.ui.recipientFile.currentData()
+        if not folder_id:
+            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
+            return
+
+        media = MediaFileUpload(self.file_path)
+        request = self.drive_service.files().create(
+            media_body=media,
+            body={
+                'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
+                'parents': [folder_id]
+            }
+        )
+        request.execute()
+        print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
+
+    def authenticate(self):
+        SCOPES = ['https://www.googleapis.com/auth/drive.file']
+
+        flow = InstalledAppFlow.from_client_secrets_file(
+            'C:\PycharmProjects\Is-for-translator2\Source\credentials.json', SCOPES) #Указывать путь к credentials.json
+
+        creds = flow.run_local_server(port=0)
+
+        return build('drive', 'v3', credentials=creds)
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
@@ -1156,7 +1244,7 @@ class MainWindow(QMainWindow):
             close_db_connect(connection, cursor)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.setup_scroll_area()
+        self.load_titles_by_team()
 
     def open_edit_title_page(self):
         connection = connect()
@@ -1259,7 +1347,7 @@ class MainWindow(QMainWindow):
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
-        self.setup_scroll_area()
+        self.load_titles_by_team()
 
     def open_image_dialog(self, event):
         options = QFileDialog.Options()
@@ -1349,7 +1437,7 @@ class MainWindow(QMainWindow):
         self.ui.descriptionEdit.clear()
         self.ui.imageArea.clear()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.setup_scroll_area()
+        self.load_titles_by_team()
         self.load_team()
 
     def setup_calender_widget(self):
@@ -1515,4 +1603,5 @@ if __name__ == "__main__":
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
+    window.post_init()
     sys.exit(app.exec())
