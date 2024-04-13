@@ -597,9 +597,13 @@ class MainWindow(QMainWindow):
     def authenticate(self):
         SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
-        flow = InstalledAppFlow.from_client_secrets_file(
-            'C:\PycharmProjects\Is-for-translator2\Source\credentials.json', SCOPES) #Указывать путь к credentials.json
+        # Получаем абсолютный путь к текущему файлу
+        current_dir = os.path.dirname(os.path.abspath(__file__))
 
+        # Формируем путь к файлу credentials.json в другой подпапке
+        credentials_path = os.path.join(current_dir, '..', 'Source', 'credentials.json')
+
+        flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
         creds = flow.run_local_server(port=0)
 
         return build('drive', 'v3', credentials=creds)
@@ -1350,24 +1354,36 @@ class MainWindow(QMainWindow):
         self.load_titles_by_team()
 
     def open_image_dialog(self, event):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
-                                                   options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageAreaEdit.setText(file_path)
 
     def open_image_dialog_add_title(self, event):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
-                                                   options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageArea.setText(file_path)
 
 
     def open_file_explorer(self):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
-                                                   options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageAreaEdit.setText(file_path)
             self.set_image_to_label(file_path)
