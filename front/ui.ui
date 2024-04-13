@@ -1536,7 +1536,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>12</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -2707,7 +2707,18 @@
                </widget>
               </item>
               <item>
-               <widget class="QDateEdit" name="dateReleaseAddTitle"/>
+               <widget class="QDateEdit" name="dateReleaseAddTitle">
+                <property name="calendarPopup">
+                 <bool>false</bool>
+                </property>
+                <property name="date">
+                 <date>
+                  <year>2000</year>
+                  <month>1</month>
+                  <day>2</day>
+                 </date>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

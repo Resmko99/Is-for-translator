@@ -1288,6 +1288,8 @@ class Ui_MainWindow(object):
 
         self.dateReleaseAddTitle = QDateEdit(self.pageAddTitle)
         self.dateReleaseAddTitle.setObjectName(u"dateReleaseAddTitle")
+        self.dateReleaseAddTitle.setCalendarPopup(False)
+        self.dateReleaseAddTitle.setDate(QDate(2000, 1, 2))
 
         self.verticalLayout_14.addWidget(self.dateReleaseAddTitle)
 
@@ -2346,7 +2348,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(12)
+        self.stackedWidget_2.setCurrentIndex(6)
         self.editLogo.setDefault(False)
 
 
