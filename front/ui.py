@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,31 +27,36 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1156, 768)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QSize(1156, 768))
         MainWindow.setMaximumSize(QSize(3840, 2160))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
-        self.centralwidget.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
+        self.centralwidget.setSizePolicy(sizePolicy1)
         self.verticalLayout_7 = QVBoxLayout(self.centralwidget)
         self.verticalLayout_7.setSpacing(0)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.widget_2 = QWidget(self.centralwidget)
         self.widget_2.setObjectName(u"widget_2")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.widget_2.sizePolicy().hasHeightForWidth())
-        self.widget_2.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.widget_2.sizePolicy().hasHeightForWidth())
+        self.widget_2.setSizePolicy(sizePolicy2)
         self.horizontalLayout_6 = QHBoxLayout(self.widget_2)
         self.horizontalLayout_6.setSpacing(2)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(2, 2, 2, 2)
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer_5)
 
@@ -100,26 +105,23 @@ class Ui_MainWindow(object):
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setEnabled(True)
-        sizePolicy2 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
-        self.stackedWidget.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
+        self.stackedWidget.setSizePolicy(sizePolicy)
         self.stackedWidget.setMinimumSize(QSize(0, 0))
         self.stackedWidget.setMaximumSize(QSize(10000000, 10000000))
         self.pageLog = QWidget()
         self.pageLog.setObjectName(u"pageLog")
         self.gridLayout_11 = QGridLayout(self.pageLog)
         self.gridLayout_11.setObjectName(u"gridLayout_11")
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_11.addItem(self.horizontalSpacer_2, 1, 2, 1, 1)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_11.addItem(self.verticalSpacer_4, 0, 1, 1, 1)
 
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_11.addItem(self.horizontalSpacer_4, 1, 0, 1, 1)
 
@@ -162,12 +164,14 @@ class Ui_MainWindow(object):
 
         self.lineEdit_2 = QLineEdit(self.pageLog)
         self.lineEdit_2.setObjectName(u"lineEdit_2")
+        self.lineEdit_2.setEchoMode(QLineEdit.Password)
+        self.lineEdit_2.setClearButtonEnabled(False)
 
         self.verticalLayout_6.addWidget(self.lineEdit_2)
 
         self.inLogBtn = QPushButton(self.pageLog)
         self.inLogBtn.setObjectName(u"inLogBtn")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.inLogBtn.sizePolicy().hasHeightForWidth())
@@ -196,7 +200,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_11.addLayout(self.verticalLayout_6, 1, 1, 1, 1)
 
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_11.addItem(self.verticalSpacer_5, 3, 1, 1, 1)
 
@@ -205,11 +209,11 @@ class Ui_MainWindow(object):
         self.pageChangePas.setObjectName(u"pageChangePas")
         self.gridLayout_12 = QGridLayout(self.pageChangePas)
         self.gridLayout_12.setObjectName(u"gridLayout_12")
-        self.verticalSpacer_10 = QSpacerItem(20, 242, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_10 = QSpacerItem(20, 242, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_12.addItem(self.verticalSpacer_10, 0, 1, 1, 1)
 
-        self.horizontalSpacer_10 = QSpacerItem(433, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_10 = QSpacerItem(433, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_12.addItem(self.horizontalSpacer_10, 1, 0, 1, 1)
 
@@ -277,11 +281,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_12.addLayout(self.verticalLayout_12, 1, 1, 1, 1)
 
-        self.horizontalSpacer_11 = QSpacerItem(433, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_11 = QSpacerItem(433, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_12.addItem(self.horizontalSpacer_11, 1, 2, 1, 1)
 
-        self.verticalSpacer_11 = QSpacerItem(20, 242, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_11 = QSpacerItem(20, 242, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_12.addItem(self.verticalSpacer_11, 2, 1, 1, 1)
 
@@ -290,11 +294,11 @@ class Ui_MainWindow(object):
         self.pageResPas.setObjectName(u"pageResPas")
         self.gridLayout_9 = QGridLayout(self.pageResPas)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
-        self.verticalSpacer_8 = QSpacerItem(20, 262, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_8 = QSpacerItem(20, 262, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_9.addItem(self.verticalSpacer_8, 0, 1, 1, 1)
 
-        self.horizontalSpacer_9 = QSpacerItem(433, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_9 = QSpacerItem(433, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_9.addItem(self.horizontalSpacer_9, 1, 0, 1, 1)
 
@@ -349,11 +353,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_9.addLayout(self.verticalLayout_11, 1, 1, 1, 1)
 
-        self.horizontalSpacer_8 = QSpacerItem(433, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_8 = QSpacerItem(433, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_9.addItem(self.horizontalSpacer_8, 1, 2, 1, 1)
 
-        self.verticalSpacer_9 = QSpacerItem(20, 261, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_9 = QSpacerItem(20, 261, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_9.addItem(self.verticalSpacer_9, 2, 1, 1, 1)
 
@@ -362,7 +366,7 @@ class Ui_MainWindow(object):
         self.pageReg.setObjectName(u"pageReg")
         self.gridLayout = QGridLayout(self.pageReg)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout.addItem(self.verticalSpacer_6, 2, 1, 1, 1)
 
@@ -442,15 +446,15 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addLayout(self.verticalLayout_9, 1, 1, 1, 1)
 
-        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout.addItem(self.verticalSpacer_7, 0, 1, 1, 1)
 
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout.addItem(self.horizontalSpacer_6, 1, 0, 1, 1)
 
-        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout.addItem(self.horizontalSpacer_7, 1, 2, 1, 1)
 
@@ -566,7 +570,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addLayout(self.verticalLayout_2)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 382, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 382, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_4.addItem(self.verticalSpacer_2)
 
@@ -612,7 +616,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.openMenuBtn)
 
-        self.horizontalSpacer_3 = QSpacerItem(742, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(742, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
 
@@ -708,7 +712,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addLayout(self.verticalLayout)
 
-        self.verticalSpacer = QSpacerItem(20, 382, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 382, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
 
@@ -735,7 +739,7 @@ class Ui_MainWindow(object):
         self.gridLayout_13.setContentsMargins(0, 0, 0, 0)
         self.titleWidget = QWidget(self.pageTitle)
         self.titleWidget.setObjectName(u"titleWidget")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.titleWidget.sizePolicy().hasHeightForWidth())
@@ -769,7 +773,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.SearchBtn)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
@@ -836,25 +840,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addLayout(self.verticalLayout_21, 0, 0, 1, 2)
 
-        self.horizontalSpacer_29 = QSpacerItem(417, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.horizontalSpacer_29 = QSpacerItem(417, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_2.addItem(self.horizontalSpacer_29, 0, 2, 1, 1)
 
-        self.verticalSpacer_19 = QSpacerItem(540, 422, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_19 = QSpacerItem(540, 422, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_2.addItem(self.verticalSpacer_19, 1, 0, 1, 1)
 
         self.widget_13 = QWidget(self.pageEditTask)
         self.widget_13.setObjectName(u"widget_13")
-        sizePolicy.setHeightForWidth(self.widget_13.sizePolicy().hasHeightForWidth())
-        self.widget_13.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_13.sizePolicy().hasHeightForWidth())
+        self.widget_13.setSizePolicy(sizePolicy1)
         self.widget_13.setMinimumSize(QSize(0, 40))
         self.widget_13.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_17 = QHBoxLayout(self.widget_13)
         self.horizontalLayout_17.setSpacing(0)
         self.horizontalLayout_17.setObjectName(u"horizontalLayout_17")
         self.horizontalLayout_17.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_28 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_28 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_17.addItem(self.horizontalSpacer_28)
 
@@ -888,11 +892,11 @@ class Ui_MainWindow(object):
         self.pageTranslator.setObjectName(u"pageTranslator")
         self.gridLayout_56 = QGridLayout(self.pageTranslator)
         self.gridLayout_56.setObjectName(u"gridLayout_56")
-        self.horizontalSpacer_55 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_55 = QSpacerItem(40, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_56.addItem(self.horizontalSpacer_55, 1, 2, 1, 1)
 
-        self.verticalSpacer_32 = QSpacerItem(20, 379, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_32 = QSpacerItem(20, 379, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_56.addItem(self.verticalSpacer_32, 2, 1, 1, 1)
 
@@ -950,11 +954,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_56.addLayout(self.gridLayout_55, 1, 1, 1, 1)
 
-        self.horizontalSpacer_56 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_56 = QSpacerItem(40, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_56.addItem(self.horizontalSpacer_56, 1, 0, 1, 1)
 
-        self.verticalSpacer_33 = QSpacerItem(40, 40, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalSpacer_33 = QSpacerItem(40, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
         self.gridLayout_56.addItem(self.verticalSpacer_33, 0, 1, 1, 1)
 
@@ -972,31 +976,31 @@ class Ui_MainWindow(object):
 
         self.widget_8 = QWidget(self.pageIncome)
         self.widget_8.setObjectName(u"widget_8")
-        sizePolicy2.setHeightForWidth(self.widget_8.sizePolicy().hasHeightForWidth())
-        self.widget_8.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.widget_8.sizePolicy().hasHeightForWidth())
+        self.widget_8.setSizePolicy(sizePolicy)
         self.gridLayout_3 = QGridLayout(self.widget_8)
         self.gridLayout_3.setSpacing(0)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.label_4 = QLabel(self.widget_8)
         self.label_4.setObjectName(u"label_4")
-        sizePolicy2.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
-        self.label_4.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy)
         self.label_4.setMargin(5)
 
         self.gridLayout_3.addWidget(self.label_4, 1, 0, 1, 1)
 
         self.label_14 = QLabel(self.widget_8)
         self.label_14.setObjectName(u"label_14")
-        sizePolicy2.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
-        self.label_14.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
+        self.label_14.setSizePolicy(sizePolicy)
         self.label_14.setMargin(5)
 
         self.gridLayout_3.addWidget(self.label_14, 1, 2, 1, 1)
 
         self.totalIncomeEdit = QLineEdit(self.widget_8)
         self.totalIncomeEdit.setObjectName(u"totalIncomeEdit")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy5.setHorizontalStretch(0)
         sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.totalIncomeEdit.sizePolicy().hasHeightForWidth())
@@ -1016,7 +1020,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.crewComboBox, 2, 0, 1, 1)
 
-        self.horizontalSpacer_16 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_16 = QSpacerItem(10, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_3.addItem(self.horizontalSpacer_16, 2, 1, 1, 1)
 
@@ -1029,7 +1033,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.setSpacing(0)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_18 = QSpacerItem(855, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_18 = QSpacerItem(855, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_10.addItem(self.horizontalSpacer_18)
 
@@ -1078,12 +1082,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.photoDesc = QLabel(self.pageDesc)
         self.photoDesc.setObjectName(u"photoDesc")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy6.setHorizontalStretch(0)
         sizePolicy6.setVerticalStretch(0)
         sizePolicy6.setHeightForWidth(self.photoDesc.sizePolicy().hasHeightForWidth())
         self.photoDesc.setSizePolicy(sizePolicy6)
-        self.photoDesc.setMinimumSize(QSize(193, 265))
+        self.photoDesc.setMinimumSize(QSize(250, 380))
         self.photoDesc.setMaximumSize(QSize(250, 380))
         self.photoDesc.setAcceptDrops(False)
         self.photoDesc.setLayoutDirection(Qt.LeftToRight)
@@ -1101,13 +1105,13 @@ class Ui_MainWindow(object):
 
         self.gridLayout_14.addLayout(self.horizontalLayout_7, 0, 0, 1, 1)
 
-        self.verticalSpacer_13 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_13 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_14.addItem(self.verticalSpacer_13, 1, 0, 1, 1)
 
         self.widget_5 = QWidget(self.pageDesc)
         self.widget_5.setObjectName(u"widget_5")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         sizePolicy7.setHorizontalStretch(0)
         sizePolicy7.setVerticalStretch(0)
         sizePolicy7.setHeightForWidth(self.widget_5.sizePolicy().hasHeightForWidth())
@@ -1118,7 +1122,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_12 = QSpacerItem(949, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_12 = QSpacerItem(949, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_8.addItem(self.horizontalSpacer_12)
 
@@ -1163,14 +1167,14 @@ class Ui_MainWindow(object):
         self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.widget_15 = QWidget(self.widget_14)
         self.widget_15.setObjectName(u"widget_15")
-        sizePolicy2.setHeightForWidth(self.widget_15.sizePolicy().hasHeightForWidth())
-        self.widget_15.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.widget_15.sizePolicy().hasHeightForWidth())
+        self.widget_15.setSizePolicy(sizePolicy)
         self.gridLayout_21 = QGridLayout(self.widget_15)
         self.gridLayout_21.setObjectName(u"gridLayout_21")
         self.label_18 = QLabel(self.widget_15)
         self.label_18.setObjectName(u"label_18")
-        sizePolicy2.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
-        self.label_18.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
+        self.label_18.setSizePolicy(sizePolicy)
 
         self.gridLayout_21.addWidget(self.label_18, 0, 0, 1, 1)
 
@@ -1194,12 +1198,12 @@ class Ui_MainWindow(object):
 
         self.label_21 = QLabel(self.widget_15)
         self.label_21.setObjectName(u"label_21")
-        sizePolicy2.setHeightForWidth(self.label_21.sizePolicy().hasHeightForWidth())
-        self.label_21.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.label_21.sizePolicy().hasHeightForWidth())
+        self.label_21.setSizePolicy(sizePolicy)
 
         self.gridLayout_21.addWidget(self.label_21, 0, 2, 1, 1)
 
-        self.horizontalSpacer_24 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_24 = QSpacerItem(10, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_21.addItem(self.horizontalSpacer_24, 1, 1, 1, 1)
 
@@ -1225,11 +1229,11 @@ class Ui_MainWindow(object):
         self.pageAddTitle.setObjectName(u"pageAddTitle")
         self.gridLayout_15 = QGridLayout(self.pageAddTitle)
         self.gridLayout_15.setObjectName(u"gridLayout_15")
-        self.horizontalSpacer_13 = QSpacerItem(540, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_13 = QSpacerItem(540, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_15.addItem(self.horizontalSpacer_13, 0, 1, 1, 1)
 
-        self.verticalSpacer_14 = QSpacerItem(540, 250, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_14 = QSpacerItem(540, 250, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_15.addItem(self.verticalSpacer_14, 1, 0, 1, 1)
 
@@ -1292,15 +1296,15 @@ class Ui_MainWindow(object):
 
         self.widget_6 = QWidget(self.pageAddTitle)
         self.widget_6.setObjectName(u"widget_6")
-        sizePolicy.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
-        self.widget_6.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
+        self.widget_6.setSizePolicy(sizePolicy1)
         self.widget_6.setMinimumSize(QSize(0, 40))
         self.widget_6.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_9 = QHBoxLayout(self.widget_6)
         self.horizontalLayout_9.setSpacing(0)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_14 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_14 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_9.addItem(self.horizontalSpacer_14)
 
@@ -1387,25 +1391,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_16.addLayout(self.verticalLayout_16, 0, 0, 1, 1)
 
-        self.horizontalSpacer_15 = QSpacerItem(540, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_15 = QSpacerItem(540, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_16.addItem(self.horizontalSpacer_15, 0, 1, 1, 1)
 
-        self.verticalSpacer_15 = QSpacerItem(540, 250, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_15 = QSpacerItem(540, 250, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_16.addItem(self.verticalSpacer_15, 1, 0, 1, 1)
 
         self.widget_7 = QWidget(self.pageEditTitle)
         self.widget_7.setObjectName(u"widget_7")
-        sizePolicy.setHeightForWidth(self.widget_7.sizePolicy().hasHeightForWidth())
-        self.widget_7.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_7.sizePolicy().hasHeightForWidth())
+        self.widget_7.setSizePolicy(sizePolicy1)
         self.widget_7.setMinimumSize(QSize(0, 40))
         self.widget_7.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_11 = QHBoxLayout(self.widget_7)
         self.horizontalLayout_11.setSpacing(0)
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_17 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_17 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_11.addItem(self.horizontalSpacer_17)
 
@@ -1445,8 +1449,8 @@ class Ui_MainWindow(object):
 
         self.postEdit = QTextEdit(self.pageSocialNetwork)
         self.postEdit.setObjectName(u"postEdit")
-        sizePolicy1.setHeightForWidth(self.postEdit.sizePolicy().hasHeightForWidth())
-        self.postEdit.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.postEdit.sizePolicy().hasHeightForWidth())
+        self.postEdit.setSizePolicy(sizePolicy2)
         self.postEdit.setMinimumSize(QSize(0, 270))
         self.postEdit.setMaximumSize(QSize(16777215, 270))
 
@@ -1461,8 +1465,8 @@ class Ui_MainWindow(object):
 
         self.imagePost = QTextEdit(self.pageSocialNetwork)
         self.imagePost.setObjectName(u"imagePost")
-        sizePolicy1.setHeightForWidth(self.imagePost.sizePolicy().hasHeightForWidth())
-        self.imagePost.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.imagePost.sizePolicy().hasHeightForWidth())
+        self.imagePost.setSizePolicy(sizePolicy2)
         self.imagePost.setMinimumSize(QSize(600, 250))
         self.imagePost.setMaximumSize(QSize(600, 250))
         self.imagePost.setReadOnly(True)
@@ -1472,11 +1476,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_46.addLayout(self.verticalLayout_10, 0, 0, 1, 1)
 
-        self.horizontalSpacer_45 = QSpacerItem(100, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_45 = QSpacerItem(100, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_46.addItem(self.horizontalSpacer_45, 0, 1, 1, 1)
 
-        self.verticalSpacer_28 = QSpacerItem(20, 122, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_28 = QSpacerItem(20, 122, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_46.addItem(self.verticalSpacer_28, 1, 0, 1, 1)
 
@@ -1486,7 +1490,7 @@ class Ui_MainWindow(object):
         self.gridLayout_45.setSpacing(0)
         self.gridLayout_45.setObjectName(u"gridLayout_45")
         self.gridLayout_45.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_44 = QSpacerItem(995, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_44 = QSpacerItem(995, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_45.addItem(self.horizontalSpacer_44, 0, 0, 1, 1)
 
@@ -1563,25 +1567,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_18.addLayout(self.verticalLayout_17, 0, 0, 1, 1)
 
-        self.horizontalSpacer_20 = QSpacerItem(563, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_20 = QSpacerItem(563, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_18.addItem(self.horizontalSpacer_20, 0, 1, 1, 1)
 
-        self.verticalSpacer_16 = QSpacerItem(540, 505, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_16 = QSpacerItem(540, 505, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_18.addItem(self.verticalSpacer_16, 1, 0, 1, 1)
 
         self.widget_10 = QWidget(self.pageAddIncome)
         self.widget_10.setObjectName(u"widget_10")
-        sizePolicy.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
-        self.widget_10.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
+        self.widget_10.setSizePolicy(sizePolicy1)
         self.widget_10.setMinimumSize(QSize(0, 40))
         self.widget_10.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_12 = QHBoxLayout(self.widget_10)
         self.horizontalLayout_12.setSpacing(0)
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_19 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_19 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_12.addItem(self.horizontalSpacer_19)
 
@@ -1667,25 +1671,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_19.addLayout(self.verticalLayout_18, 0, 0, 1, 1)
 
-        self.horizontalSpacer_22 = QSpacerItem(563, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_22 = QSpacerItem(563, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_19.addItem(self.horizontalSpacer_22, 0, 1, 1, 1)
 
-        self.verticalSpacer_17 = QSpacerItem(540, 505, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_17 = QSpacerItem(540, 505, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_19.addItem(self.verticalSpacer_17, 1, 0, 1, 1)
 
         self.widget_11 = QWidget(self.pageEditIncome)
         self.widget_11.setObjectName(u"widget_11")
-        sizePolicy.setHeightForWidth(self.widget_11.sizePolicy().hasHeightForWidth())
-        self.widget_11.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_11.sizePolicy().hasHeightForWidth())
+        self.widget_11.setSizePolicy(sizePolicy1)
         self.widget_11.setMinimumSize(QSize(0, 40))
         self.widget_11.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_13 = QHBoxLayout(self.widget_11)
         self.horizontalLayout_13.setSpacing(0)
         self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
         self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_21 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_21 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_13.addItem(self.horizontalSpacer_21)
 
@@ -1754,21 +1758,21 @@ class Ui_MainWindow(object):
 
         self.gridLayout_50.addLayout(self.verticalLayout_27, 0, 0, 1, 1)
 
-        self.verticalSpacer_29 = QSpacerItem(20, 60, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_29 = QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_50.addItem(self.verticalSpacer_29, 1, 0, 1, 1)
 
         self.widget_30 = QWidget(self.pageFileSharing)
         self.widget_30.setObjectName(u"widget_30")
-        sizePolicy.setHeightForWidth(self.widget_30.sizePolicy().hasHeightForWidth())
-        self.widget_30.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_30.sizePolicy().hasHeightForWidth())
+        self.widget_30.setSizePolicy(sizePolicy1)
         self.widget_30.setMinimumSize(QSize(0, 40))
         self.widget_30.setMaximumSize(QSize(16777215, 40))
         self.gridLayout_48 = QGridLayout(self.widget_30)
         self.gridLayout_48.setSpacing(0)
         self.gridLayout_48.setObjectName(u"gridLayout_48")
         self.gridLayout_48.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_48 = QSpacerItem(995, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_48 = QSpacerItem(995, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_48.addItem(self.horizontalSpacer_48, 0, 0, 1, 1)
 
@@ -1808,7 +1812,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_25.addWidget(self.label_8)
 
-        self.horizontalSpacer_51 = QSpacerItem(691, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_51 = QSpacerItem(691, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_25.addItem(self.horizontalSpacer_51)
 
@@ -1830,15 +1834,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_25.addWidget(self.deleteTeamBtn)
 
-        self.saveTeamBtn = QPushButton(self.widget_33)
-        self.saveTeamBtn.setObjectName(u"saveTeamBtn")
-        self.saveTeamBtn.setMinimumSize(QSize(140, 30))
-        self.saveTeamBtn.setMaximumSize(QSize(140, 30))
-        self.saveTeamBtn.setIcon(icon15)
-        self.saveTeamBtn.setIconSize(QSize(20, 20))
-
-        self.horizontalLayout_25.addWidget(self.saveTeamBtn)
-
 
         self.gridLayout_7.addWidget(self.widget_33, 1, 0, 1, 1)
 
@@ -1848,82 +1843,127 @@ class Ui_MainWindow(object):
         self.gridLayout_7.addWidget(self.tableTeamAcc, 2, 0, 1, 1)
 
 
-        self.gridLayout_52.addWidget(self.widget_32, 3, 0, 1, 1)
+        self.gridLayout_52.addWidget(self.widget_32, 2, 0, 1, 1)
 
         self.widget_17 = QWidget(self.pageAccount)
         self.widget_17.setObjectName(u"widget_17")
         self.gridLayout_6 = QGridLayout(self.widget_17)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
-        self.label_91 = QLabel(self.widget_17)
-        self.label_91.setObjectName(u"label_91")
-
-        self.gridLayout_6.addWidget(self.label_91, 1, 1, 1, 1)
-
         self.label_37 = QLabel(self.widget_17)
         self.label_37.setObjectName(u"label_37")
-        self.label_37.setMinimumSize(QSize(270, 350))
-        self.label_37.setMaximumSize(QSize(200, 16777215))
+        self.label_37.setMinimumSize(QSize(280, 370))
+        self.label_37.setMaximumSize(QSize(280, 370))
+        self.label_37.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_6.addWidget(self.label_37, 1, 0, 8, 1)
+        self.gridLayout_6.addWidget(self.label_37, 0, 0, 2, 1)
 
-        self.nameCrewAccComboBox = QComboBox(self.widget_17)
-        self.nameCrewAccComboBox.setObjectName(u"nameCrewAccComboBox")
-        sizePolicy1.setHeightForWidth(self.nameCrewAccComboBox.sizePolicy().hasHeightForWidth())
-        self.nameCrewAccComboBox.setSizePolicy(sizePolicy1)
-        self.nameCrewAccComboBox.setMaximumSize(QSize(16777215, 16777215))
-
-        self.gridLayout_6.addWidget(self.nameCrewAccComboBox, 2, 1, 3, 1)
-
-        self.lineEdit_6 = QLineEdit(self.widget_17)
+        self.widget_20 = QWidget(self.widget_17)
+        self.widget_20.setObjectName(u"widget_20")
+        self.gridLayout_27 = QGridLayout(self.widget_20)
+        self.gridLayout_27.setObjectName(u"gridLayout_27")
+        self.lineEdit_6 = QLineEdit(self.widget_20)
         self.lineEdit_6.setObjectName(u"lineEdit_6")
-        self.lineEdit_6.setMinimumSize(QSize(540, 0))
-        self.lineEdit_6.setMaximumSize(QSize(16777215, 16777215))
+        self.lineEdit_6.setMinimumSize(QSize(340, 0))
+        self.lineEdit_6.setMaximumSize(QSize(540, 16777215))
 
-        self.gridLayout_6.addWidget(self.lineEdit_6, 6, 1, 1, 1)
+        self.gridLayout_27.addWidget(self.lineEdit_6, 6, 0, 1, 1)
 
-        self.label_3 = QLabel(self.widget_17)
+        self.label_91 = QLabel(self.widget_20)
+        self.label_91.setObjectName(u"label_91")
+
+        self.gridLayout_27.addWidget(self.label_91, 1, 0, 1, 1)
+
+        self.label_3 = QLabel(self.widget_20)
         self.label_3.setObjectName(u"label_3")
 
-        self.gridLayout_6.addWidget(self.label_3, 5, 1, 1, 1)
+        self.gridLayout_27.addWidget(self.label_3, 5, 0, 1, 1)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_6.addItem(self.verticalSpacer_3, 8, 1, 1, 1)
-
-        self.widget_16 = QWidget(self.widget_17)
-        self.widget_16.setObjectName(u"widget_16")
-        self.horizontalLayout_16 = QHBoxLayout(self.widget_16)
-        self.horizontalLayout_16.setSpacing(0)
-        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
-        self.horizontalLayout_16.setContentsMargins(0, 3, 0, 0)
-        self.label_92 = QLabel(self.widget_16)
+        self.label_92 = QLabel(self.widget_20)
         self.label_92.setObjectName(u"label_92")
+        sizePolicy.setHeightForWidth(self.label_92.sizePolicy().hasHeightForWidth())
+        self.label_92.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout_16.addWidget(self.label_92)
+        self.gridLayout_27.addWidget(self.label_92, 7, 0, 1, 1)
 
-        self.addLogo = QPushButton(self.widget_16)
-        self.addLogo.setObjectName(u"addLogo")
-        self.addLogo.setMinimumSize(QSize(140, 30))
-        self.addLogo.setIcon(icon19)
+        self.nameCrewAccComboBox = QComboBox(self.widget_20)
+        self.nameCrewAccComboBox.setObjectName(u"nameCrewAccComboBox")
+        sizePolicy2.setHeightForWidth(self.nameCrewAccComboBox.sizePolicy().hasHeightForWidth())
+        self.nameCrewAccComboBox.setSizePolicy(sizePolicy2)
+        self.nameCrewAccComboBox.setMinimumSize(QSize(340, 0))
+        self.nameCrewAccComboBox.setMaximumSize(QSize(540, 16777215))
 
-        self.horizontalLayout_16.addWidget(self.addLogo)
+        self.gridLayout_27.addWidget(self.nameCrewAccComboBox, 2, 0, 1, 1)
 
-        self.editLogo = QPushButton(self.widget_16)
+        self.horizontalSpacer_31 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_27.addItem(self.horizontalSpacer_31, 2, 1, 1, 1)
+
+
+        self.gridLayout_6.addWidget(self.widget_20, 0, 1, 1, 1)
+
+        self.widget_19 = QWidget(self.widget_17)
+        self.widget_19.setObjectName(u"widget_19")
+        self.gridLayout_26 = QGridLayout(self.widget_19)
+        self.gridLayout_26.setObjectName(u"gridLayout_26")
+        self.gridLayout_26.setContentsMargins(0, 0, 0, 0)
+        self.editLogo = QPushButton(self.widget_19)
         self.editLogo.setObjectName(u"editLogo")
+        sizePolicy.setHeightForWidth(self.editLogo.sizePolicy().hasHeightForWidth())
+        self.editLogo.setSizePolicy(sizePolicy)
         self.editLogo.setMinimumSize(QSize(140, 30))
         self.editLogo.setIcon(icon18)
+        self.editLogo.setAutoDefault(False)
+        self.editLogo.setFlat(False)
 
-        self.horizontalLayout_16.addWidget(self.editLogo)
+        self.gridLayout_26.addWidget(self.editLogo, 0, 1, 1, 1)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_26.addItem(self.verticalSpacer_3, 1, 0, 1, 1)
+
+        self.addLogo = QPushButton(self.widget_19)
+        self.addLogo.setObjectName(u"addLogo")
+        sizePolicy.setHeightForWidth(self.addLogo.sizePolicy().hasHeightForWidth())
+        self.addLogo.setSizePolicy(sizePolicy)
+        self.addLogo.setMinimumSize(QSize(140, 30))
+        self.addLogo.setIcon(icon19)
+        self.addLogo.setCheckable(False)
+
+        self.gridLayout_26.addWidget(self.addLogo, 0, 0, 1, 1)
+
+        self.horizontalSpacer_32 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_26.addItem(self.horizontalSpacer_32, 0, 2, 1, 1)
 
 
-        self.gridLayout_6.addWidget(self.widget_16, 7, 1, 1, 1)
-
-        self.horizontalSpacer_27 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_6.addItem(self.horizontalSpacer_27, 6, 2, 1, 1)
+        self.gridLayout_6.addWidget(self.widget_19, 1, 1, 1, 1)
 
 
-        self.gridLayout_52.addWidget(self.widget_17, 0, 0, 1, 1)
+        self.gridLayout_52.addWidget(self.widget_17, 0, 0, 2, 1)
+
+        self.widget_16 = QWidget(self.pageAccount)
+        self.widget_16.setObjectName(u"widget_16")
+        self.widget_16.setMinimumSize(QSize(0, 0))
+        self.widget_16.setMaximumSize(QSize(16777215, 16777215))
+        self.horizontalLayout_18 = QHBoxLayout(self.widget_16)
+        self.horizontalLayout_18.setSpacing(5)
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_27 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_18.addItem(self.horizontalSpacer_27)
+
+        self.saveTeamBtn = QPushButton(self.widget_16)
+        self.saveTeamBtn.setObjectName(u"saveTeamBtn")
+        self.saveTeamBtn.setMinimumSize(QSize(140, 30))
+        self.saveTeamBtn.setMaximumSize(QSize(140, 30))
+        self.saveTeamBtn.setIcon(icon15)
+        self.saveTeamBtn.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_18.addWidget(self.saveTeamBtn)
+
+
+        self.gridLayout_52.addWidget(self.widget_16, 3, 0, 1, 1)
 
         self.stackedWidget_2.addWidget(self.pageAccount)
         self.pageUserAccount = QWidget()
@@ -1936,14 +1976,14 @@ class Ui_MainWindow(object):
         self.gridLayout_25.setObjectName(u"gridLayout_25")
         self.nameUserAccComboBox = QComboBox(self.widget_18)
         self.nameUserAccComboBox.setObjectName(u"nameUserAccComboBox")
-        sizePolicy1.setHeightForWidth(self.nameUserAccComboBox.sizePolicy().hasHeightForWidth())
-        self.nameUserAccComboBox.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.nameUserAccComboBox.sizePolicy().hasHeightForWidth())
+        self.nameUserAccComboBox.setSizePolicy(sizePolicy2)
         self.nameUserAccComboBox.setMinimumSize(QSize(540, 0))
         self.nameUserAccComboBox.setMaximumSize(QSize(16777215, 16777215))
 
         self.gridLayout_25.addWidget(self.nameUserAccComboBox, 1, 1, 1, 1)
 
-        self.horizontalSpacer_30 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_30 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_25.addItem(self.horizontalSpacer_30, 1, 2, 1, 1)
 
@@ -1959,7 +1999,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_25.addWidget(self.label_93, 2, 1, 1, 1)
 
-        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_25.addItem(self.verticalSpacer_12, 3, 1, 1, 1)
 
@@ -1988,15 +2028,15 @@ class Ui_MainWindow(object):
         self.gridLayout_23.setObjectName(u"gridLayout_23")
         self.widget_12 = QWidget(self.pageAddTask)
         self.widget_12.setObjectName(u"widget_12")
-        sizePolicy.setHeightForWidth(self.widget_12.sizePolicy().hasHeightForWidth())
-        self.widget_12.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_12.sizePolicy().hasHeightForWidth())
+        self.widget_12.setSizePolicy(sizePolicy1)
         self.widget_12.setMinimumSize(QSize(0, 40))
         self.widget_12.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_14 = QHBoxLayout(self.widget_12)
         self.horizontalLayout_14.setSpacing(0)
         self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
         self.horizontalLayout_14.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_25 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_25 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_14.addItem(self.horizontalSpacer_25)
 
@@ -2021,7 +2061,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.widget_12, 2, 0, 1, 2)
 
-        self.verticalSpacer_18 = QSpacerItem(540, 422, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_18 = QSpacerItem(540, 422, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_23.addItem(self.verticalSpacer_18, 1, 0, 1, 1)
 
@@ -2061,7 +2101,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addLayout(self.verticalLayout_19, 0, 0, 1, 1)
 
-        self.horizontalSpacer_23 = QSpacerItem(417, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.horizontalSpacer_23 = QSpacerItem(417, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_23.addItem(self.horizontalSpacer_23, 0, 1, 1, 1)
 
@@ -2080,8 +2120,8 @@ class Ui_MainWindow(object):
 
         self.dateEditView = QDateEdit(self.pageUserView)
         self.dateEditView.setObjectName(u"dateEditView")
-        sizePolicy2.setHeightForWidth(self.dateEditView.sizePolicy().hasHeightForWidth())
-        self.dateEditView.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.dateEditView.sizePolicy().hasHeightForWidth())
+        self.dateEditView.setSizePolicy(sizePolicy)
         self.dateEditView.setMinimumSize(QSize(450, 0))
         self.dateEditView.setReadOnly(True)
 
@@ -2101,21 +2141,21 @@ class Ui_MainWindow(object):
 
         self.gridLayout_42.addLayout(self.verticalLayout_25, 0, 0, 1, 1)
 
-        self.verticalSpacer_27 = QSpacerItem(540, 300, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_27 = QSpacerItem(540, 300, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_42.addItem(self.verticalSpacer_27, 1, 0, 1, 1)
 
         self.widget_26 = QWidget(self.pageUserView)
         self.widget_26.setObjectName(u"widget_26")
-        sizePolicy.setHeightForWidth(self.widget_26.sizePolicy().hasHeightForWidth())
-        self.widget_26.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.widget_26.sizePolicy().hasHeightForWidth())
+        self.widget_26.setSizePolicy(sizePolicy1)
         self.widget_26.setMinimumSize(QSize(0, 40))
         self.widget_26.setMaximumSize(QSize(16777215, 40))
         self.horizontalLayout_24 = QHBoxLayout(self.widget_26)
         self.horizontalLayout_24.setSpacing(0)
         self.horizontalLayout_24.setObjectName(u"horizontalLayout_24")
         self.horizontalLayout_24.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_42 = QSpacerItem(809, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_42 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_24.addItem(self.horizontalSpacer_42)
 
@@ -2136,15 +2176,15 @@ class Ui_MainWindow(object):
         self.pageAboutUs.setObjectName(u"pageAboutUs")
         self.gridLayout_8 = QGridLayout(self.pageAboutUs)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
-        self.horizontalSpacer_54 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_54 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_8.addItem(self.horizontalSpacer_54, 1, 2, 1, 1)
 
-        self.verticalSpacer_30 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_30 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_8.addItem(self.verticalSpacer_30, 0, 1, 1, 1)
 
-        self.horizontalSpacer_53 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_53 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_8.addItem(self.horizontalSpacer_53, 1, 0, 1, 1)
 
@@ -2181,7 +2221,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_8.addWidget(self.widget_36, 3, 1, 1, 1)
 
-        self.verticalSpacer_31 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_31 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_8.addItem(self.verticalSpacer_31, 2, 1, 1, 1)
 
@@ -2239,7 +2279,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_43.addWidget(self.deleteListTask, 0, 2, 1, 1)
 
-        self.horizontalSpacer_43 = QSpacerItem(855, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_43 = QSpacerItem(855, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_43.addItem(self.horizontalSpacer_43, 0, 0, 1, 1)
 
@@ -2260,7 +2300,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.setSpacing(0)
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_26 = QSpacerItem(829, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_26 = QSpacerItem(829, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_15.addItem(self.horizontalSpacer_26)
 
@@ -2306,7 +2346,8 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(13)
+        self.stackedWidget_2.setCurrentIndex(12)
+        self.editLogo.setDefault(False)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2447,13 +2488,13 @@ class Ui_MainWindow(object):
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0441\u0442\u0430\u0432 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.addTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.deleteTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
-        self.saveTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
+        self.label_37.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0431\u043b\u0430\u0441\u0442\u044c \u0434\u043b\u044f \u043b\u043e\u0433\u043e\u0442\u0438\u043f\u0430 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.label_91.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_37.setText("")
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Token \u0432\u0430\u0448\u0435\u0433\u043e \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c \u0431\u043e\u0442\u0430", None))
         self.label_92.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.addLogo.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.editLogo.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
+        self.addLogo.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
+        self.saveTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.label_36.setText("")
         self.label_93.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.label_95.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))

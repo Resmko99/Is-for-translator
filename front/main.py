@@ -1,3 +1,4 @@
+import configparser
 import sys
 import os
 from io import BytesIO
@@ -7,21 +8,27 @@ import time
 
 import numpy as np
 from PIL import Image
-from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate, QByteArray, QBuffer, QIODevice,
-                            QTimer, QRegularExpression)
+from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
+                            QTimer, QRegularExpression, QStandardPaths)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
+from cryptography.fernet import Fernet
+
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+from google.oauth2.service_account import Credentials
+
 
 from googletrans import Translator
-from datetime import datetime
 from functools import partial
 from ui import Ui_MainWindow
 from database import connect, close_db_connect
 
 import psycopg2
-import itertools
 
 directory = os.path.abspath(os.curdir)
 
@@ -131,12 +138,14 @@ class RoundedImageLabel(QLabel):
 
 
 class ImageScrollArea(QWidget):
-    def __init__(self, search_text=None, parent=None):
+    def __init__(self, team_id=None, search_text=None, parent=None):
         super().__init__(parent)
+        self.team_id = team_id
+        self.search_text = search_text
         self.loaded = False
-        self.setup_ui(search_text)
+        self.setup_ui()
 
-    def setup_ui(self, search_text):
+    def setup_ui(self):
         self.scroll_area_contents_layout = QVBoxLayout(self)
         self.scroll_area_contents_layout.setAlignment(Qt.AlignTop)
 
@@ -184,10 +193,10 @@ class ImageScrollArea(QWidget):
             """
         )
 
-        if search_text:  # Если есть текст для поиска, передаем его в функцию load_images_from_database
-            self.load_images_from_database(search_text)
+        if self.team_id is not None:
+            self.load_images_from_database(team_id=self.team_id, search_text=self.search_text)
         else:
-            self.load_images_from_database()  # Иначе загружаем все тайтлы
+            self.load_images_from_database(search_text=self.search_text)  # Иначе загружаем все тайтлы
 
         self.scrollLayout.addStretch()
         self.scroll.setWidget(self.scrollContent)
@@ -199,17 +208,25 @@ class ImageScrollArea(QWidget):
             if widget:
                 widget.deleteLater()
 
-    def load_images_from_database(self, search_text=None):
+    def load_images_from_database(self, team_id=None, search_text=None):
         # Очищаем существующие тайтлы перед загрузкой новых
         self.clear_titles()
 
         connection = connect()
         cursor = connection.cursor()
 
-        if search_text:
+        if team_id is not None and search_text is not None:
+            cursor.execute(
+                'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "team_id" = %s AND "title_name" ILIKE %s ORDER BY "title_id" ASC',
+                (team_id, f'%{search_text}%'))
+        elif team_id is not None:
+            cursor.execute(
+                'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "team_id" = %s ORDER BY "title_id" ASC',
+                (team_id,))
+        elif search_text is not None:
             cursor.execute(
                 'SELECT "title_name", "icon_title", "title_id" FROM "Title" WHERE "title_name" ILIKE %s ORDER BY "title_id" ASC',
-                ('%' + search_text + '%',))
+                (f'%{search_text}%',))
         else:
             cursor.execute('SELECT "title_name", "icon_title", "title_id" FROM "Title" ORDER BY "title_id" ASC')
 
@@ -272,7 +289,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.icon.hide()
-        self.ui.stackedWidget.setCurrentIndex(4)
+        self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.stackedWidget_2.setCurrentIndex(0)
         self.ui.openMenuBtn.clicked.connect(self.toggle_full_menu)
         self.ui.fullMenu.hide()
@@ -367,7 +384,11 @@ class MainWindow(QMainWindow):
         self.current_cursor = self.open_hand_cursor
 
         self.installEventFilter(self)
-        self.setup_scroll_area()
+
+        self.load_title_teams()
+        self.ui.comboboxTitle.currentIndexChanged.connect(self.load_titles_by_team)
+        self.load_titles_by_team()
+
         self.setup_calender_widget()
         self.get_data()
 
@@ -378,7 +399,7 @@ class MainWindow(QMainWindow):
         self.init_translator_ui()
         self.ui.textEdit.textChanged.connect(self.on_text_edit_changed)
         self.ui.deleteListTask.clicked.connect(self.delete_selected_task)
-        self.ui.editListTask.clicked.connect(self.edit_task)
+        self.ui.tableListTask.clicked.connect(self.state_edit_button)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
@@ -485,7 +506,12 @@ class MainWindow(QMainWindow):
                                      background: none;
                                  }
                              """)
-        self.ui.SearchBtn.clicked.connect(self.search_titles)
+        self.ui.SearchBtn.clicked.connect(self.load_titles_by_team)
+        self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
+
+        self.generate_key()
+        self.load_saved_credentials()
+
         self.load_team()
         self.load_title_income()
         self.load_users()
@@ -496,6 +522,177 @@ class MainWindow(QMainWindow):
         self.load_edit_title_income()
         self.load_account_teams()
         self.load_edit_teams()
+
+        self.file_path = None
+        self.folder_id = None
+
+    #     self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
+    #     self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+    #
+    # def post_init(self):
+    #     self.drive_service = self.authenticate()  # Переместить сюда
+    #     self.get_folders()
+    #
+    # def file_add_double_click(self, event):
+    #     if event.button() == Qt.LeftButton:
+    #         self.browse_file()
+    #
+    # def browse_file(self):
+    #     desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+    #     file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+    #
+    #     if file_path:
+    #         self.ui.fileAdd.setText(f"Выбран файл: {file_path}")
+    #
+    # def get_folders(self):
+    #     self.ui.recipientFile.clear()
+    #     if not self.drive_service:
+    #         self.drive_service = self.authenticate()
+    #
+    #     if not self.drive_service:
+    #         self.drive_service = self.authenticate()
+    #
+    #     try:
+    #         results = self.drive_service.files().list(
+    #             q="mimeType='application/vnd.google-apps.folder'",
+    #             spaces='drive',
+    #             fields='nextPageToken, files(id, name)'
+    #         ).execute()
+    #     except Exception as e:
+    #         print(f"An error occurred: {e}")
+    #         return
+    #
+    #     items = results.get('files', [])
+    #     if not items:
+    #         print('No folders found.')
+    #     else:
+    #         print('Folders:')
+    #         for item in items:
+    #             print(u'{0} ({1})'.format(item['name'], item['id']))
+    #             self.ui.recipientFile.addItem(item['name'], item['id'])
+    #
+    # def upload_to_drive(self):
+    #     if not self.drive_service:
+    #         self.drive_service = self.authenticate()
+    #     if not self.file_path:
+    #         QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
+    #         return
+    #
+    #     folder_id = self.ui.recipientFile.currentData()
+    #     if not folder_id:
+    #         QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
+    #         return
+    #
+    #     media = MediaFileUpload(self.file_path)
+    #     request = self.drive_service.files().create(
+    #         media_body=media,
+    #         body={
+    #             'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
+    #             'parents': [folder_id]
+    #         }
+    #     )
+    #     request.execute()
+    #     print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
+    #
+    # def authenticate(self):
+    #     SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    #
+    #     # Получаем абсолютный путь к текущему файлу
+    #     current_dir = os.path.dirname(os.path.abspath(__file__))
+    #
+    #     # Формируем путь к файлу credentials.json в другой подпапке
+    #     credentials_path = os.path.join(current_dir, '..', 'Source', 'credentials.json')
+    #
+    #     flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
+    #     creds = flow.run_local_server(port=0)
+    #
+    #     return build('drive', 'v3', credentials=creds)
+
+    def load_title_teams(self):
+        self.ui.comboboxTitle.clear()
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT team_id, name_team FROM "Teams"')
+        teams = cursor.fetchall()
+        for team in teams:
+            self.ui.comboboxTitle.addItem(f"{team[1]}", userData=team[0])
+
+    def load_titles_by_team(self):
+        team_id = self.ui.comboboxTitle.currentData()
+        search_text = self.ui.SearchEdit.text().strip()
+        self.setup_scroll_area(team_id, search_text)
+
+    def state_edit_button(self):
+        selected_index = self.ui.tableListTask.currentIndex()
+        if selected_index.isValid():
+            self.ui.editListTask.clicked.connect(self.edit_task)
+        else:
+            self.ui.editListTask.setEnabled(False)
+
+
+    def login_button_clicked(self):
+        login = self.ui.lineEdit.text()
+        password = self.ui.lineEdit_2.text()
+
+        encrypted_login = self.encrypt_data(login)
+        encrypted_password = self.encrypt_data(password)
+
+        self.save_credentials(encrypted_login, encrypted_password)
+
+        if self.check_credentials(login, password):
+            self.ui.stackedWidget.setCurrentIndex(4)
+        else:
+            self.show_error_message("Неправильный логин/email или пароль")
+
+    def check_credentials(self, login, password):
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                       (login, login, password))
+        user_exists = cursor.fetchone() is not None
+        close_db_connect(connection, cursor)
+        return user_exists
+
+    def load_saved_credentials(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            encrypted_login = config['Account']['username']
+            encrypted_password = config['Account']['password']
+            login = self.decrypt_data(encrypted_login)
+            password = self.decrypt_data(encrypted_password)
+
+            if self.check_credentials(login, password):
+                self.ui.stackedWidget.setCurrentIndex(4)
+
+    def save_credentials(self, encrypted_login, encrypted_password):
+        config = configparser.ConfigParser()
+        config['Account'] = {'username': encrypted_login, 'password': encrypted_password}
+
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def generate_key(self):
+        key_file = 'secret.key'
+        if not os.path.exists(key_file):
+            key = Fernet.generate_key()
+            with open(key_file, 'wb') as keyfile:
+                keyfile.write(key)
+
+    def encrypt_data(self, data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        encrypted_data = fernet.encrypt(data.encode())
+        return encrypted_data.decode()
+
+    def decrypt_data(self, encrypted_data):
+        with open('secret.key', 'rb') as keyfile:
+            key = keyfile.read()
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data.encode())
+        return decrypted_data.decode()
 
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
@@ -1006,16 +1203,13 @@ class MainWindow(QMainWindow):
         else:
             print("Ошибка: Один из выбранных языков не распознается.")
 
-    def setup_scroll_area(self, search_text=None):
-        self.image_scroll_area = ImageScrollArea(search_text)
+    def setup_scroll_area(self, team_id=None, search_text=None):
+        # Убедитесь, что image_scroll_area является атрибутом вашего класса
+        self.image_scroll_area = ImageScrollArea(team_id=team_id, search_text=search_text)
         self.ui.titleGrid.addWidget(self.image_scroll_area, 0, 0)
 
         for child_widget in self.image_scroll_area.findChildren(RoundedImageLabel):
             child_widget.mousePressEvent = lambda event, widget=child_widget: self.open_desc_page(event, widget)
-
-    def search_titles(self):
-        search_text = self.ui.SearchEdit.text().strip()  # Получаем текст из SearchEdit
-        self.setup_scroll_area(search_text)  # Вызываем setup_scroll_area с передачей текста для поиска
 
     def open_desc_page(self, event, widget):
         if event.button() == Qt.LeftButton:
@@ -1054,7 +1248,7 @@ class MainWindow(QMainWindow):
             close_db_connect(connection, cursor)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.setup_scroll_area()
+        self.load_titles_by_team()
 
     def open_edit_title_page(self):
         connection = connect()
@@ -1157,36 +1351,67 @@ class MainWindow(QMainWindow):
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
-        self.setup_scroll_area()
+        self.load_titles_by_team()
 
     def open_image_dialog(self, event):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
-                                                   options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageAreaEdit.setText(file_path)
 
     def open_image_dialog_add_title(self, event):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
-                                                   options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageArea.setText(file_path)
 
 
     def open_file_explorer(self):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg)",
-                                                   options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageAreaEdit.setText(file_path)
             self.set_image_to_label(file_path)
 
+    def rounded_pixmap(self, pixmap):
+        rounded_pixmap = QPixmap(pixmap.size())
+        rounded_pixmap.fill(Qt.transparent)
+        painter = QPainter(rounded_pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.white)
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(pixmap.rect(), 10, 10)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+        painter.drawPixmap(10, 10, pixmap)
+        painter.end()
+        return rounded_pixmap
+
     def set_image_to_label(self, image_path):
+        # Загрузка изображения
         pixmap = QPixmap(image_path)
-        pixmap_resized = pixmap.scaled(250, 300)  # Изменение размера изображения до 250x300 пикселей
-        self.ui.label_37.setPixmap(pixmap_resized)
-        self.ui.label_37.setScaledContents(True)
+
+        # Применение стилей к QLabel (self.ui.label_37)
+        self.ui.label_37.setContentsMargins(10, 10, 10, 10)  # Установка отступов
+
+        # Установка изображения с закругленными углами
+        rounded_pixmap = self.rounded_pixmap(pixmap)
+        self.ui.label_37.setPixmap(rounded_pixmap)
+        self.ui.label_37.setScaledContents(True)  # Разрешение масштабирования содержимого QLabel
 
     def add_logo_button_clicked(self):
         self.open_file_explorer()
@@ -1228,7 +1453,7 @@ class MainWindow(QMainWindow):
         self.ui.descriptionEdit.clear()
         self.ui.imageArea.clear()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.setup_scroll_area()
+        self.load_titles_by_team()
         self.load_team()
 
     def setup_calender_widget(self):
@@ -1394,4 +1619,5 @@ if __name__ == "__main__":
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
+    # window.post_init()
     sys.exit(app.exec())
