@@ -509,6 +509,11 @@ class MainWindow(QMainWindow):
         self.ui.SearchBtn.clicked.connect(self.load_titles_by_team)
         self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
 
+        self.ui.titleBtn_1.clicked.connect(self.load_titles_by_team)
+        self.ui.titleBtn_2.clicked.connect(self.load_titles_by_team)
+        self.ui.incomeBtn_1.clicked.connect(self.get_income)
+        self.ui.incomeBtn_2.clicked.connect(self.get_income)
+
         self.generate_key()
         self.load_saved_credentials()
 
@@ -526,87 +531,88 @@ class MainWindow(QMainWindow):
         self.file_path = None
         self.folder_id = None
 
-        self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
-        self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
-
-    def post_init(self):
-        self.drive_service = self.authenticate()  # Переместить сюда
-        self.get_folders()
-
-    def file_add_double_click(self, event):
-        if event.button() == Qt.LeftButton:
-            self.browse_file()
-
-    def browse_file(self):
-        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
-
-        if file_path:
-            self.ui.fileAdd.setText(f"Выбран файл: {file_path}")
-
-    def get_folders(self):
-        self.ui.recipientFile.clear()
-        if not self.drive_service:
-            self.drive_service = self.authenticate()
-
-        if not self.drive_service:
-            self.drive_service = self.authenticate()
-
-        try:
-            results = self.drive_service.files().list(
-                q="mimeType='application/vnd.google-apps.folder'",
-                spaces='drive',
-                fields='nextPageToken, files(id, name)'
-            ).execute()
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return
-
-        items = results.get('files', [])
-        if not items:
-            print('No folders found.')
-        else:
-            print('Folders:')
-            for item in items:
-                print(u'{0} ({1})'.format(item['name'], item['id']))
-                self.ui.recipientFile.addItem(item['name'], item['id'])
-
-    def upload_to_drive(self):
-        if not self.drive_service:
-            self.drive_service = self.authenticate()
-        if not self.file_path:
-            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
-            return
-
-        folder_id = self.ui.recipientFile.currentData()
-        if not folder_id:
-            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
-            return
-
-        media = MediaFileUpload(self.file_path)
-        request = self.drive_service.files().create(
-            media_body=media,
-            body={
-                'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
-                'parents': [folder_id]
-            }
-        )
-        request.execute()
-        print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
-
-    def authenticate(self):
-        SCOPES = ['https://www.googleapis.com/auth/drive.file']
-
-        # Получаем абсолютный путь к текущему файлу
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Формируем путь к файлу credentials.json в другой подпапке
-        credentials_path = os.path.join(current_dir, '..', 'Source', 'credentials.json')
-
-        flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-        creds = flow.run_local_server(port=0)
-
-        return build('drive', 'v3', credentials=creds)
+        self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
+    #     self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
+    #     self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+    #
+    # def post_init(self):
+    #     self.drive_service = self.authenticate()  # Переместить сюда
+    #     self.get_folders()
+    #
+    # def file_add_double_click(self, event):
+    #     if event.button() == Qt.LeftButton:
+    #         self.browse_file()
+    #
+    # def browse_file(self):
+    #     desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+    #     file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+    #
+    #     if file_path:
+    #         self.ui.fileAdd.setText(f"Выбран файл: {file_path}")
+    #
+    # def get_folders(self):
+    #     self.ui.recipientFile.clear()
+    #     if not self.drive_service:
+    #         self.drive_service = self.authenticate()
+    #
+    #     if not self.drive_service:
+    #         self.drive_service = self.authenticate()
+    #
+    #     try:
+    #         results = self.drive_service.files().list(
+    #             q="mimeType='application/vnd.google-apps.folder'",
+    #             spaces='drive',
+    #             fields='nextPageToken, files(id, name)'
+    #         ).execute()
+    #     except Exception as e:
+    #         print(f"An error occurred: {e}")
+    #         return
+    #
+    #     items = results.get('files', [])
+    #     if not items:
+    #         print('No folders found.')
+    #     else:
+    #         print('Folders:')
+    #         for item in items:
+    #             print(u'{0} ({1})'.format(item['name'], item['id']))
+    #             self.ui.recipientFile.addItem(item['name'], item['id'])
+    #
+    # def upload_to_drive(self):
+    #     if not self.drive_service:
+    #         self.drive_service = self.authenticate()
+    #     if not self.file_path:
+    #         QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
+    #         return
+    #
+    #     folder_id = self.ui.recipientFile.currentData()
+    #     if not folder_id:
+    #         QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
+    #         return
+    #
+    #     media = MediaFileUpload(self.file_path)
+    #     request = self.drive_service.files().create(
+    #         media_body=media,
+    #         body={
+    #             'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
+    #             'parents': [folder_id]
+    #         }
+    #     )
+    #     request.execute()
+    #     print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
+    #
+    # def authenticate(self):
+    #     SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    #
+    #     # Получаем абсолютный путь к текущему файлу
+    #     current_dir = os.path.dirname(os.path.abspath(__file__))
+    #
+    #     # Формируем путь к файлу credentials.json в другой подпапке
+    #     credentials_path = os.path.join(current_dir, '..', 'Source', 'credentials.json')
+    #
+    #     flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
+    #     creds = flow.run_local_server(port=0)
+    #
+    #     return build('drive', 'v3', credentials=creds)
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
@@ -1253,15 +1259,16 @@ class MainWindow(QMainWindow):
     def open_edit_title_page(self):
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT title_name, description, team_id FROM "Title" WHERE title_id = %s', (self.title_id,))
+        cursor.execute('SELECT title_name, description, team_id, title_date FROM "Title" WHERE title_id = %s', (self.title_id,))
         row = cursor.fetchone()
         close_db_connect(connection, cursor)
 
         if row:
-            title_name, title_description, team_id = row
+            title_name, title_description, team_id, title_date  = row
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
             self.ui.nameEditTitle.setText(title_name)
             self.ui.descriptionEdit_2.setText(title_description)
+            self.ui.dateReleaseEditTitle.setDate(title_date)
 
             index = self.ui.nameCrewTranslatorEditTitle.findData(team_id)
             if index != -1:
@@ -1292,13 +1299,6 @@ class MainWindow(QMainWindow):
 
         return compressed_image, compression_time
 
-    def fractal_decompress(self, compressed_image, scale=6):
-        height, width = compressed_image.shape[:2]
-        decompressed_image = cv2.resize(compressed_image, (width * scale, height * scale),
-                                        interpolation=cv2.INTER_NEAREST)
-
-        return decompressed_image
-
     def load_image(self, path):
         try:
             with Image.open(path) as img:
@@ -1316,6 +1316,8 @@ class MainWindow(QMainWindow):
         team_id = self.ui.nameCrewTranslatorEditTitle.currentData()
         new_title_name = self.ui.nameEditTitle.text()
         new_description = self.ui.descriptionEdit_2.toPlainText()
+        selected_date = self.ui.dateReleaseEditTitle.date()
+        release_date = selected_date.toPython()
 
         # Получаем путь к изображению
         image_path = self.ui.imageAreaEdit.toPlainText()
@@ -1341,11 +1343,11 @@ class MainWindow(QMainWindow):
         cursor = connection.cursor()
         if image_data is not None:
             cursor.execute(
-                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s WHERE title_id = %s',
-                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, self.title_id))
+                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
         else:
-            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s, team_id = %s WHERE title_id = %s',
-                           (new_title_name, new_description, team_id,  self.title_id))
+            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                           (new_title_name, new_description, team_id, release_date,  self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -1417,38 +1419,41 @@ class MainWindow(QMainWindow):
         self.open_file_explorer()
 
     def add_title_to_database(self):
-        comboxBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
+        comboBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
         title_name = self.ui.nameAddTitle.text()
         title_description = self.ui.descriptionEdit.toPlainText()
         image_path = self.ui.imageArea.toPlainText()
+        selected_date = self.ui.dateReleaseAddTitle.date()
+        release_date = selected_date.toPython()
+
 
         if not title_name or not title_description or not image_path:
-            self.show_error_message(
-                "Вы не заполнили поле, пожалуйста, заполните все необходимые поля и повторите попытку!")
+            self.show_error_message("Пожалуйста, заполните все обязательные поля и попробуйте снова!")
             return
 
-        # Загружаем изображение
+
+        # Загружаем и сжимаем изображение
         original_image = self.load_image(image_path)
-
         if original_image is not None:
-            # Сжимаем изображение
             compressed_image, _ = self.fractal_compress(original_image)
-
-            # Преобразуем сжатое изображение в байтовый массив
             buffer = BytesIO()
             buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
             image_data = buffer.getvalue()
         else:
             print("Ошибка загрузки изображения.")
+            return
 
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id) VALUES (%s, %s, %s, %s)',
-                       (title_name, title_description, psycopg2.Binary(image_data), comboxBox_team))
+        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id, title_date) '
+                       'VALUES (%s, %s, %s, %s, %s)',
+                       (title_name, title_description, psycopg2.Binary(image_data), comboBox_team, release_date))
         connection.commit()
         cursor.close()
         connection.close()
 
+        # Очистка полей ввода после вставки
+        self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
         self.ui.nameAddTitle.clear()
         self.ui.descriptionEdit.clear()
         self.ui.imageArea.clear()
@@ -1619,5 +1624,5 @@ if __name__ == "__main__":
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
-    window.post_init()
+    # window.post_init()
     sys.exit(app.exec())
