@@ -1331,11 +1331,27 @@ class MainWindow(QMainWindow):
         # Получаем путь к изображению
         image_path = self.ui.imageAreaEdit.toPlainText()
 
+        if not new_title_name:
+            self.ui.nameEditTitle.setPlaceholderText('Вы не написали название тайтла.')
+            self.ui.nameEditTitle.setStyleSheet("placeholder-text-color: red;")
+        else:
+            self.ui.nameEditTitle.setPlaceholderText('')
+
+        if not new_description:
+            self.ui.descriptionEdit_2.setPlaceholderText('Вы не написали описание.')
+            self.ui.descriptionEdit_2.setStyleSheet("placeholder-text-color: red;")
+        else:
+            self.ui.descriptionEdit_2.setPlaceholderText('')
+
+        # Установка таймера на 5 секунд для сброса стилей и текстовых подсказок
+        timer = QTimer(self)
+        timer.singleShot(5000, self.reset_input_edit_fields)
+
         if image_path:
             # Загружаем изображение
             original_image = self.load_image(image_path)
 
-            if original_image is not None:
+            if original_image is not None and new_title_name and new_description:
                 # Сжимаем изображение
                 compressed_image, _ = self.fractal_compress(original_image)
 
@@ -1345,24 +1361,36 @@ class MainWindow(QMainWindow):
                 image_data = buffer.getvalue()
             else:
                 print("Ошибка загрузки изображения.")
+                return
         else:
             image_data = None
 
         connection = connect()
         cursor = connection.cursor()
-        if image_data is not None:
-            cursor.execute(
-                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
-                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
+        if new_title_name and new_description is not None:
+            if image_data is not None:
+                cursor.execute(
+                    'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                    (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
+            else:
+                cursor.execute(
+                    'UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                    (new_title_name, new_description, team_id, release_date, self.title_id))
         else:
-            cursor.execute('UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
-                           (new_title_name, new_description, team_id, release_date,  self.title_id))
+            return
         connection.commit()
         close_db_connect(connection, cursor)
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.ui.imageAreaEdit.clear()
         self.load_titles_by_team()
+
+    def reset_input_edit_fields(self):
+        # Сброс стилей и текстовых подсказок полей ввода
+        self.ui.imageAreaEdit.setPlaceholderText('Нажмите два раза для добавления изображения')
+        self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")  # Сброс стилей
+        self.ui.nameEditTitle.setPlaceholderText('')
+        self.ui.descriptionEdit_2.setPlaceholderText('')
 
     def open_image_dialog(self, event):
         # Получаем путь к рабочему столу
