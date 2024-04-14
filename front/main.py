@@ -514,6 +514,10 @@ class MainWindow(QMainWindow):
         self.ui.incomeBtn_1.clicked.connect(self.get_income)
         self.ui.incomeBtn_2.clicked.connect(self.get_income)
 
+        self.autentificate = False
+        self.ui.fileSharingBtn_1.clicked.connect(self.post_init)
+        self.ui.fileSharingBtn_2.clicked.connect(self.post_init)
+
         self.generate_key()
         self.load_saved_credentials()
 
@@ -532,87 +536,92 @@ class MainWindow(QMainWindow):
         self.folder_id = None
 
         self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
-    #     self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
-    #     self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
-    #
-    # def post_init(self):
-    #     self.drive_service = self.authenticate()  # Переместить сюда
-    #     self.get_folders()
-    #
-    # def file_add_double_click(self, event):
-    #     if event.button() == Qt.LeftButton:
-    #         self.browse_file()
-    #
-    # def browse_file(self):
-    #     desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
-    #     file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
-    #
-    #     if file_path:
-    #         self.ui.fileAdd.setText(f"Выбран файл: {file_path}")
-    #
-    # def get_folders(self):
-    #     self.ui.recipientFile.clear()
-    #     if not self.drive_service:
-    #         self.drive_service = self.authenticate()
-    #
-    #     if not self.drive_service:
-    #         self.drive_service = self.authenticate()
-    #
-    #     try:
-    #         results = self.drive_service.files().list(
-    #             q="mimeType='application/vnd.google-apps.folder'",
-    #             spaces='drive',
-    #             fields='nextPageToken, files(id, name)'
-    #         ).execute()
-    #     except Exception as e:
-    #         print(f"An error occurred: {e}")
-    #         return
-    #
-    #     items = results.get('files', [])
-    #     if not items:
-    #         print('No folders found.')
-    #     else:
-    #         print('Folders:')
-    #         for item in items:
-    #             print(u'{0} ({1})'.format(item['name'], item['id']))
-    #             self.ui.recipientFile.addItem(item['name'], item['id'])
-    #
-    # def upload_to_drive(self):
-    #     if not self.drive_service:
-    #         self.drive_service = self.authenticate()
-    #     if not self.file_path:
-    #         QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
-    #         return
-    #
-    #     folder_id = self.ui.recipientFile.currentData()
-    #     if not folder_id:
-    #         QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
-    #         return
-    #
-    #     media = MediaFileUpload(self.file_path)
-    #     request = self.drive_service.files().create(
-    #         media_body=media,
-    #         body={
-    #             'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
-    #             'parents': [folder_id]
-    #         }
-    #     )
-    #     request.execute()
-    #     print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
-    #
-    # def authenticate(self):
-    #     SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    #
-    #     # Получаем абсолютный путь к текущему файлу
-    #     current_dir = os.path.dirname(os.path.abspath(__file__))
-    #
-    #     # Формируем путь к файлу credentials.json в другой подпапке
-    #     credentials_path = os.path.join(current_dir, '..', 'Source', 'credentials.json')
-    #
-    #     flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-    #     creds = flow.run_local_server(port=0)
-    #
-    #     return build('drive', 'v3', credentials=creds)
+        self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
+        self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+    def post_init(self):
+        if not self.autentificate:
+
+            self.drive_service = self.authenticate()  # Переместить сюда
+            self.get_folders()
+            self.autentificate = True
+        else:
+            return
+    def file_add_double_click(self, event):
+        if event.button() == Qt.LeftButton:
+            self.browse_file()
+
+    def browse_file(self):
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+        self.file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+
+        if self.file_path:
+            self.ui.fileAdd.setText(f"Выбран файл: {self.file_path}")
+
+    def get_folders(self):
+        self.ui.recipientFile.clear()
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+
+        try:
+            results = self.drive_service.files().list(
+                q="mimeType='application/vnd.google-apps.folder'",
+                spaces='drive',
+                fields='nextPageToken, files(id, name)'
+            ).execute()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return
+
+        items = results.get('files', [])
+        if not items:
+            print('No folders found.')
+        else:
+            print('Folders:')
+            for item in items:
+                print(u'{0} ({1})'.format(item['name'], item['id']))
+                self.ui.recipientFile.addItem(item['name'], item['id'])
+
+    def upload_to_drive(self):
+        if not self.drive_service:
+            self.drive_service = self.authenticate()
+        if not self.file_path:
+            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
+            return
+
+        folder_id = self.ui.recipientFile.currentData()
+        if not folder_id:
+            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
+            return
+
+        media = MediaFileUpload(self.file_path)
+        request = self.drive_service.files().create(
+            media_body=media,
+            body={
+                'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
+                'parents': [folder_id]
+            }
+        )
+        request.execute()
+        print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
+        self.ui.fileAdd.clear()
+
+    def authenticate(self):
+        SCOPES = ['https://www.googleapis.com/auth/drive']
+
+        # Получаем абсолютный путь к текущему файлу
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Формируем путь к файлу credentials.json в другой подпапке
+        credentials_path = os.path.join(current_dir, '..', 'Source', 'credentials.json')
+
+        flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
+        creds = flow.run_local_server(port=0)
+
+        return build('drive', 'v3', credentials=creds)
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
