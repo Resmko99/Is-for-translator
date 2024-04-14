@@ -2634,92 +2634,7 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_13">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>540</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_28">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>Изображение</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QTextEdit" name="imageArea">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>Нажмите два раза для добавления изображения</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Наименование</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLineEdit" name="nameAddTitle"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_32">
-                <property name="text">
-                 <string>Название команды переводчиков</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QComboBox" name="nameCrewTranslatorAddTitle"/>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_33">
-                <property name="text">
-                 <string>Описание тайтла</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QTextEdit" name="descriptionEdit"/>
-              </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_34">
-                <property name="text">
-                 <string>Дата выхода</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="0">
-               <widget class="QDateEdit" name="dateReleaseAddTitle">
-                <property name="calendarPopup">
-                 <bool>false</bool>
-                </property>
-                <property name="date">
-                 <date>
-                  <year>2000</year>
-                  <month>1</month>
-                  <day>2</day>
-                 </date>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="2" column="0" colspan="3">
+            <item row="2" column="0" colspan="2">
              <widget class="QWidget" name="widget_6" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -2830,103 +2745,89 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QWidget" name="widget_21" native="true">
-              <layout class="QVBoxLayout" name="verticalLayout_13">
-               <item>
-                <spacer name="verticalSpacer_24">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>100</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="tiz_1_err">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_26">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>113</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="nt_1_err">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_25">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>65</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="tt_1_err">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_22">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>103</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="dt_1_err">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_23">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>140</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
+             <spacer name="horizontalSpacer_13">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>540</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_28">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>Изображение</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QTextEdit" name="imageArea">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>Нажмите два раза для добавления изображения</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>Наименование</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLineEdit" name="nameAddTitle"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_32">
+                <property name="text">
+                 <string>Название команды переводчиков</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QComboBox" name="nameCrewTranslatorAddTitle"/>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>Описание тайтла</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QTextEdit" name="descriptionEdit"/>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_34">
+                <property name="text">
+                 <string>Дата выхода</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QDateEdit" name="dateReleaseAddTitle">
+                <property name="calendarPopup">
+                 <bool>false</bool>
+                </property>
+                <property name="date">
+                 <date>
+                  <year>2000</year>
+                  <month>1</month>
+                  <day>2</day>
+                 </date>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>

@@ -1233,9 +1233,44 @@ class Ui_MainWindow(object):
 
         self.gridLayout_15.addItem(self.verticalSpacer_14, 1, 0, 1, 1)
 
+        self.widget_6 = QWidget(self.pageAddTitle)
+        self.widget_6.setObjectName(u"widget_6")
+        sizePolicy1.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
+        self.widget_6.setSizePolicy(sizePolicy1)
+        self.widget_6.setMinimumSize(QSize(0, 40))
+        self.widget_6.setMaximumSize(QSize(16777215, 40))
+        self.horizontalLayout_9 = QHBoxLayout(self.widget_6)
+        self.horizontalLayout_9.setSpacing(0)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_14 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_14)
+
+        self.backAddTitleBtn = QPushButton(self.widget_6)
+        self.backAddTitleBtn.setObjectName(u"backAddTitleBtn")
+        self.backAddTitleBtn.setMinimumSize(QSize(140, 30))
+        self.backAddTitleBtn.setMaximumSize(QSize(140, 30))
+        self.backAddTitleBtn.setIcon(icon16)
+        self.backAddTitleBtn.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_9.addWidget(self.backAddTitleBtn)
+
+        self.addTitleBtn = QPushButton(self.widget_6)
+        self.addTitleBtn.setObjectName(u"addTitleBtn")
+        self.addTitleBtn.setMinimumSize(QSize(140, 30))
+        self.addTitleBtn.setMaximumSize(QSize(140, 30))
+        self.addTitleBtn.setIcon(icon19)
+        self.addTitleBtn.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_9.addWidget(self.addTitleBtn)
+
+
+        self.gridLayout_15.addWidget(self.widget_6, 2, 0, 1, 2)
+
         self.horizontalSpacer_13 = QSpacerItem(540, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_15.addItem(self.horizontalSpacer_13, 0, 2, 1, 1)
+        self.gridLayout_15.addItem(self.horizontalSpacer_13, 0, 1, 1, 1)
 
         self.gridLayout_28 = QGridLayout()
         self.gridLayout_28.setObjectName(u"gridLayout_28")
@@ -1294,88 +1329,6 @@ class Ui_MainWindow(object):
 
 
         self.gridLayout_15.addLayout(self.gridLayout_28, 0, 0, 1, 1)
-
-        self.widget_6 = QWidget(self.pageAddTitle)
-        self.widget_6.setObjectName(u"widget_6")
-        sizePolicy1.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
-        self.widget_6.setSizePolicy(sizePolicy1)
-        self.widget_6.setMinimumSize(QSize(0, 40))
-        self.widget_6.setMaximumSize(QSize(16777215, 40))
-        self.horizontalLayout_9 = QHBoxLayout(self.widget_6)
-        self.horizontalLayout_9.setSpacing(0)
-        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_14 = QSpacerItem(809, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_9.addItem(self.horizontalSpacer_14)
-
-        self.backAddTitleBtn = QPushButton(self.widget_6)
-        self.backAddTitleBtn.setObjectName(u"backAddTitleBtn")
-        self.backAddTitleBtn.setMinimumSize(QSize(140, 30))
-        self.backAddTitleBtn.setMaximumSize(QSize(140, 30))
-        self.backAddTitleBtn.setIcon(icon16)
-        self.backAddTitleBtn.setIconSize(QSize(20, 20))
-
-        self.horizontalLayout_9.addWidget(self.backAddTitleBtn)
-
-        self.addTitleBtn = QPushButton(self.widget_6)
-        self.addTitleBtn.setObjectName(u"addTitleBtn")
-        self.addTitleBtn.setMinimumSize(QSize(140, 30))
-        self.addTitleBtn.setMaximumSize(QSize(140, 30))
-        self.addTitleBtn.setIcon(icon19)
-        self.addTitleBtn.setIconSize(QSize(20, 20))
-
-        self.horizontalLayout_9.addWidget(self.addTitleBtn)
-
-
-        self.gridLayout_15.addWidget(self.widget_6, 2, 0, 1, 3)
-
-        self.widget_21 = QWidget(self.pageAddTitle)
-        self.widget_21.setObjectName(u"widget_21")
-        self.verticalLayout_13 = QVBoxLayout(self.widget_21)
-        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.verticalSpacer_24 = QSpacerItem(20, 100, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_13.addItem(self.verticalSpacer_24)
-
-        self.tiz_1_err = QLabel(self.widget_21)
-        self.tiz_1_err.setObjectName(u"tiz_1_err")
-
-        self.verticalLayout_13.addWidget(self.tiz_1_err)
-
-        self.verticalSpacer_26 = QSpacerItem(20, 113, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_13.addItem(self.verticalSpacer_26)
-
-        self.nt_1_err = QLabel(self.widget_21)
-        self.nt_1_err.setObjectName(u"nt_1_err")
-
-        self.verticalLayout_13.addWidget(self.nt_1_err)
-
-        self.verticalSpacer_25 = QSpacerItem(20, 65, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_13.addItem(self.verticalSpacer_25)
-
-        self.tt_1_err = QLabel(self.widget_21)
-        self.tt_1_err.setObjectName(u"tt_1_err")
-
-        self.verticalLayout_13.addWidget(self.tt_1_err)
-
-        self.verticalSpacer_22 = QSpacerItem(20, 103, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_13.addItem(self.verticalSpacer_22)
-
-        self.dt_1_err = QLabel(self.widget_21)
-        self.dt_1_err.setObjectName(u"dt_1_err")
-
-        self.verticalLayout_13.addWidget(self.dt_1_err)
-
-        self.verticalSpacer_23 = QSpacerItem(20, 140, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_13.addItem(self.verticalSpacer_23)
-
-
-        self.gridLayout_15.addWidget(self.widget_21, 0, 1, 1, 1)
 
         self.stackedWidget_2.addWidget(self.pageAddTitle)
         self.pageEditTitle = QWidget()
@@ -2499,18 +2452,14 @@ class Ui_MainWindow(object):
         self.backBtnDesc.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043c\u0435\u0441\u044f\u0446", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0433\u043e\u0434", None))
+        self.backAddTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
+        self.addTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.label_30.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435", None))
         self.imageArea.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430 \u0434\u043b\u044f \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f", None))
         self.label_31.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435", None))
         self.label_32.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b \u043f\u0435\u0440\u0435\u0432\u043e\u0434\u0447\u0438\u043a\u043e\u0432", None))
         self.label_33.setText(QCoreApplication.translate("MainWindow", u"\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0442\u0430\u0439\u0442\u043b\u0430", None))
         self.label_34.setText(QCoreApplication.translate("MainWindow", u"\u0414\u0430\u0442\u0430 \u0432\u044b\u0445\u043e\u0434\u0430", None))
-        self.backAddTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
-        self.addTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
-        self.tiz_1_err.setText("")
-        self.nt_1_err.setText("")
-        self.tt_1_err.setText("")
-        self.dt_1_err.setText("")
         self.label_40.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435", None))
         self.imageAreaEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430 \u0434\u043b\u044f \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f", None))
         self.label_41.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435", None))
