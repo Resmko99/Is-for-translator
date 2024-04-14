@@ -726,6 +726,14 @@
         color: #FFFFFF;
     }
 
+    #sendFile:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+    }
+
     #pageLog QLabel {
         color: #fff;
         font: 18px "Inter";

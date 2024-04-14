@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -130,10 +130,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.label_10 = QLabel(self.pageLog)
         self.label_10.setObjectName(u"label_10")
-        self.label_10.setTextFormat(Qt.AutoText)
+        self.label_10.setTextFormat(Qt.TextFormat.AutoText)
         self.label_10.setPixmap(QPixmap(u":/icon/icon/Logo(100x100).png"))
         self.label_10.setScaledContents(False)
-        self.label_10.setAlignment(Qt.AlignCenter)
+        self.label_10.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_10.setWordWrap(False)
         self.label_10.setMargin(8)
 
@@ -141,7 +141,7 @@ class Ui_MainWindow(object):
 
         self.label_11 = QLabel(self.pageLog)
         self.label_11.setObjectName(u"label_11")
-        self.label_11.setAlignment(Qt.AlignCenter)
+        self.label_11.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_11.setMargin(10)
 
         self.verticalLayout_6.addWidget(self.label_11)
@@ -164,7 +164,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_2 = QLineEdit(self.pageLog)
         self.lineEdit_2.setObjectName(u"lineEdit_2")
-        self.lineEdit_2.setEchoMode(QLineEdit.Password)
+        self.lineEdit_2.setEchoMode(QLineEdit.EchoMode.Password)
         self.lineEdit_2.setClearButtonEnabled(False)
 
         self.verticalLayout_6.addWidget(self.lineEdit_2)
@@ -177,16 +177,16 @@ class Ui_MainWindow(object):
         sizePolicy3.setHeightForWidth(self.inLogBtn.sizePolicy().hasHeightForWidth())
         self.inLogBtn.setSizePolicy(sizePolicy3)
         self.inLogBtn.setMaximumSize(QSize(16777215, 16777215))
-        self.inLogBtn.setLayoutDirection(Qt.LeftToRight)
+        self.inLogBtn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.inLogBtn.setAutoFillBackground(True)
 
-        self.verticalLayout_6.addWidget(self.inLogBtn, 0, Qt.AlignHCenter)
+        self.verticalLayout_6.addWidget(self.inLogBtn, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.notRegLabel = QLabel(self.pageLog)
         self.notRegLabel.setObjectName(u"notRegLabel")
         self.notRegLabel.setMargin(4)
 
-        self.verticalLayout_6.addWidget(self.notRegLabel, 0, Qt.AlignHCenter)
+        self.verticalLayout_6.addWidget(self.notRegLabel, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.forgotPasLabel = QLabel(self.pageLog)
         self.forgotPasLabel.setObjectName(u"forgotPasLabel")
@@ -195,7 +195,7 @@ class Ui_MainWindow(object):
         self.forgotPasLabel.setPixmap(QPixmap(u":/icon/icon/YQR.png"))
         self.forgotPasLabel.setScaledContents(False)
 
-        self.verticalLayout_6.addWidget(self.forgotPasLabel, 0, Qt.AlignHCenter)
+        self.verticalLayout_6.addWidget(self.forgotPasLabel, 0, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.gridLayout_11.addLayout(self.verticalLayout_6, 1, 1, 1, 1)
@@ -222,10 +222,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
         self.label_26 = QLabel(self.pageChangePas)
         self.label_26.setObjectName(u"label_26")
-        self.label_26.setTextFormat(Qt.AutoText)
+        self.label_26.setTextFormat(Qt.TextFormat.AutoText)
         self.label_26.setPixmap(QPixmap(u":/icon/icon/Logo(100x100).png"))
         self.label_26.setScaledContents(False)
-        self.label_26.setAlignment(Qt.AlignCenter)
+        self.label_26.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_26.setWordWrap(False)
         self.label_26.setMargin(8)
 
@@ -233,7 +233,7 @@ class Ui_MainWindow(object):
 
         self.label_27 = QLabel(self.pageChangePas)
         self.label_27.setObjectName(u"label_27")
-        self.label_27.setAlignment(Qt.AlignCenter)
+        self.label_27.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_27.setMargin(10)
 
         self.verticalLayout_12.addWidget(self.label_27)
@@ -265,10 +265,10 @@ class Ui_MainWindow(object):
         self.changePasBtn.setMinimumSize(QSize(110, 0))
         self.changePasBtn.setMaximumSize(QSize(16777215, 16777215))
         self.changePasBtn.setSizeIncrement(QSize(0, 0))
-        self.changePasBtn.setLayoutDirection(Qt.LeftToRight)
+        self.changePasBtn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.changePasBtn.setAutoFillBackground(True)
 
-        self.verticalLayout_12.addWidget(self.changePasBtn, 0, Qt.AlignHCenter)
+        self.verticalLayout_12.addWidget(self.changePasBtn, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.backChangePasBtn = QPushButton(self.pageChangePas)
         self.backChangePasBtn.setObjectName(u"backChangePasBtn")
@@ -276,7 +276,7 @@ class Ui_MainWindow(object):
         self.backChangePasBtn.setMaximumSize(QSize(16777215, 16777215))
         self.backChangePasBtn.setSizeIncrement(QSize(100, 0))
 
-        self.verticalLayout_12.addWidget(self.backChangePasBtn, 0, Qt.AlignHCenter)
+        self.verticalLayout_12.addWidget(self.backChangePasBtn, 0, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.gridLayout_12.addLayout(self.verticalLayout_12, 1, 1, 1, 1)
@@ -307,10 +307,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_11.setObjectName(u"verticalLayout_11")
         self.label_23 = QLabel(self.pageResPas)
         self.label_23.setObjectName(u"label_23")
-        self.label_23.setTextFormat(Qt.AutoText)
+        self.label_23.setTextFormat(Qt.TextFormat.AutoText)
         self.label_23.setPixmap(QPixmap(u":/icon/icon/Logo(100x100).png"))
         self.label_23.setScaledContents(False)
-        self.label_23.setAlignment(Qt.AlignCenter)
+        self.label_23.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_23.setWordWrap(False)
         self.label_23.setMargin(8)
 
@@ -318,7 +318,7 @@ class Ui_MainWindow(object):
 
         self.label_24 = QLabel(self.pageResPas)
         self.label_24.setObjectName(u"label_24")
-        self.label_24.setAlignment(Qt.AlignCenter)
+        self.label_24.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_24.setMargin(10)
 
         self.verticalLayout_11.addWidget(self.label_24)
@@ -338,17 +338,17 @@ class Ui_MainWindow(object):
         sizePolicy3.setHeightForWidth(self.nextResBtn.sizePolicy().hasHeightForWidth())
         self.nextResBtn.setSizePolicy(sizePolicy3)
         self.nextResBtn.setMaximumSize(QSize(16777214, 16777215))
-        self.nextResBtn.setLayoutDirection(Qt.LeftToRight)
+        self.nextResBtn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.nextResBtn.setAutoFillBackground(True)
 
-        self.verticalLayout_11.addWidget(self.nextResBtn, 0, Qt.AlignHCenter)
+        self.verticalLayout_11.addWidget(self.nextResBtn, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.backResBtn = QPushButton(self.pageResPas)
         self.backResBtn.setObjectName(u"backResBtn")
         self.backResBtn.setMinimumSize(QSize(60, 0))
         self.backResBtn.setSizeIncrement(QSize(100, 0))
 
-        self.verticalLayout_11.addWidget(self.backResBtn, 0, Qt.AlignHCenter)
+        self.verticalLayout_11.addWidget(self.backResBtn, 0, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.gridLayout_9.addLayout(self.verticalLayout_11, 1, 1, 1, 1)
@@ -376,10 +376,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.label_16 = QLabel(self.pageReg)
         self.label_16.setObjectName(u"label_16")
-        self.label_16.setTextFormat(Qt.AutoText)
+        self.label_16.setTextFormat(Qt.TextFormat.AutoText)
         self.label_16.setPixmap(QPixmap(u":/icon/icon/Logo(100x100).png"))
         self.label_16.setScaledContents(False)
-        self.label_16.setAlignment(Qt.AlignCenter)
+        self.label_16.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_16.setWordWrap(False)
         self.label_16.setMargin(8)
 
@@ -387,7 +387,7 @@ class Ui_MainWindow(object):
 
         self.label_17 = QLabel(self.pageReg)
         self.label_17.setObjectName(u"label_17")
-        self.label_17.setAlignment(Qt.AlignCenter)
+        self.label_17.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_17.setMargin(10)
 
         self.verticalLayout_8.addWidget(self.label_17)
@@ -428,17 +428,17 @@ class Ui_MainWindow(object):
         sizePolicy3.setHeightForWidth(self.regBtn.sizePolicy().hasHeightForWidth())
         self.regBtn.setSizePolicy(sizePolicy3)
         self.regBtn.setMaximumSize(QSize(16777215, 16777215))
-        self.regBtn.setLayoutDirection(Qt.LeftToRight)
+        self.regBtn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.regBtn.setAutoFillBackground(True)
 
-        self.verticalLayout_8.addWidget(self.regBtn, 0, Qt.AlignHCenter)
+        self.verticalLayout_8.addWidget(self.regBtn, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.backBtnReg = QPushButton(self.pageReg)
         self.backBtnReg.setObjectName(u"backBtnReg")
         self.backBtnReg.setMinimumSize(QSize(100, 0))
         self.backBtnReg.setMaximumSize(QSize(16777215, 16777215))
 
-        self.verticalLayout_8.addWidget(self.backBtnReg, 0, Qt.AlignHCenter)
+        self.verticalLayout_8.addWidget(self.backBtnReg, 0, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.verticalLayout_9.addLayout(self.verticalLayout_8)
@@ -785,7 +785,7 @@ class Ui_MainWindow(object):
 
         self.pushOpenAdd = QPushButton(self.pageTitle)
         self.pushOpenAdd.setObjectName(u"pushOpenAdd")
-        self.pushOpenAdd.setLayoutDirection(Qt.LeftToRight)
+        self.pushOpenAdd.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         icon14 = QIcon()
         icon14.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Normal, QIcon.Off)
         icon14.addFile(u":/icon/icon/free-icon-add-7222864.png", QSize(), QIcon.Active, QIcon.On)
@@ -969,8 +969,8 @@ class Ui_MainWindow(object):
         self.gridLayout_17.setObjectName(u"gridLayout_17")
         self.tableIncome = QTableView(self.pageIncome)
         self.tableIncome.setObjectName(u"tableIncome")
-        self.tableIncome.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tableIncome.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableIncome.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tableIncome.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
 
         self.gridLayout_17.addWidget(self.tableIncome, 1, 0, 1, 1)
 
@@ -1090,11 +1090,11 @@ class Ui_MainWindow(object):
         self.photoDesc.setMinimumSize(QSize(250, 380))
         self.photoDesc.setMaximumSize(QSize(250, 380))
         self.photoDesc.setAcceptDrops(False)
-        self.photoDesc.setLayoutDirection(Qt.LeftToRight)
+        self.photoDesc.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.photoDesc.setPixmap(QPixmap(u":/Photo/Photo/EyX_7safWuU.jpg"))
         self.photoDesc.setScaledContents(True)
 
-        self.horizontalLayout_7.addWidget(self.photoDesc, 0, Qt.AlignHCenter|Qt.AlignTop)
+        self.horizontalLayout_7.addWidget(self.photoDesc, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
 
         self.textEditDesc = QTextEdit(self.pageDesc)
         self.textEditDesc.setObjectName(u"textEditDesc")
@@ -1229,72 +1229,71 @@ class Ui_MainWindow(object):
         self.pageAddTitle.setObjectName(u"pageAddTitle")
         self.gridLayout_15 = QGridLayout(self.pageAddTitle)
         self.gridLayout_15.setObjectName(u"gridLayout_15")
-        self.horizontalSpacer_13 = QSpacerItem(540, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_15.addItem(self.horizontalSpacer_13, 0, 1, 1, 1)
-
         self.verticalSpacer_14 = QSpacerItem(540, 250, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_15.addItem(self.verticalSpacer_14, 1, 0, 1, 1)
 
-        self.verticalLayout_14 = QVBoxLayout()
-        self.verticalLayout_14.setSpacing(10)
-        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
+        self.horizontalSpacer_13 = QSpacerItem(540, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_15.addItem(self.horizontalSpacer_13, 0, 2, 1, 1)
+
+        self.gridLayout_28 = QGridLayout()
+        self.gridLayout_28.setObjectName(u"gridLayout_28")
         self.label_30 = QLabel(self.pageAddTitle)
         self.label_30.setObjectName(u"label_30")
 
-        self.verticalLayout_14.addWidget(self.label_30)
+        self.gridLayout_28.addWidget(self.label_30, 0, 0, 1, 1)
 
         self.imageArea = QTextEdit(self.pageAddTitle)
         self.imageArea.setObjectName(u"imageArea")
         self.imageArea.setReadOnly(True)
 
-        self.verticalLayout_14.addWidget(self.imageArea)
+        self.gridLayout_28.addWidget(self.imageArea, 1, 0, 1, 1)
 
         self.label_31 = QLabel(self.pageAddTitle)
         self.label_31.setObjectName(u"label_31")
 
-        self.verticalLayout_14.addWidget(self.label_31)
+        self.gridLayout_28.addWidget(self.label_31, 2, 0, 1, 1)
 
         self.nameAddTitle = QLineEdit(self.pageAddTitle)
         self.nameAddTitle.setObjectName(u"nameAddTitle")
 
-        self.verticalLayout_14.addWidget(self.nameAddTitle)
+        self.gridLayout_28.addWidget(self.nameAddTitle, 3, 0, 1, 1)
 
         self.label_32 = QLabel(self.pageAddTitle)
         self.label_32.setObjectName(u"label_32")
 
-        self.verticalLayout_14.addWidget(self.label_32)
+        self.gridLayout_28.addWidget(self.label_32, 4, 0, 1, 1)
 
         self.nameCrewTranslatorAddTitle = QComboBox(self.pageAddTitle)
         self.nameCrewTranslatorAddTitle.setObjectName(u"nameCrewTranslatorAddTitle")
 
-        self.verticalLayout_14.addWidget(self.nameCrewTranslatorAddTitle)
+        self.gridLayout_28.addWidget(self.nameCrewTranslatorAddTitle, 5, 0, 1, 1)
 
         self.label_33 = QLabel(self.pageAddTitle)
         self.label_33.setObjectName(u"label_33")
 
-        self.verticalLayout_14.addWidget(self.label_33)
+        self.gridLayout_28.addWidget(self.label_33, 6, 0, 1, 1)
 
         self.descriptionEdit = QTextEdit(self.pageAddTitle)
         self.descriptionEdit.setObjectName(u"descriptionEdit")
 
-        self.verticalLayout_14.addWidget(self.descriptionEdit)
+        self.gridLayout_28.addWidget(self.descriptionEdit, 7, 0, 1, 1)
 
         self.label_34 = QLabel(self.pageAddTitle)
         self.label_34.setObjectName(u"label_34")
 
-        self.verticalLayout_14.addWidget(self.label_34)
+        self.gridLayout_28.addWidget(self.label_34, 8, 0, 1, 1)
 
         self.dateReleaseAddTitle = QDateEdit(self.pageAddTitle)
         self.dateReleaseAddTitle.setObjectName(u"dateReleaseAddTitle")
         self.dateReleaseAddTitle.setCalendarPopup(False)
         self.dateReleaseAddTitle.setDate(QDate(2000, 1, 2))
 
-        self.verticalLayout_14.addWidget(self.dateReleaseAddTitle)
+        self.gridLayout_28.addWidget(self.dateReleaseAddTitle, 9, 0, 1, 1)
 
 
-        self.gridLayout_15.addLayout(self.verticalLayout_14, 0, 0, 1, 1)
+        self.gridLayout_15.addLayout(self.gridLayout_28, 0, 0, 1, 1)
 
         self.widget_6 = QWidget(self.pageAddTitle)
         self.widget_6.setObjectName(u"widget_6")
@@ -1329,7 +1328,54 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.addWidget(self.addTitleBtn)
 
 
-        self.gridLayout_15.addWidget(self.widget_6, 2, 0, 1, 2)
+        self.gridLayout_15.addWidget(self.widget_6, 2, 0, 1, 3)
+
+        self.widget_21 = QWidget(self.pageAddTitle)
+        self.widget_21.setObjectName(u"widget_21")
+        self.verticalLayout_13 = QVBoxLayout(self.widget_21)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.verticalSpacer_24 = QSpacerItem(20, 100, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_13.addItem(self.verticalSpacer_24)
+
+        self.tiz_1_err = QLabel(self.widget_21)
+        self.tiz_1_err.setObjectName(u"tiz_1_err")
+
+        self.verticalLayout_13.addWidget(self.tiz_1_err)
+
+        self.verticalSpacer_26 = QSpacerItem(20, 113, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_13.addItem(self.verticalSpacer_26)
+
+        self.nt_1_err = QLabel(self.widget_21)
+        self.nt_1_err.setObjectName(u"nt_1_err")
+
+        self.verticalLayout_13.addWidget(self.nt_1_err)
+
+        self.verticalSpacer_25 = QSpacerItem(20, 65, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_13.addItem(self.verticalSpacer_25)
+
+        self.tt_1_err = QLabel(self.widget_21)
+        self.tt_1_err.setObjectName(u"tt_1_err")
+
+        self.verticalLayout_13.addWidget(self.tt_1_err)
+
+        self.verticalSpacer_22 = QSpacerItem(20, 103, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_13.addItem(self.verticalSpacer_22)
+
+        self.dt_1_err = QLabel(self.widget_21)
+        self.dt_1_err.setObjectName(u"dt_1_err")
+
+        self.verticalLayout_13.addWidget(self.dt_1_err)
+
+        self.verticalSpacer_23 = QSpacerItem(20, 140, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_13.addItem(self.verticalSpacer_23)
+
+
+        self.gridLayout_15.addWidget(self.widget_21, 0, 1, 1, 1)
 
         self.stackedWidget_2.addWidget(self.pageAddTitle)
         self.pageEditTitle = QWidget()
@@ -1757,6 +1803,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_27.addWidget(self.recipientFile)
 
+        self.rar_error = QLabel(self.pageFileSharing)
+        self.rar_error.setObjectName(u"rar_error")
+
+        self.verticalLayout_27.addWidget(self.rar_error)
+
 
         self.gridLayout_50.addLayout(self.verticalLayout_27, 0, 0, 1, 1)
 
@@ -1855,7 +1906,7 @@ class Ui_MainWindow(object):
         self.label_37.setObjectName(u"label_37")
         self.label_37.setMinimumSize(QSize(280, 370))
         self.label_37.setMaximumSize(QSize(280, 370))
-        self.label_37.setAlignment(Qt.AlignCenter)
+        self.label_37.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout_6.addWidget(self.label_37, 0, 0, 2, 1)
 
@@ -2199,12 +2250,12 @@ class Ui_MainWindow(object):
         self.infoLabel = QLabel(self.widget_37)
         self.infoLabel.setObjectName(u"infoLabel")
 
-        self.gridLayout_54.addWidget(self.infoLabel, 0, 0, 1, 1, Qt.AlignHCenter)
+        self.gridLayout_54.addWidget(self.infoLabel, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.plugLabel = QLabel(self.widget_37)
         self.plugLabel.setObjectName(u"plugLabel")
 
-        self.gridLayout_54.addWidget(self.plugLabel, 1, 0, 1, 1, Qt.AlignHCenter)
+        self.gridLayout_54.addWidget(self.plugLabel, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.gridLayout_8.addWidget(self.widget_37, 1, 1, 1, 1)
@@ -2218,7 +2269,7 @@ class Ui_MainWindow(object):
         self.verLabel = QLabel(self.widget_36)
         self.verLabel.setObjectName(u"verLabel")
 
-        self.gridLayout_53.addWidget(self.verLabel, 0, 0, 1, 1, Qt.AlignHCenter)
+        self.gridLayout_53.addWidget(self.verLabel, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.gridLayout_8.addWidget(self.widget_36, 3, 1, 1, 1)
@@ -2249,9 +2300,9 @@ class Ui_MainWindow(object):
         self.gridLayout_44.setObjectName(u"gridLayout_44")
         self.tableListTask = QTableView(self.pageListTask)
         self.tableListTask.setObjectName(u"tableListTask")
-        self.tableListTask.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tableListTask.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableListTask.setGridStyle(Qt.NoPen)
+        self.tableListTask.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tableListTask.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tableListTask.setGridStyle(Qt.PenStyle.NoPen)
         self.tableListTask.setSortingEnabled(True)
         self.tableListTask.setCornerButtonEnabled(True)
 
@@ -2456,6 +2507,10 @@ class Ui_MainWindow(object):
         self.label_34.setText(QCoreApplication.translate("MainWindow", u"\u0414\u0430\u0442\u0430 \u0432\u044b\u0445\u043e\u0434\u0430", None))
         self.backAddTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.addTitleBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
+        self.tiz_1_err.setText("")
+        self.nt_1_err.setText("")
+        self.tt_1_err.setText("")
+        self.dt_1_err.setText("")
         self.label_40.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435", None))
         self.imageAreaEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430 \u0434\u043b\u044f \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f", None))
         self.label_41.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435", None))
@@ -2486,6 +2541,7 @@ class Ui_MainWindow(object):
         self.label_89.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043a\u0440\u0435\u043f\u0438\u0442\u0435 \u0444\u0430\u0439\u043b \u0432 \u0444\u043e\u0440\u043c\u0430\u0442\u0435 \".rar\", \".docx\"", None))
         self.fileAdd.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b \".rar\" \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u043f\u0440\u0435\u0432\u044b\u0448\u0430\u0442\u044c 4\u0433\u0431, \".docx\" \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u043f\u0440\u0435\u0432\u044b\u0448\u0430\u0442\u044c 100\u043c\u0431", None))
         self.label_90.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430", None))
+        self.rar_error.setText("")
         self.sendFile.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0441\u0442\u0430\u0432 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.addTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
