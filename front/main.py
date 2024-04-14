@@ -808,11 +808,6 @@ class MainWindow(QMainWindow):
 
         connection = connect()
         cursor = connection.cursor()
-
-        if task_text == "":
-            self.ui.taskEditAdd.setPlaceholderText("Ты долбаеб блять?")
-            return
-
         cursor.execute('INSERT INTO "Task" (date, task_text) VALUES (%s, %s) RETURNING task_id', (date, task_text))
         task_id = cursor.fetchone()[0]
 
