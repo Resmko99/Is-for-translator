@@ -2140,15 +2140,7 @@
         border: 1px solid #FFCC33;
     }
 
-    #addLogo {
-        background-color: #3D434B;
-        border: 1px solid #FFCC33;
-        border-radius: 10px;
-        font: 18px "Inter";
-        color: #FFFFFF;
-    }
-
-    #addLogo:pressed {
+    #widget_19 QPushButton:pressed {
         background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
@@ -2156,16 +2148,8 @@
         color: #FFFFFF;
     }
 
-    #editLogo {
+    #widget_19 QPushButton {
         background-color: #3D434B;
-        border: 1px solid #FFCC33;
-        border-radius: 10px;
-        font: 18px "Inter";
-        color: #FFFFFF;
-    }
-
-    #editLogo:pressed {
-        background-color: #545c67;
         border: 1px solid #FFCC33;
         border-radius: 10px;
         font: 18px "Inter";
