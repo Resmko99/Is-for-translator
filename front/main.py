@@ -325,7 +325,7 @@ class MainWindow(QMainWindow):
         self.ui.incomeBtn_1.setToolTip("Доходы")
         self.ui.titleBtn_1.setToolTip("Тайтлы")
         self.ui.scheduleBtn_1.setToolTip("Расписание")
-        self.ui.socialNetworksBtn_1.setToolTip("Соц. сети")
+        self.ui.socialNetworksBtn_1.setToolTip("Соц. сеть")
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
@@ -1435,21 +1435,32 @@ class MainWindow(QMainWindow):
         selected_date = self.ui.dateReleaseAddTitle.date()
         release_date = selected_date.toPython()
 
+        if not image_path:
+            self.ui.imageArea.setPlaceholderText('Вы не выбрали изображение.')
+            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+        if not title_name:
+            self.ui.nameAddTitle.setPlaceholderText('Вы не написали название тайтла.')
+            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
+        if not title_description:
+            self.ui.descriptionEdit.setPlaceholderText('Вы не написали описание.')
+            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
 
-        if not title_name or not title_description or not image_path:
-            self.show_error_message("Пожалуйста, заполните все обязательные поля и попробуйте снова!")
-            return
+        # Установка таймера на 5 секунд для сброса стилей и текстовых подсказок
+        timer = QTimer(self)
+        timer.singleShot(5000, self.reset_input_fields)
 
 
         # Загружаем и сжимаем изображение
         original_image = self.load_image(image_path)
-        if original_image is not None:
+        # Check if original_image is valid
+        if original_image is not None and title_name and title_description is not None:
+            # Continue with image processing and database insertion
             compressed_image, _ = self.fractal_compress(original_image)
             buffer = BytesIO()
             buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
             image_data = buffer.getvalue()
         else:
-            print("Ошибка загрузки изображения.")
+            print("Ошибка загрузки изображения или отсутствует название/описание.")
             return
 
         connection = connect()
@@ -1469,6 +1480,13 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
         self.load_titles_by_team()
         self.load_team()
+
+    def reset_input_fields(self):
+        # Сброс стилей и текстовых подсказок полей ввода
+        self.ui.imageArea.setPlaceholderText('Нажмите два раза для добавления изображения')
+        self.ui.imageArea.setStyleSheet("placeholder-text-color: #FFFFFF")  # Сброс стилей
+        self.ui.nameAddTitle.setPlaceholderText('')
+        self.ui.descriptionEdit.setPlaceholderText('')
 
     def setup_calender_widget(self):
         calender = Calender(self.ui)
