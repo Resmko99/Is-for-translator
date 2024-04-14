@@ -610,7 +610,7 @@ class MainWindow(QMainWindow):
         self.ui.fileAdd.clear()
 
     def authenticate(self):
-        SCOPES = ['https://www.googleapis.com/auth/drive.file']
+        SCOPES = ['https://www.googleapis.com/auth/drive']
 
         # Получаем абсолютный путь к текущему файлу
         current_dir = os.path.dirname(os.path.abspath(__file__))
