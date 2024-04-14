@@ -367,6 +367,18 @@ class MainWindow(QMainWindow):
         for button, page in move_buttons:
             button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, page))
 
+        clear_buttons = [
+            self.ui.backTaskBtn, self.ui.backAddIncome, self.ui.titleBtn_1,
+            self.ui.incomeBtn_1, self.ui.scheduleBtn_1, self.ui.socialNetworksBtn_1,
+            self.ui.fileSharingBtn_1, self.ui.accountBtn_1, self.ui.translateBtn_1,
+            self.ui.aboutUs_1, self.ui.titleBtn_2, self.ui.incomeBtn_2,
+            self.ui.scheduleBtn_2, self.ui.socialNetworksBtn_2, self.ui.fileSharingBtn_2,
+            self.ui.accountBtn_2, self.ui.translateBtn_2, self.ui.aboutUs_2
+        ]
+
+        for button in clear_buttons:
+            button.clicked.connect(self.all_clear)
+
         self.ui.tableListTask.doubleClicked.connect(self.view_task)
         self.ui.closeBtn.clicked.connect(self.closeApp)
         self.ui.expandBtn.clicked.connect(self.toggle_screen_state)
@@ -542,6 +554,14 @@ class MainWindow(QMainWindow):
         self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
         self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
         self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+    def all_clear(self):
+        self.ui.taskEditAdd.clear()
+        self.ui.nameChapterAddIncome.clear()
+        self.ui.salaryAddIncome.clear()
+        self.ui.imageArea.clear()
+        self.ui.nameAddTitle.clear()
+        self.ui.descriptionEdit.clear()
 
     def post_init(self):
         if not self.autentificate:
@@ -1715,5 +1735,4 @@ if __name__ == "__main__":
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
-    # window.post_init()
     sys.exit(app.exec())
