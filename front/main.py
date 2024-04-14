@@ -1331,27 +1331,11 @@ class MainWindow(QMainWindow):
         # Получаем путь к изображению
         image_path = self.ui.imageAreaEdit.toPlainText()
 
-        if not new_title_name:
-            self.ui.nameEditTitle.setPlaceholderText('Вы не написали название тайтла.')
-            self.ui.nameEditTitle.setStyleSheet("placeholder-text-color: red;")
-        else:
-            self.ui.nameEditTitle.setPlaceholderText('')
-
-        if not new_description:
-            self.ui.descriptionEdit_2.setPlaceholderText('Вы не написали описание.')
-            self.ui.descriptionEdit_2.setStyleSheet("placeholder-text-color: red;")
-        else:
-            self.ui.descriptionEdit_2.setPlaceholderText('')
-
-        # Установка таймера на 5 секунд для сброса стилей и текстовых подсказок
-        timer = QTimer(self)
-        timer.singleShot(5000, self.reset_input_edit_fields)
-
         if image_path:
             # Загружаем изображение
             original_image = self.load_image(image_path)
 
-            if original_image is not None and new_title_name and new_description:
+            if original_image is not None:
                 # Сжимаем изображение
                 compressed_image, _ = self.fractal_compress(original_image)
 
@@ -1365,19 +1349,34 @@ class MainWindow(QMainWindow):
         else:
             image_data = None
 
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if new_title_name.strip() == "" and new_description.strip() == "":
+            self.ui.nameEditTitle.setPlaceholderText("Вы не написали обновленное название тайтла.")
+            self.ui.nameEditTitle.setStyleSheet("placeholder-text-color: red;")
+            self.ui.descriptionEdit_2.setPlaceholderText("Вы не написали обновленное описание тайтла.")
+            self.ui.descriptionEdit_2.setStyleSheet("placeholder-text-color: red;")
+            return
+        if new_title_name.strip() == "":
+            self.ui.nameEditTitle.setPlaceholderText("Вы не написали обновленное название тайтла.")
+            self.ui.nameEditTitle.setStyleSheet("placeholder-text-color: red;")
+            return
+        if new_description.strip() == "":
+            self.ui.descriptionEdit_2.setPlaceholderText("Вы не написали обновленное описание тайтла.")
+            self.ui.descriptionEdit_2.setStyleSheet("placeholder-text-color: red;")
+            return
+
         connection = connect()
         cursor = connection.cursor()
-        if new_title_name and new_description is not None:
-            if image_data is not None:
-                cursor.execute(
-                    'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
-                    (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
-            else:
-                cursor.execute(
-                    'UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
-                    (new_title_name, new_description, team_id, release_date, self.title_id))
+        if image_data is not None:
+            cursor.execute(
+                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
         else:
-            return
+            cursor.execute(
+                'UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                (new_title_name, new_description, team_id, release_date, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -1386,9 +1385,8 @@ class MainWindow(QMainWindow):
         self.load_titles_by_team()
 
     def reset_input_edit_fields(self):
-        # Сброс стилей и текстовых подсказок полей ввода
         self.ui.imageAreaEdit.setPlaceholderText('Нажмите два раза для добавления изображения')
-        self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")  # Сброс стилей
+        self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.nameEditTitle.setPlaceholderText('')
         self.ui.descriptionEdit_2.setPlaceholderText('')
 
@@ -1463,25 +1461,44 @@ class MainWindow(QMainWindow):
         selected_date = self.ui.dateReleaseAddTitle.date()
         release_date = selected_date.toPython()
 
-        if not image_path:
-            self.ui.imageArea.setPlaceholderText('Вы не выбрали изображение.')
-            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
-        if not title_name:
-            self.ui.nameAddTitle.setPlaceholderText('Вы не написали название тайтла.')
-            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
-        if not title_description:
-            self.ui.descriptionEdit.setPlaceholderText('Вы не написали описание.')
-            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
-
-        # Установка таймера на 5 секунд для сброса стилей и текстовых подсказок
         timer = QTimer(self)
-        timer.singleShot(5000, self.reset_input_fields)
+        timer.singleShot(2000, self.reset_input_fields)
 
+        if image_path.strip() == "" and title_name.strip() == "" and title_description.strip() == "":
+            self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
+            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+            self.ui.nameAddTitle.setPlaceholderText("Вы не написали название тайтла.")
+            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
+            self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
+            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if title_name.strip() == "" and title_description.strip() == "":
+            self.ui.nameAddTitle.setPlaceholderText("Вы не написали название тайтла.")
+            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
+            self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
+            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if image_path.strip() == "":
+            self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
+            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if title_name.strip() == "":
+            self.ui.nameAddTitle.setPlaceholderText("Вы не написали название тайтла.")
+            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if title_description.strip() == "":
+            self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
+            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            return
 
         # Загружаем и сжимаем изображение
         original_image = self.load_image(image_path)
         # Check if original_image is valid
-        if original_image is not None and title_name and title_description is not None:
+        if original_image is not None:
             # Continue with image processing and database insertion
             compressed_image, _ = self.fractal_compress(original_image)
             buffer = BytesIO()
