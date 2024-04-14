@@ -518,6 +518,10 @@ class MainWindow(QMainWindow):
         self.ui.fileSharingBtn_1.clicked.connect(self.post_init)
         self.ui.fileSharingBtn_2.clicked.connect(self.post_init)
 
+        self.path_to_publish_file = 'publish.txt'
+        self.ui.publishBtn.clicked.connect(self.on_publishBtn_click)
+        self.ui.imagePost.mouseDoubleClickEvent = self.file_add_double_click
+
         self.generate_key()
         self.load_saved_credentials()
 
@@ -622,6 +626,21 @@ class MainWindow(QMainWindow):
         creds = flow.run_local_server(port=0)
 
         return build('drive', 'v3', credentials=creds)
+
+    def on_publishBtn_click(self):
+        postEdit = self.ui.postEdit.toPlainText()
+        imagePost = self.file_path
+        print(imagePost, postEdit)
+
+        if not postEdit or not imagePost:
+            QMessageBox.warning(self, 'Внимание', 'Вы не добавили текст публикации или URL изображения')
+            return
+
+        with open(self.path_to_publish_file, 'w') as file:
+            file.write(f'{postEdit}\n{imagePost}')
+        print(f"Публикация успешно записана в файл: {self.path_to_publish_file}")
+        self.ui.postEdit.clear()
+        self.ui.fileAdd.clear()
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()

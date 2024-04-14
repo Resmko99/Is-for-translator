@@ -5,6 +5,7 @@ configparser
 psycopg2
 Telebot
 PySide6
+PySide6-QtAds
 googletrans
 google-api-python-client
 google-auth-httplib2

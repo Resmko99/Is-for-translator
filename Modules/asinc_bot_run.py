@@ -1,18 +1,57 @@
+import os
+import telebot
+import psycopg2
 import configparser
-from telebot.async_telebot import AsyncTeleBot
 from telebot import types
+from telebot.async_telebot import AsyncTeleBot
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import asyncio
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-token = config.get('Team_token', 'token')
+
+# Читаем файл config.ini
+config.read(os.path.join(os.path.dirname(__file__), '..', 'Source', 'config.ini'))
+
+# Получаем значения из файла
+db_user = config.get('database', 'user')
+db_password = config.get('database', 'password')
+db_host = config.get('database', 'host')
+db_name = config.get('database', 'name')
+
+conn = psycopg2.connect(
+    dbname=db_name,
+    user=db_user,
+    password=db_password,
+    host=db_host
+)
+cursor = conn.cursor()
+cursor.execute("SELECT bot_id FROM Teams")
+bot_id = cursor.fetchone()[0]
+token = bot_id
 
 bot = AsyncTeleBot(token)
 
 subscribers_config = configparser.ConfigParser()
 subscribers_config.read('subscribers.ini')
 
-user_steps = {}
+async def read_publication():
+    if 'publish.txt' not in os.listdir():
+        return None
+    with open('publish.txt', 'r') as fp:
+        lines = fp.readlines()
+    os.remove('publish.txt')
+    return lines
 
+class FileHandler(FileSystemEventHandler):
+    async def on_created(self, event):
+        if event.src_path.endswith('publish.txt'):
+            contents = await read_publication()
+            if contents is not None:
+                for chat_id in subscribers_config['subscribers']:
+                    await bot.send_message(chat_id, contents[0])
+                    await bot.send_photo(chat_id, contents[1])
 
 @bot.message_handler(commands=['start'])
 async def start_command(message):
@@ -24,41 +63,23 @@ async def start_command(message):
     user_chat_id = str(message.chat.id)
     if user_chat_id in subscribers_config['subscribers']:
         await bot.send_message(message.chat.id,
-                               'Вы уже подписаны на нашу рассылку. Если вы хотите отписаться, просто нажмите на кнопку.',
+                               'Вы уже подписаны на нашу рассылку.',
                                reply_markup=keyboard)
     else:
         await bot.send_message(message.chat.id,
                                'Вы еще не подписаны на нашу рассылку. Если хотите подписаться, просто нажмите на кнопку.',
                                reply_markup=keyboard)
 
+async def main():
+    event_handler = FileHandler()
+    observer = Observer()
+    observer.schedule(event_handler, path='.', recursive=False)
+    observer.start()
+    try:
+        while True:
+            await asyncio.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
 
-@bot.message_handler(func=lambda message: True)
-async def process_user_reply(message):
-    user_chat_id = str(message.chat.id)
-    if message.text == 'Подписаться на рассылку':
-        if user_chat_id not in subscribers_config['subscribers']:
-            await add_subscriber(user_chat_id)
-            await bot.send_message(user_chat_id, 'Вы подписались на рассылку.')
-        else:
-            await bot.send_message(user_chat_id, 'Вы уже подписаны на рассылку.')
-
-    elif message.text == 'Отписаться от рассылки':
-        if user_chat_id in subscribers_config['subscribers']:
-            await remove_subscriber(user_chat_id)
-            await bot.send_message(user_chat_id, 'Вы отписались от рассылки.')
-        else:
-            await bot.send_message(user_chat_id, 'Вы уже отписаны от рассылки.')
-
-
-async def add_subscriber(chat_id):
-    subscribers_config.set('subscribers', chat_id, '')
-    with open('subscribers.ini', 'w') as configfile:
-        subscribers_config.write(configfile)
-
-
-async def remove_subscriber(chat_id):
-    subscribers_config.remove_option('subscribers', chat_id)
-    with open('subscribers.ini', 'w') as configfile:
-        subscribers_config.write(configfile)
-
-bot.polling(none_stop=True)
+asyncio.run(main())
