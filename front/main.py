@@ -831,17 +831,25 @@ class MainWindow(QMainWindow):
     def on_publishBtn_click(self):
         postEdit = self.ui.postEdit.toPlainText()
         imagePost = self.file_path
+        new_imagePost = self.ui.imagePost.toPlainText()
         print(imagePost, postEdit)
 
-        if not postEdit or not imagePost:
-            QMessageBox.warning(self, 'Внимание', 'Вы не добавили текст публикации или URL изображения')
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (postEdit and imagePost):
+            if not postEdit:
+                self.ui.postEdit.setPlaceholderText("Вы не написали текст публикации.")
+                self.ui.postEdit.setStyleSheet("placeholder-text-color: red;")
+            if not new_imagePost:
+                self.ui.imagePost.setPlaceholderText("Вы не выбрали изображение.")
+                self.ui.imagePost.setStyleSheet("placeholder-text-color: red;")
             return
 
         with open(self.path_to_publish_file, 'w') as file:
             file.write(f'{postEdit}\n{imagePost}')
         print(f"Публикация успешно записана в файл: {self.path_to_publish_file}")
         self.ui.postEdit.clear()
-        self.ui.fileAdd.clear()
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
@@ -1003,8 +1011,13 @@ class MainWindow(QMainWindow):
         task_text = self.ui.taskEditAdd.toPlainText()
         date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
 
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
         if not task_text:
-            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            if not task_text:
+                self.ui.taskEditAdd.setPlaceholderText("Вы не написали название тайтла.")
+                self.ui.taskEditAdd.setStyleSheet("placeholder-text-color: red;")
             return
 
         connection = connect()
@@ -1033,8 +1046,13 @@ class MainWindow(QMainWindow):
         updated_date = self.ui.dateEditEditTask.date().toString("yyyy-MM-dd")
         updated_user_id = self.ui.employeeEditTask.currentData()
 
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
         if not updated_task_text:
-            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            if not updated_task_text:
+                self.ui.taskEditChange.setPlaceholderText("Вы не написали название тайтла.")
+                self.ui.taskEditChange.setStyleSheet("placeholder-text-color: red;")
             return
 
         try:
@@ -1625,6 +1643,10 @@ class MainWindow(QMainWindow):
         self.ui.salaryAddIncome.setPlaceholderText('')
         self.ui.nameChapterEditIncome.setPlaceholderText('')
         self.ui.salaryEditIncome.setPlaceholderText('')
+        self.ui.taskEditAdd.setPlaceholderText('')
+        self.ui.taskEditChange.setPlaceholderText('')
+        self.ui.imagePost.setPlaceholderText('')
+        self.ui.postEdit.setPlaceholderText('')
 
     def open_image_dialog(self, event):
         # Получаем путь к рабочему столу
@@ -1698,7 +1720,7 @@ class MainWindow(QMainWindow):
         release_date = selected_date.toPython()
 
         timer = QTimer(self)
-        timer.singleShot(2000, self.reset_input_fields)
+        timer.singleShot(2000, self.reset_input_edit_fields)
 
         if not (title_name and title_description and image_path):
             if not title_name:
@@ -1746,7 +1768,7 @@ class MainWindow(QMainWindow):
     def reset_input_fields(self):
         # Сброс стилей и текстовых подсказок полей ввода
         self.ui.imageArea.setPlaceholderText('Нажмите два раза для добавления изображения')
-        self.ui.imageArea.setStyleSheet("placeholder-text-color: #FFFFFF")  # Сброс стилей
+        self.ui.imageArea.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.nameAddTitle.setPlaceholderText('')
         self.ui.descriptionEdit.setPlaceholderText('')
 
