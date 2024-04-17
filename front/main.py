@@ -1234,8 +1234,16 @@ class MainWindow(QMainWindow):
         chapter = self.ui.nameChapterAddIncome.text()
         money = self.ui.salaryAddIncome.text()
 
-        if not money or not chapter:
-            self.show_error_message("Вы не заполнили поля! Пожалуйста повторите попытку!")
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (chapter and money):
+            if not chapter:
+                self.ui.nameChapterAddIncome.setPlaceholderText("Вы не написали название главы.")
+                self.ui.nameChapterAddIncome.setStyleSheet("placeholder-text-color: red;")
+            if not money:
+                self.ui.salaryAddIncome.setPlaceholderText("Вы не написали заработную плату.")
+                self.ui.salaryAddIncome.setStyleSheet("placeholder-text-color: red;")
             return
 
         connection = connect()
@@ -1360,8 +1368,16 @@ class MainWindow(QMainWindow):
         edit_chapter = self.ui.nameChapterEditIncome.text()
         edit_money = self.ui.salaryEditIncome.text()
 
-        if not edit_chapter or not edit_money:
-            self.show_error_message("Вы не заполнили поля! Пожалуйста повторите попытку!")
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (edit_chapter and edit_money):
+            if not edit_chapter:
+                self.ui.nameChapterEditIncome.setPlaceholderText("Вы не написали название главы.")
+                self.ui.nameChapterEditIncome.setStyleSheet("placeholder-text-color: red;")
+            if not edit_money:
+                self.ui.salaryEditIncome.setPlaceholderText("Вы не написали заработную плату.")
+                self.ui.salaryEditIncome.setStyleSheet("placeholder-text-color: red;")
             return
 
         try:
@@ -1605,6 +1621,10 @@ class MainWindow(QMainWindow):
         self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.nameEditTitle.setPlaceholderText('')
         self.ui.descriptionEdit_2.setPlaceholderText('')
+        self.ui.nameChapterAddIncome.setPlaceholderText('')
+        self.ui.salaryAddIncome.setPlaceholderText('')
+        self.ui.nameChapterEditIncome.setPlaceholderText('')
+        self.ui.salaryEditIncome.setPlaceholderText('')
 
     def open_image_dialog(self, event):
         # Получаем путь к рабочему столу
