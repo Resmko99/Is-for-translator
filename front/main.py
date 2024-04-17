@@ -791,10 +791,17 @@ class MainWindow(QMainWindow):
                 self.ui.recipientFile.addItem(item['name'], item['id'])
 
     def upload_to_drive(self):
+        add_file = self.ui.fileAdd.toPlainText()
+
         if not self.drive_service:
             self.drive_service = self.authenticate()
-        if not self.file_path:
-            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали файл')
+
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not add_file:
+            self.ui.fileAdd.setPlaceholderText("Вы не выбрали изображение.")
+            self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
             return
 
         folder_id = self.ui.recipientFile.currentData()
@@ -831,20 +838,7 @@ class MainWindow(QMainWindow):
     def on_publishBtn_click(self):
         postEdit = self.ui.postEdit.toPlainText()
         imagePost = self.file_path
-        new_imagePost = self.ui.imagePost.toPlainText()
         print(imagePost, postEdit)
-
-        timer = QTimer(self)
-        timer.singleShot(2000, self.reset_input_edit_fields)
-
-        if not (postEdit and imagePost):
-            if not postEdit:
-                self.ui.postEdit.setPlaceholderText("Вы не написали текст публикации.")
-                self.ui.postEdit.setStyleSheet("placeholder-text-color: red;")
-            if not new_imagePost:
-                self.ui.imagePost.setPlaceholderText("Вы не выбрали изображение.")
-                self.ui.imagePost.setStyleSheet("placeholder-text-color: red;")
-            return
 
         with open(self.path_to_publish_file, 'w') as file:
             file.write(f'{postEdit}\n{imagePost}')
@@ -1015,9 +1009,8 @@ class MainWindow(QMainWindow):
         timer.singleShot(2000, self.reset_input_edit_fields)
 
         if not task_text:
-            if not task_text:
-                self.ui.taskEditAdd.setPlaceholderText("Вы не написали название тайтла.")
-                self.ui.taskEditAdd.setStyleSheet("placeholder-text-color: red;")
+            self.ui.taskEditAdd.setPlaceholderText("Вы не написали название тайтла.")
+            self.ui.taskEditAdd.setStyleSheet("placeholder-text-color: red;")
             return
 
         connection = connect()
@@ -1051,7 +1044,7 @@ class MainWindow(QMainWindow):
 
         if not updated_task_text:
             if not updated_task_text:
-                self.ui.taskEditChange.setPlaceholderText("Вы не написали название тайтла.")
+                self.ui.taskEditChange.setPlaceholderText("Вы не написали задачу.")
                 self.ui.taskEditChange.setStyleSheet("placeholder-text-color: red;")
             return
 
@@ -1615,8 +1608,6 @@ class MainWindow(QMainWindow):
         else:
             image_data = None
 
-
-
         connection = connect()
         cursor = connection.cursor()
         if image_data is not None:
@@ -1634,10 +1625,69 @@ class MainWindow(QMainWindow):
         self.ui.imageAreaEdit.clear()
         self.load_titles_by_team()
 
+    def add_title_to_database(self):
+        comboBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
+        title_name = self.ui.nameAddTitle.text()
+        title_description = self.ui.descriptionEdit.toPlainText()
+        image_path = self.ui.imageArea.toPlainText()
+        selected_date = self.ui.dateReleaseAddTitle.date()
+        release_date = selected_date.toPython()
+
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (title_name and title_description and image_path):
+            if not title_name:
+                self.ui.nameAddTitle.setPlaceholderText("Вы не написали название тайтла.")
+                self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
+            if not title_description:
+                self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
+                self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            if not image_path:
+                self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
+                self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        # Загружаем и сжимаем изображение
+        original_image = self.load_image(image_path)
+        # Check if original_image is valid
+        if original_image is not None:
+            # Continue with image processing and database insertion
+            compressed_image, _ = self.fractal_compress(original_image)
+            buffer = BytesIO()
+            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
+            image_data = buffer.getvalue()
+        else:
+            print("Ошибка загрузки изображения или отсутствует название/описание.")
+            return
+
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id, title_date) '
+                       'VALUES (%s, %s, %s, %s, %s)',
+                       (title_name, title_description, psycopg2.Binary(image_data), comboBox_team, release_date))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        # Очистка полей ввода после вставки
+        self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
+        self.ui.nameAddTitle.clear()
+        self.ui.descriptionEdit.clear()
+        self.ui.imageArea.clear()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
+        self.load_titles_by_team()
+        self.load_team()
+
+
     def reset_input_edit_fields(self):
         self.ui.imageAreaEdit.setPlaceholderText('Нажмите два раза для добавления изображения')
         self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.nameEditTitle.setPlaceholderText('')
+        self.ui.nameAddTitle.setPlaceholderText('')
+        self.ui.descriptionEdit.setPlaceholderText('')
+        self.ui.imageArea.setPlaceholderText('Нажмите два раза для добавления изображения')
+        self.ui.imageArea.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.descriptionEdit_2.setPlaceholderText('')
         self.ui.nameChapterAddIncome.setPlaceholderText('')
         self.ui.salaryAddIncome.setPlaceholderText('')
@@ -1647,6 +1697,8 @@ class MainWindow(QMainWindow):
         self.ui.taskEditChange.setPlaceholderText('')
         self.ui.imagePost.setPlaceholderText('')
         self.ui.postEdit.setPlaceholderText('')
+        self.ui.fileAdd.setPlaceholderText('Нажмите два раза для добавления изображения')
+        self.ui.fileAdd.setStyleSheet("placeholder-text-color: #FFFFFF")
 
     def open_image_dialog(self, event):
         # Получаем путь к рабочему столу
@@ -1711,59 +1763,6 @@ class MainWindow(QMainWindow):
     def add_logo_button_clicked(self):
         self.open_file_explorer()
 
-    def add_title_to_database(self):
-        comboBox_team = self.ui.nameCrewTranslatorAddTitle.currentData()
-        title_name = self.ui.nameAddTitle.text()
-        title_description = self.ui.descriptionEdit.toPlainText()
-        image_path = self.ui.imageArea.toPlainText()
-        selected_date = self.ui.dateReleaseAddTitle.date()
-        release_date = selected_date.toPython()
-
-        timer = QTimer(self)
-        timer.singleShot(2000, self.reset_input_edit_fields)
-
-        if not (title_name and title_description and image_path):
-            if not title_name:
-                self.ui.nameAddTitle.setPlaceholderText("Вы не написали название тайтла.")
-                self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
-            if not title_description:
-                self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
-                self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
-            if not image_path:
-                self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
-                self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
-            return
-
-        # Загружаем и сжимаем изображение
-        original_image = self.load_image(image_path)
-        # Check if original_image is valid
-        if original_image is not None:
-            # Continue with image processing and database insertion
-            compressed_image, _ = self.fractal_compress(original_image)
-            buffer = BytesIO()
-            buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
-            image_data = buffer.getvalue()
-        else:
-            print("Ошибка загрузки изображения или отсутствует название/описание.")
-            return
-
-        connection = connect()
-        cursor = connection.cursor()
-        cursor.execute('INSERT INTO "Title" (title_name, description, icon_title, team_id, title_date) '
-                       'VALUES (%s, %s, %s, %s, %s)',
-                       (title_name, title_description, psycopg2.Binary(image_data), comboBox_team, release_date))
-        connection.commit()
-        cursor.close()
-        connection.close()
-
-        # Очистка полей ввода после вставки
-        self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
-        self.ui.nameAddTitle.clear()
-        self.ui.descriptionEdit.clear()
-        self.ui.imageArea.clear()
-        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageTitle)
-        self.load_titles_by_team()
-        self.load_team()
 
     def reset_input_fields(self):
         # Сброс стилей и текстовых подсказок полей ввода
