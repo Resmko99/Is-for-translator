@@ -367,7 +367,6 @@ class MainWindow(QMainWindow):
         for button, page in move_buttons:
             button.clicked.connect(partial(self.ui.stackedWidget_2.setCurrentWidget, page))
 
-
         clear_buttons = [
             self.ui.backTaskBtn, self.ui.backAddIncome, self.ui.titleBtn_1,
             self.ui.incomeBtn_1, self.ui.scheduleBtn_1, self.ui.socialNetworksBtn_1,
@@ -386,7 +385,6 @@ class MainWindow(QMainWindow):
         self.ui.minimazeBtn.clicked.connect(self.minimizeApp)
         self.ui.taskAddBtn.clicked.connect(self.apply_task)
         self.ui.addIncomeBtn.clicked.connect(self.apply_income)
-
         self.screen_expanded = False
 
         # Установка фильтра событий для главного окна
@@ -520,6 +518,187 @@ class MainWindow(QMainWindow):
                                      background: none;
                                  }
                              """)
+        self.ui.taskEditView.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
+        self.ui.taskEditAdd.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
+
+        self.ui.taskEditChange.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
+        self.ui.postEdit.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
+        self.ui.textEdit.verticalScrollBar().setStyleSheet("""
+                                 QScrollBar:vertical {
+                                     background-color: transparent;
+                                     border: none;
+                                     border-radius: 5px;
+                                     width: 15px;
+                                     margin-right: 5px;
+                                     margin-top: 2px;
+                                     margin-bottom: 2px;
+                                 }
+
+                                 QScrollBar::handle:vertical {
+                                     background-color: #FFFFFF;
+                                     border-radius: 5px;
+                                     min-height: 20px;
+                                 }
+
+                                 QScrollBar::add-line:vertical,
+                                 QScrollBar::sub-line:vertical {
+                                     background-color: #2E333A;
+                                     height: 0px;
+                                     subcontrol-position: bottom;
+                                     subcontrol-origin: margin;
+                                 }
+
+                                 QScrollBar::add-page:vertical,
+                                 QScrollBar::sub-page:vertical {
+                                     background: none;
+                                 }
+                             """)
+        self.ui.textEdit_2.verticalScrollBar().setStyleSheet("""
+                                         QScrollBar:vertical {
+                                             background-color: transparent;
+                                             border: none;
+                                             border-radius: 5px;
+                                             width: 15px;
+                                             margin-right: 5px;
+                                             margin-top: 2px;
+                                             margin-bottom: 2px;
+                                         }
+
+                                         QScrollBar::handle:vertical {
+                                             background-color: #FFFFFF;
+                                             border-radius: 5px;
+                                             min-height: 20px;
+                                         }
+
+                                         QScrollBar::add-line:vertical,
+                                         QScrollBar::sub-line:vertical {
+                                             background-color: #2E333A;
+                                             height: 0px;
+                                             subcontrol-position: bottom;
+                                             subcontrol-origin: margin;
+                                         }
+
+                                         QScrollBar::add-page:vertical,
+                                         QScrollBar::sub-page:vertical {
+                                             background: none;
+                                         }
+                                     """)
         self.ui.SearchBtn.clicked.connect(self.load_titles_by_team)
         self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
 
@@ -532,6 +711,10 @@ class MainWindow(QMainWindow):
         self.ui.fileSharingBtn_1.clicked.connect(self.post_init)
         self.ui.fileSharingBtn_2.clicked.connect(self.post_init)
 
+        self.path_to_publish_file = 'publish.txt'
+        self.ui.publishBtn.clicked.connect(self.on_publishBtn_click)
+        self.ui.imagePost.mouseDoubleClickEvent = self.file_add_double_click
+
         self.generate_key()
         self.load_saved_credentials()
 
@@ -543,7 +726,7 @@ class MainWindow(QMainWindow):
         self.load_edit_users()
         self.load_edit_team_income()
         self.load_edit_title_income()
-        self.load_account_teams()
+        # self.load_account_teams()
         self.load_edit_teams()
 
         self.file_path = None
@@ -552,6 +735,14 @@ class MainWindow(QMainWindow):
         self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
         self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
         self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+    def all_clear(self):
+        self.ui.taskEditAdd.clear()
+        self.ui.nameChapterAddIncome.clear()
+        self.ui.salaryAddIncome.clear()
+        self.ui.imageArea.clear()
+        self.ui.nameAddTitle.clear()
+        self.ui.descriptionEdit.clear()
 
     def post_init(self):
         if not self.autentificate:
@@ -636,6 +827,21 @@ class MainWindow(QMainWindow):
         creds = flow.run_local_server(port=0)
 
         return build('drive', 'v3', credentials=creds)
+
+    def on_publishBtn_click(self):
+        postEdit = self.ui.postEdit.toPlainText()
+        imagePost = self.file_path
+        print(imagePost, postEdit)
+
+        if not postEdit or not imagePost:
+            QMessageBox.warning(self, 'Внимание', 'Вы не добавили текст публикации или URL изображения')
+            return
+
+        with open(self.path_to_publish_file, 'w') as file:
+            file.write(f'{postEdit}\n{imagePost}')
+        print(f"Публикация успешно записана в файл: {self.path_to_publish_file}")
+        self.ui.postEdit.clear()
+        self.ui.fileAdd.clear()
 
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
@@ -740,16 +946,16 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
-    def load_account_teams(self):
-        self.ui.nameCrewAccComboBox.clear()
-        self.ui.nameCrewAccComboBox.clear()
-        connection = connect()
-        cursor = connection.cursor()
-        cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
-        teams = cursor.fetchall()
-        for team in teams:
-            self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
-            self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
+    # def load_account_teams(self):
+    #     self.ui.nameCrewAccComboBox.clear()
+    #     self.ui.nameCrewAccComboBox.clear()
+    #     connection = connect()
+    #     cursor = connection.cursor()
+    #     cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
+    #     teams = cursor.fetchall()
+    #     for team in teams:
+    #         self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
+    #         self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
 
     def show_error_message(self, message):
         msg = QMessageBox()
@@ -792,19 +998,14 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
-
-    def all_clear(self):
-        self.ui.taskEditAdd.clear()
-        self.ui.nameChapterAddIncome.clear()
-        self.ui.salaryAddIncome.clear()
-        self.ui.imageArea.clear()
-        self.ui.nameAddTitle.clear()
-        self.ui.descriptionEdit.clear()
-
     def apply_task(self):
         user_id = self.ui.employeeAddTask.currentData()
         task_text = self.ui.taskEditAdd.toPlainText()
         date = self.ui.dateEdit.date().toString("yyyy-MM-dd")
+
+        if not task_text:
+            self.show_error_message("Вы не заполнили задачу! Пожалуйста повторите попытку!")
+            return
 
         connection = connect()
         cursor = connection.cursor()
@@ -1347,30 +1548,26 @@ class MainWindow(QMainWindow):
         selected_date = self.ui.dateReleaseEditTitle.date()
         release_date = selected_date.toPython()
 
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (new_title_name and new_description):
+            if not new_title_name:
+                self.ui.nameEditTitle.setPlaceholderText("Вы не написали название тайтла.")
+                self.ui.nameEditTitle.setStyleSheet("placeholder-text-color: red;")
+            if not new_description:
+                self.ui.descriptionEdit_2.setPlaceholderText("Вы не написали описание.")
+                self.ui.descriptionEdit_2.setStyleSheet("placeholder-text-color: red;")
+            return
+
         # Получаем путь к изображению
         image_path = self.ui.imageAreaEdit.toPlainText()
-
-        if not new_title_name:
-            self.ui.nameEditTitle.setPlaceholderText('Вы не написали название тайтла.')
-            self.ui.nameEditTitle.setStyleSheet("placeholder-text-color: red;")
-        else:
-            self.ui.nameEditTitle.setPlaceholderText('')
-
-        if not new_description:
-            self.ui.descriptionEdit_2.setPlaceholderText('Вы не написали описание.')
-            self.ui.descriptionEdit_2.setStyleSheet("placeholder-text-color: red;")
-        else:
-            self.ui.descriptionEdit_2.setPlaceholderText('')
-
-        # Установка таймера на 5 секунд для сброса стилей и текстовых подсказок
-        timer = QTimer(self)
-        timer.singleShot(5000, self.reset_input_edit_fields)
 
         if image_path:
             # Загружаем изображение
             original_image = self.load_image(image_path)
 
-            if original_image is not None and new_title_name and new_description:
+            if original_image is not None:
                 # Сжимаем изображение
                 compressed_image, _ = self.fractal_compress(original_image)
 
@@ -1384,19 +1581,18 @@ class MainWindow(QMainWindow):
         else:
             image_data = None
 
+
+
         connection = connect()
         cursor = connection.cursor()
-        if new_title_name and new_description is not None:
-            if image_data is not None:
-                cursor.execute(
-                    'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
-                    (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
-            else:
-                cursor.execute(
-                    'UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
-                    (new_title_name, new_description, team_id, release_date, self.title_id))
+        if image_data is not None:
+            cursor.execute(
+                'UPDATE "Title" SET title_name = %s, description = %s, icon_title = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                (new_title_name, new_description, psycopg2.Binary(image_data), team_id, release_date, self.title_id))
         else:
-            return
+            cursor.execute(
+                'UPDATE "Title" SET title_name = %s, description = %s, team_id = %s, title_date = %s WHERE title_id = %s',
+                (new_title_name, new_description, team_id, release_date, self.title_id))
         connection.commit()
         close_db_connect(connection, cursor)
 
@@ -1405,9 +1601,8 @@ class MainWindow(QMainWindow):
         self.load_titles_by_team()
 
     def reset_input_edit_fields(self):
-        # Сброс стилей и текстовых подсказок полей ввода
         self.ui.imageAreaEdit.setPlaceholderText('Нажмите два раза для добавления изображения')
-        self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")  # Сброс стилей
+        self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.nameEditTitle.setPlaceholderText('')
         self.ui.descriptionEdit_2.setPlaceholderText('')
 
@@ -1482,25 +1677,25 @@ class MainWindow(QMainWindow):
         selected_date = self.ui.dateReleaseAddTitle.date()
         release_date = selected_date.toPython()
 
-        if not image_path:
-            self.ui.imageArea.setPlaceholderText('Вы не выбрали изображение.')
-            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
-        if not title_name:
-            self.ui.nameAddTitle.setPlaceholderText('Вы не написали название тайтла.')
-            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
-        if not title_description:
-            self.ui.descriptionEdit.setPlaceholderText('Вы не написали описание.')
-            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
-
-        # Установка таймера на 5 секунд для сброса стилей и текстовых подсказок
         timer = QTimer(self)
-        timer.singleShot(5000, self.reset_input_fields)
+        timer.singleShot(2000, self.reset_input_fields)
 
+        if not (title_name and title_description and image_path):
+            if not title_name:
+                self.ui.nameAddTitle.setPlaceholderText("Вы не написали название тайтла.")
+                self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
+            if not title_description:
+                self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
+                self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            if not image_path:
+                self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
+                self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+            return
 
         # Загружаем и сжимаем изображение
         original_image = self.load_image(image_path)
         # Check if original_image is valid
-        if original_image is not None and title_name and title_description is not None:
+        if original_image is not None:
             # Continue with image processing and database insertion
             compressed_image, _ = self.fractal_compress(original_image)
             buffer = BytesIO()
@@ -1698,5 +1893,4 @@ if __name__ == "__main__":
     app.setStyleSheet(style_str)
     window = MainWindow()
     window.show()
-    # window.post_init()
     sys.exit(app.exec())
