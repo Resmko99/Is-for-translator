@@ -11,7 +11,7 @@ from PIL import Image
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
                             QTimer, QRegularExpression, QStandardPaths)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
 from cryptography.fernet import Fernet
@@ -1698,6 +1698,20 @@ class MainWindow(QMainWindow):
             self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
             self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
             self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if image_path.strip() == "" and title_description.strip() == "":
+            self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
+            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+            self.ui.descriptionEdit.setPlaceholderText("Вы не написали описание.")
+            self.ui.descriptionEdit.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if image_path.strip() == "" and title_name.strip() == "":
+            self.ui.imageArea.setPlaceholderText("Вы не выбрали изображение.")
+            self.ui.imageArea.setStyleSheet("placeholder-text-color: red;")
+            self.ui.nameAddTitle.setPlaceholderText("Вы не написали описание.")
+            self.ui.nameAddTitle.setStyleSheet("placeholder-text-color: red;")
             return
 
         if image_path.strip() == "":
