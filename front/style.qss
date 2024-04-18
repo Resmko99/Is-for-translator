@@ -549,6 +549,7 @@
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
         font: 18px "Inter";
+        color: #FFFFFF;
     }
 
     #publishBtn {
