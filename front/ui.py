@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -1962,79 +1962,76 @@ class Ui_MainWindow(object):
         self.horizontalLayout_18.setSpacing(5)
         self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
         self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_27 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_18.addItem(self.horizontalSpacer_27)
-
-        self.saveTeamBtn = QPushButton(self.widget_16)
-        self.saveTeamBtn.setObjectName(u"saveTeamBtn")
-        self.saveTeamBtn.setMinimumSize(QSize(140, 30))
-        self.saveTeamBtn.setMaximumSize(QSize(140, 30))
-        self.saveTeamBtn.setIcon(icon15)
-        self.saveTeamBtn.setIconSize(QSize(20, 20))
-
-        self.horizontalLayout_18.addWidget(self.saveTeamBtn)
-
 
         self.gridLayout_52.addWidget(self.widget_16, 3, 0, 1, 1)
 
         self.stackedWidget_2.addWidget(self.pageAccount)
-        self.pageUserAccount = QWidget()
-        self.pageUserAccount.setObjectName(u"pageUserAccount")
-        self.gridLayout_5 = QGridLayout(self.pageUserAccount)
+        self.pageAddTeams = QWidget()
+        self.pageAddTeams.setObjectName(u"pageAddTeams")
+        self.gridLayout_5 = QGridLayout(self.pageAddTeams)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.widget_18 = QWidget(self.pageUserAccount)
-        self.widget_18.setObjectName(u"widget_18")
-        self.gridLayout_25 = QGridLayout(self.widget_18)
-        self.gridLayout_25.setObjectName(u"gridLayout_25")
-        self.nameUserAccComboBox = QComboBox(self.widget_18)
-        self.nameUserAccComboBox.setObjectName(u"nameUserAccComboBox")
-        sizePolicy2.setHeightForWidth(self.nameUserAccComboBox.sizePolicy().hasHeightForWidth())
-        self.nameUserAccComboBox.setSizePolicy(sizePolicy2)
-        self.nameUserAccComboBox.setMinimumSize(QSize(540, 0))
-        self.nameUserAccComboBox.setMaximumSize(QSize(16777215, 16777215))
-
-        self.gridLayout_25.addWidget(self.nameUserAccComboBox, 1, 1, 1, 1)
-
-        self.horizontalSpacer_30 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_25.addItem(self.horizontalSpacer_30, 1, 2, 1, 1)
-
-        self.label_36 = QLabel(self.widget_18)
-        self.label_36.setObjectName(u"label_36")
-        self.label_36.setMinimumSize(QSize(270, 350))
-        self.label_36.setMaximumSize(QSize(200, 16777215))
-
-        self.gridLayout_25.addWidget(self.label_36, 0, 0, 4, 1)
-
-        self.label_93 = QLabel(self.widget_18)
-        self.label_93.setObjectName(u"label_93")
-
-        self.gridLayout_25.addWidget(self.label_93, 2, 1, 1, 1)
-
-        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_25.addItem(self.verticalSpacer_12, 3, 1, 1, 1)
-
-        self.label_95 = QLabel(self.widget_18)
-        self.label_95.setObjectName(u"label_95")
-
-        self.gridLayout_25.addWidget(self.label_95, 0, 1, 1, 1)
-
-
-        self.gridLayout_5.addWidget(self.widget_18, 0, 0, 1, 1)
-
-        self.label_35 = QLabel(self.pageUserAccount)
+        self.verticalLayout_13 = QVBoxLayout()
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.label_35 = QLabel(self.pageAddTeams)
         self.label_35.setObjectName(u"label_35")
 
-        self.gridLayout_5.addWidget(self.label_35, 1, 0, 1, 1)
+        self.verticalLayout_13.addWidget(self.label_35)
 
-        self.tableTeamAccUser = QTableView(self.pageUserAccount)
-        self.tableTeamAccUser.setObjectName(u"tableTeamAccUser")
+        self.teamsComboBoxTeam = QComboBox(self.pageAddTeams)
+        self.teamsComboBoxTeam.setObjectName(u"teamsComboBoxTeam")
+        self.teamsComboBoxTeam.setMinimumSize(QSize(540, 0))
 
-        self.gridLayout_5.addWidget(self.tableTeamAccUser, 2, 0, 1, 1)
+        self.verticalLayout_13.addWidget(self.teamsComboBoxTeam)
 
-        self.stackedWidget_2.addWidget(self.pageUserAccount)
+        self.label_36 = QLabel(self.pageAddTeams)
+        self.label_36.setObjectName(u"label_36")
+
+        self.verticalLayout_13.addWidget(self.label_36)
+
+        self.usersComboBoxTeam = QComboBox(self.pageAddTeams)
+        self.usersComboBoxTeam.setObjectName(u"usersComboBoxTeam")
+
+        self.verticalLayout_13.addWidget(self.usersComboBoxTeam)
+
+
+        self.gridLayout_5.addLayout(self.verticalLayout_13, 0, 0, 1, 1)
+
+        self.verticalSpacer_12 = QSpacerItem(20, 557, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_5.addItem(self.verticalSpacer_12, 1, 0, 1, 1)
+
+        self.widget_18 = QWidget(self.pageAddTeams)
+        self.widget_18.setObjectName(u"widget_18")
+        self.horizontalLayout_16 = QHBoxLayout(self.widget_18)
+        self.horizontalLayout_16.setSpacing(6)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_30 = QSpacerItem(678, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_16.addItem(self.horizontalSpacer_30)
+
+        self.backTeamsBtn = QPushButton(self.widget_18)
+        self.backTeamsBtn.setObjectName(u"backTeamsBtn")
+        self.backTeamsBtn.setMinimumSize(QSize(140, 30))
+        self.backTeamsBtn.setMaximumSize(QSize(140, 30))
+        self.backTeamsBtn.setIcon(icon16)
+        self.backTeamsBtn.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_16.addWidget(self.backTeamsBtn)
+
+        self.saveTeams = QPushButton(self.widget_18)
+        self.saveTeams.setObjectName(u"saveTeams")
+        self.saveTeams.setMinimumSize(QSize(140, 30))
+        self.saveTeams.setMaximumSize(QSize(140, 30))
+        self.saveTeams.setIcon(icon15)
+        self.saveTeams.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_16.addWidget(self.saveTeams)
+
+
+        self.gridLayout_5.addWidget(self.widget_18, 2, 0, 1, 2)
+
+        self.stackedWidget_2.addWidget(self.pageAddTeams)
         self.pageAddTask = QWidget()
         self.pageAddTask.setObjectName(u"pageAddTask")
         self.gridLayout_23 = QGridLayout(self.pageAddTask)
@@ -2358,8 +2355,8 @@ class Ui_MainWindow(object):
         self.incomeBtn_2.toggled.connect(self.incomeBtn_1.setChecked)
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
-        self.stackedWidget.setCurrentIndex(0)
-        self.stackedWidget_2.setCurrentIndex(11)
+        self.stackedWidget.setCurrentIndex(4)
+        self.stackedWidget_2.setCurrentIndex(13)
         self.editLogo.setDefault(False)
 
 
@@ -2509,11 +2506,10 @@ class Ui_MainWindow(object):
         self.label_92.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.editLogo.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.addLogo.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
-        self.saveTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
-        self.label_36.setText("")
-        self.label_93.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_95.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_35.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0441\u0442\u0430\u0432 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
+        self.label_35.setText(QCoreApplication.translate("MainWindow", u"\u041a\u043e\u043c\u0430\u043d\u0434\u0430", None))
+        self.label_36.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c", None))
+        self.backTeamsBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
+        self.saveTeams.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.taskAddBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.backTaskBtn.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f", None))
         self.label_55.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0435\u0440\u0438\u043e\u0434", None))
