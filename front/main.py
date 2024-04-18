@@ -337,6 +337,7 @@ class MainWindow(QMainWindow):
 
         validator = QRegularExpressionValidator(QRegularExpression("[0-9.]*"))
         self.ui.salaryAddIncome.setValidator(validator)
+        self.ui.salaryEditIncome.setValidator(validator)
 
         self.normal_geometry = None
 

@@ -1546,7 +1546,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>13</number>
+           <number>10</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3283,7 +3283,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="salaryAddIncome"/>
+               <widget class="QLineEdit" name="salaryAddIncome">
+                <property name="inputMethodHints">
+                 <set>Qt::ImhNone</set>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -3483,7 +3487,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="salaryEditIncome"/>
+               <widget class="QLineEdit" name="salaryEditIncome">
+                <property name="inputMethodHints">
+                 <set>Qt::ImhDigitsOnly|Qt::ImhFormattedNumbersOnly</set>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

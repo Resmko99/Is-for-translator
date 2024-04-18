@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -1569,6 +1569,7 @@ class Ui_MainWindow(object):
 
         self.salaryAddIncome = QLineEdit(self.pageAddIncome)
         self.salaryAddIncome.setObjectName(u"salaryAddIncome")
+        self.salaryAddIncome.setInputMethodHints(Qt.ImhNone)
 
         self.verticalLayout_17.addWidget(self.salaryAddIncome)
 
@@ -1673,6 +1674,7 @@ class Ui_MainWindow(object):
 
         self.salaryEditIncome = QLineEdit(self.pageEditIncome)
         self.salaryEditIncome.setObjectName(u"salaryEditIncome")
+        self.salaryEditIncome.setInputMethodHints(Qt.ImhDigitsOnly|Qt.ImhFormattedNumbersOnly)
 
         self.verticalLayout_18.addWidget(self.salaryEditIncome)
 
@@ -2356,7 +2358,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(13)
+        self.stackedWidget_2.setCurrentIndex(10)
         self.editLogo.setDefault(False)
 
 
