@@ -729,7 +729,6 @@ class MainWindow(QMainWindow):
         # self.load_account_teams()
         self.load_edit_teams()
 
-        self.file_path = None
         self.folder_id = None
 
         self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
@@ -758,10 +757,10 @@ class MainWindow(QMainWindow):
 
     def browse_file(self):
         desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
-        self.file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
 
-        if self.file_path:
-            self.ui.fileAdd.setText(f"Выбран файл: {self.file_path}")
+        if file_path:
+            self.ui.fileAdd.setText(file_path)
 
     def get_folders(self):
         self.ui.recipientFile.clear()
@@ -791,25 +790,30 @@ class MainWindow(QMainWindow):
                 self.ui.recipientFile.addItem(item['name'], item['id'])
 
     def upload_to_drive(self):
+        file_add = self.ui.fileAdd.toPlainText()
         if not self.drive_service:
             self.drive_service = self.authenticate()
 
         folder_id = self.ui.recipientFile.currentData()
-        if not folder_id:
-            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
+
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not file_add:
+            self.ui.fileAdd.setPlaceholderText("Вы не выбрали файл для загрузки.")
+            self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
             return
 
-        media = MediaFileUpload(self.file_path)
+        media = MediaFileUpload(file_add)
         request = self.drive_service.files().create(
             media_body=media,
             body={
-                'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
+                'name': os.path.basename(file_add),  # Используйте имя файла, а не статическое имя
                 'parents': [folder_id]
             }
         )
         request.execute()
-        print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
-        self.file_path = None
+
         self.ui.fileAdd.clear()
 
     def authenticate(self):
@@ -886,15 +890,30 @@ class MainWindow(QMainWindow):
         login = self.ui.lineEdit.text()
         password = self.ui.lineEdit_2.text()
 
-        encrypted_login = self.encrypt_data(login)
-        encrypted_password = self.encrypt_data(password)
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
 
-        self.save_credentials(encrypted_login, encrypted_password)
+        if not (login and password):
+            if not login:
+                self.ui.lineEdit.setPlaceholderText("Вы не написали логин/почту")
+                self.ui.lineEdit.setStyleSheet("placeholder-text-color: red;")
+            if not password:
+                self.ui.lineEdit_2.setPlaceholderText("Вы не написали пароль.")
+                self.ui.lineEdit_2.setStyleSheet("placeholder-text-color: red;")
+            return
 
         if self.check_credentials(login, password):
             self.ui.stackedWidget.setCurrentIndex(4)
         else:
-            self.show_error_message("Неправильный логин/email или пароль")
+            timer.singleShot(2000, self.reset_input_edit_fields)
+            self.ui.errorLabel.setText("Неправильный логин/email или пароль")
+            self.ui.errorLabel.setStyleSheet("color: red;")
+            return
+
+        encrypted_login = self.encrypt_data(login)
+        encrypted_password = self.encrypt_data(password)
+
+        self.save_credentials(encrypted_login, encrypted_password)
 
     def check_credentials(self, login, password):
         connection = connect()
@@ -1711,10 +1730,15 @@ class MainWindow(QMainWindow):
         self.ui.taskEditAdd.setPlaceholderText('')
         self.ui.taskEditChange.setPlaceholderText('')
         self.ui.postEdit.setPlaceholderText('')
-        self.ui.fileAdd.setPlaceholderText('Нажмите два раза для добавления изображения')
-        self.ui.fileAdd.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.imagePost.setPlaceholderText('Нажмите два раза для добавления изображения')
         self.ui.imagePost.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.fileAdd.setPlaceholderText('Файл ".rar" не должен превышать 4гб, ".docx" не должен превышать 100мб')
+        self.ui.fileAdd.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.lineEdit.setPlaceholderText('')
+        self.ui.lineEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.lineEdit_2.setPlaceholderText('')
+        self.ui.lineEdit_2.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.errorLabel.setText("")
 
     def open_image_dialog(self, event):
         # Получаем путь к рабочему столу

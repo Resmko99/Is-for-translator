@@ -310,6 +310,16 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLabel" name="errorLabel">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
           <item alignment="Qt::AlignHCenter">
            <widget class="QPushButton" name="inLogBtn">
             <property name="sizePolicy">
@@ -1536,7 +1546,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>11</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">

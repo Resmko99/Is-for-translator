@@ -169,6 +169,12 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_6.addWidget(self.lineEdit_2)
 
+        self.errorLabel = QLabel(self.pageLog)
+        self.errorLabel.setObjectName(u"errorLabel")
+        self.errorLabel.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_6.addWidget(self.errorLabel)
+
         self.inLogBtn = QPushButton(self.pageLog)
         self.inLogBtn.setObjectName(u"inLogBtn")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
@@ -2353,7 +2359,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(0)
-        self.stackedWidget_2.setCurrentIndex(2)
+        self.stackedWidget_2.setCurrentIndex(11)
         self.editLogo.setDefault(False)
 
 
@@ -2369,6 +2375,7 @@ class Ui_MainWindow(object):
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0445\u043e\u0434 \u0432 \u0430\u043a\u043a\u0430\u0443\u043d\u0442", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0447\u0442\u0430/\u043b\u043e\u0433\u0438\u043d", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0430\u0440\u043e\u043b\u044c", None))
+        self.errorLabel.setText("")
 #if QT_CONFIG(tooltip)
         self.inLogBtn.setToolTip("")
 #endif // QT_CONFIG(tooltip)
