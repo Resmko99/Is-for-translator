@@ -25,6 +25,7 @@ from database import connect, close_db_connect
 
 directory = os.path.abspath(os.curdir)
 
+
 class Calender(QWidget):
     def __init__(self, ui, parent=None):
         super().__init__(parent)
@@ -301,6 +302,9 @@ class MainWindow(QMainWindow):
         self.model_table_income = QStandardItemModel()
         self.ui.tableIncome.setModel(self.model_table_income)
 
+        self.model_table_teams = QStandardItemModel()
+        self.ui.tableTeamAcc.setModel(self.model_table_teams)
+
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
@@ -353,7 +357,10 @@ class MainWindow(QMainWindow):
             (self.ui.backTaskViewBtn, self.ui.pageListTask),
             (self.ui.incomeAddBtn, self.ui.pageAddIncome),
             (self.ui.backAddIncome, self.ui.pageIncome),
-            (self.ui.backEditIncome, self.ui.pageIncome)
+            (self.ui.backEditIncome, self.ui.pageIncome),
+            (self.ui.addTeamBtn, self.ui.pageAddTeams),
+            (self.ui.backTeamsBtn, self.ui.pageAccount)
+
         ]
 
         for button, page in move_buttons:
@@ -406,6 +413,8 @@ class MainWindow(QMainWindow):
         self.ui.tableListTask.clicked.connect(self.state_edit_button)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
+        self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.update_teams_combo_box)
+        self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.get_teams)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
@@ -698,6 +707,8 @@ class MainWindow(QMainWindow):
         self.ui.titleBtn_2.clicked.connect(self.load_titles_by_team)
         self.ui.incomeBtn_1.clicked.connect(self.get_income)
         self.ui.incomeBtn_2.clicked.connect(self.get_income)
+        self.ui.saveTeams.clicked.connect(self.apply_teams)
+        self.ui.deleteTeamBtn.clicked.connect(self.delete_selected_teams)
 
         self.autentificate = False
         self.ui.fileSharingBtn_1.clicked.connect(self.post_init)
@@ -711,6 +722,7 @@ class MainWindow(QMainWindow):
         self.load_saved_credentials()
 
         self.load_team()
+        self.get_teams()
         self.load_title_income()
         self.load_users()
         self.get_data()
@@ -744,6 +756,7 @@ class MainWindow(QMainWindow):
             self.autentificate = True
         else:
             return
+
     def file_add_double_click(self, event):
         if event.button() == Qt.LeftButton:
             self.browse_file()
@@ -858,7 +871,6 @@ class MainWindow(QMainWindow):
         else:
             self.ui.editListTask.setEnabled(False)
 
-
     def login_button_clicked(self):
         login = self.ui.lineEdit.text()
         password = self.ui.lineEdit_2.text()
@@ -961,6 +973,7 @@ class MainWindow(QMainWindow):
     def load_users(self):
         self.ui.employeeAddTask.clear()
         self.ui.userAddComboBox.clear()
+        self.ui.usersComboBoxTeam.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT user_id, login, password FROM "User"')
@@ -968,10 +981,10 @@ class MainWindow(QMainWindow):
         for user in users:
             self.ui.userAddComboBox.addItem(f"{user[1]}", userData=user[0])
             self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
+            self.ui.usersComboBoxTeam.addItem(f"{user[1]}", userData=user[0])
 
     def load_edit_users(self):
         self.ui.employeeEditTask.clear()
-        self.ui.userEditComboBox.clear()
         try:
             connection = connect()
             cursor = connection.cursor()
@@ -979,15 +992,12 @@ class MainWindow(QMainWindow):
             users = cursor.fetchall()
             for user in users:
                 self.ui.employeeEditTask.addItem(f"{user[1]}", userData=user[0])
-                self.ui.userEditComboBox.addItem(f"{user[1]}", userData=user[0])
             if users:
                 first_user_id = users[0][0]
                 index = self.ui.employeeEditTask.findData(first_user_id)
-                index_new = self.ui.userEditComboBox.findData(first_user_id)
                 if index != -1:
                     self.ui.employeeEditTask.setCurrentIndex(index)
-                if index_new != -1:
-                    self.ui.userEditComboBox.setCurrentIndex(index_new)
+
 
         except Exception as e:
             print(f'Ошибка при загрузке пользователей для редактирования: {e}')
@@ -1175,6 +1185,7 @@ class MainWindow(QMainWindow):
         self.ui.crewAddComboBox.clear()
         self.ui.crewComboBox.clear()
         self.ui.nameCrewTranslatorAddTitle.clear()
+        self.ui.nameCrewAccComboBox.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
@@ -1183,7 +1194,7 @@ class MainWindow(QMainWindow):
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.nameCrewTranslatorAddTitle.addItem(f"{team[1]}", userData=team[0])
-
+            self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
 
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
@@ -1196,6 +1207,7 @@ class MainWindow(QMainWindow):
 
     def load_edit_team_income(self):
         self.ui.crewEditComboBox.clear()
+        self.ui.teamsComboBoxTeam.clear()
         try:
             connection = connect()
             cursor = connection.cursor()
@@ -1203,11 +1215,15 @@ class MainWindow(QMainWindow):
             teams = cursor.fetchall()
             for team in teams:
                 self.ui.crewEditComboBox.addItem(f"{team[1]}", userData=team[0])
+                self.ui.teamsComboBoxTeam.addItem(f"{team[1]}", userData=team[0])
             if teams:
                 first_team_id = teams[0][0]
                 index = self.ui.crewEditComboBox.findData(first_team_id)
                 if index != -1:
                     self.ui.crewEditComboBox.setCurrentIndex(index)
+                new_index = self.ui.teamsComboBoxTeam.findData(first_team_id)
+                if index != -1:
+                    self.ui.teamsComboBoxTeam.setCurrentIndex(new_index)
 
         except Exception as e:
             print(f'Ошибка при загрузке команд для редактирования: {e}')
@@ -1310,7 +1326,6 @@ class MainWindow(QMainWindow):
         selected_index = self.ui.tableIncome.currentIndex()
         if not selected_index.isValid():
             return
-
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditIncome)
         income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
@@ -1507,12 +1522,13 @@ class MainWindow(QMainWindow):
     def open_edit_title_page(self):
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT title_name, description, team_id, title_date FROM "Title" WHERE title_id = %s', (self.title_id,))
+        cursor.execute('SELECT title_name, description, team_id, title_date FROM "Title" WHERE title_id = %s',
+                       (self.title_id,))
         row = cursor.fetchone()
         close_db_connect(connection, cursor)
 
         if row:
-            title_name, title_description, team_id, title_date  = row
+            title_name, title_description, team_id, title_date = row
             self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditTitle)
             self.ui.nameEditTitle.setText(title_name)
             self.ui.descriptionEdit_2.setText(title_description)
@@ -1522,6 +1538,79 @@ class MainWindow(QMainWindow):
             if index != -1:
                 self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
 
+
+    def apply_teams(self):
+        team_id = self.ui.teamsComboBoxTeam.currentData()
+        user_id = self.ui.usersComboBoxTeam.currentData()
+
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "User_teams" (user_id, team_id) VALUES (%s, %s) '
+                       'RETURNING user_teams_id', (user_id, team_id))
+        user_teams_id = cursor.fetchone()[0]
+        connection.commit()
+
+        self.get_teams()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageAccount)
+
+    def get_teams(self):
+        try:
+            selected_teams = self.ui.nameCrewAccComboBox.currentData()
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT u.login, t.name_team, ut.user_teams_id
+                    FROM "User_teams" ut
+                    INNER JOIN "User" u ON ut.user_id = u.user_id
+                    INNER JOIN "Teams" t ON ut.team_id = t.team_id
+                    WHERE ut.team_id = %s
+                    ORDER BY ut.user_teams_id;
+                ''', (selected_teams,))
+                records = cursor.fetchall()
+
+                self.model_table_teams.clear()
+                self.model_table_teams.setColumnCount(3)
+                self.model_table_teams.setHorizontalHeaderLabels(['Пользователь', 'Команда'])
+
+                for record in records:
+                    row = [QStandardItem(str(value)) for value in record[:2]]
+                    task_id_item = QStandardItem()
+                    task_id_item.setData(record[2], Qt.UserRole)
+                    row.append(task_id_item)
+
+                    self.model_table_teams.appendRow(row)
+                self.ui.tableTeamAcc.resizeColumnsToContents()
+
+                header = self.ui.tableTeamAcc.horizontalHeader()
+                header.setSectionResizeMode(QHeaderView.Stretch)
+
+                self.ui.tableTeamAcc.setColumnHidden(2, True)
+
+        except Exception as e:
+            print(f'Ошибка при выводе: {e}')
+
+    def delete_selected_teams(self):
+        selected_index = self.ui.tableTeamAcc.currentIndex()
+        if not selected_index.isValid():
+            return
+        try:
+            user_teams_id = int(self.model_table_teams.item(selected_index.row(), 2).data(Qt.UserRole))
+            connection = connect()
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM "User_teams" WHERE user_teams_id = %s', (user_teams_id,))
+            connection.commit()
+            self.get_teams()
+        except Exception as e:
+            print(f'Ошибка при удалении: {e}')
+
+
+
+    def update_teams_combo_box(self, index):
+        selected_team_id = self.ui.nameCrewAccComboBox.itemData(index, Qt.UserRole)
+        if selected_team_id is not None:
+            team_index = self.ui.teamsComboBoxTeam.findData(selected_team_id, Qt.UserRole)
+            if team_index != -1:
+                self.ui.teamsComboBoxTeam.setCurrentIndex(team_index)
 
     def switch_to_page_desc(self):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
@@ -1671,7 +1760,6 @@ class MainWindow(QMainWindow):
         self.load_titles_by_team()
         self.load_team()
 
-
     def reset_input_edit_fields(self):
         self.ui.imageAreaEdit.setPlaceholderText('Нажмите два раза для добавления изображения')
         self.ui.imageAreaEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
@@ -1714,7 +1802,6 @@ class MainWindow(QMainWindow):
         if file_path:
             self.ui.imageArea.setText(file_path)
 
-
     def open_file_explorer(self):
         # Получаем путь к рабочему столу
         desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
@@ -1754,7 +1841,6 @@ class MainWindow(QMainWindow):
 
     def add_logo_button_clicked(self):
         self.open_file_explorer()
-
 
     def reset_input_fields(self):
         # Сброс стилей и текстовых подсказок полей ввода
