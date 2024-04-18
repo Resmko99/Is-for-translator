@@ -1,37 +1,29 @@
 import configparser
 import sys
 import os
-from io import BytesIO
-
 import cv2
 import time
-
 import numpy as np
+import psycopg2
+
 from PIL import Image
+from io import BytesIO
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
                             QTimer, QRegularExpression, QStandardPaths)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
 from cryptography.fernet import Fernet
-
-from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from google.oauth2.service_account import Credentials
-
-
 from googletrans import Translator
 from functools import partial
 from ui import Ui_MainWindow
 from database import connect, close_db_connect
 
-import psycopg2
-
 directory = os.path.abspath(os.curdir)
-
 
 class Calender(QWidget):
     def __init__(self, ui, parent=None):
