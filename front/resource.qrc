@@ -1,0 +1,36 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>icon/free-icon-loupe-216463.png</file>
+    <file>icon/YQR.png</file>
+    <file>icon/icons8-discord-100.png</file>
+    <file>icon/icons8-vk-100.png</file>
+    <file>icon/icons8-телеграм-100.png</file>
+    <file>icon/free-icon-add-7222864.png</file>
+    <file>icon/free-icon-back-2644908.png</file>
+    <file>icon/free-icon-check-mark-8370918.png</file>
+    <file>icon/free-icon-cross-mark-4225690 (1) копия.png</file>
+    <file>icon/free-icon-minus-button-4315581 копия.png</file>
+    <file>icon/free-icon-pencil-7266923.png</file>
+    <file>icon/free-icon-send-9351602.png</file>
+    <file>icon/free-icon-upload-file-6328807 копия.png</file>
+    <file>icon/rev.png</file>
+    <file>icon/close-button.png</file>
+    <file>icon/expand.png</file>
+    <file>icon/minimize-sign.png</file>
+    <file>icon/free-icon-envelope-2168955.png</file>
+    <file>icon/Logo(100x100).png</file>
+    <file>icon/free-icon-book-9193009.png</file>
+    <file>icon/free-icon-chevron-248744.png</file>
+    <file>icon/free-icon-clock-2902894.png</file>
+    <file>icon/free-icon-coin-550650.png</file>
+    <file>icon/free-icon-file-sharing-10004135.png</file>
+    <file>icon/free-icon-magnifier-3593144.png</file>
+    <file>icon/free-icon-social-media-9351311.png</file>
+    <file>icon/info.png</file>
+    <file>icon/person.png</file>
+    <file>icon/education.png</file>
+  </qresource>
+  <qresource prefix="Photo">
+    <file>Photo/EyX_7safWuU.jpg</file>
+  </qresource>
+</RCC>
