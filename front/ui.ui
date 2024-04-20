@@ -1534,7 +1534,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>12</number>
+           <number>10</number>
           </property>
           <widget class="QWidget" name="pageTitle">
            <layout class="QGridLayout" name="gridLayout_13">
@@ -3668,7 +3668,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="placeholderText">
-                 <string>Файл &quot;.rar&quot; не должен превышать 100мб, &quot;.docx&quot; не должен превышать 50мб</string>
+                 <string>Файл &quot;.rar&quot; не должен превышать 100 МБ, &quot;.docx&quot; не должен превышать 50 МБ</string>
                 </property>
                </widget>
               </item>
