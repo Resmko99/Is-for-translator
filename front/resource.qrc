@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icon">
+    <file>icon/exit.png</file>
     <file>icon/free-icon-loupe-216463.png</file>
     <file>icon/YQR.png</file>
     <file>icon/icons8-discord-100.png</file>

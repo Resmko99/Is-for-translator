@@ -11,16 +11,10 @@ from io import BytesIO
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
                             QTimer, QRegularExpression, QStandardPaths)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
 from cryptography.fernet import Fernet
-
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-from google.oauth2.service_account import Credentials
 
 
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -333,7 +327,7 @@ class MainWindow(QMainWindow):
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
-        self.ui.aboutUs_1.setToolTip("О нас")
+        self.ui.exitAppBtn.setToolTip("Выход")
 
         validator = QRegularExpressionValidator(QRegularExpression("[0-9.]*"))
         self.ui.salaryAddIncome.setValidator(validator)
@@ -348,7 +342,6 @@ class MainWindow(QMainWindow):
             (self.ui.socialNetworksBtn_1, self.ui.socialNetworksBtn_2, self.ui.pageSocialNetwork),
             (self.ui.fileSharingBtn_1, self.ui.fileSharingBtn_2, self.ui.pageFileSharing),
             (self.ui.accountBtn_1, self.ui.accountBtn_2, self.ui.pageAccount),
-            (self.ui.aboutUs_1, self.ui.aboutUs_2, self.ui.pageAboutUs),
             (self.ui.translateBtn_1, self.ui.translateBtn_2, self.ui.pageTranslator)
         ]
         for button, button_2, page in page_buttons:
@@ -379,9 +372,8 @@ class MainWindow(QMainWindow):
             self.ui.backTaskBtn, self.ui.backAddIncome, self.ui.titleBtn_1,
             self.ui.incomeBtn_1, self.ui.scheduleBtn_1, self.ui.socialNetworksBtn_1,
             self.ui.fileSharingBtn_1, self.ui.accountBtn_1, self.ui.translateBtn_1,
-            self.ui.aboutUs_1, self.ui.titleBtn_2, self.ui.incomeBtn_2,
-            self.ui.scheduleBtn_2, self.ui.socialNetworksBtn_2, self.ui.fileSharingBtn_2,
-            self.ui.accountBtn_2, self.ui.translateBtn_2, self.ui.aboutUs_2, self.ui.backAddTitleBtn
+            self.ui.titleBtn_2, self.ui.incomeBtn_2,self.ui.scheduleBtn_2, self.ui.socialNetworksBtn_2,
+            self.ui.fileSharingBtn_2, self.ui.accountBtn_2, self.ui.translateBtn_2, self.ui.backAddTitleBtn
         ]
 
         for button in clear_buttons:
@@ -437,278 +429,82 @@ class MainWindow(QMainWindow):
         self.ui.imageAreaEdit.mouseDoubleClickEvent = self.open_image_dialog
         self.ui.imageArea.mouseDoubleClickEvent = self.open_image_dialog_add_title
         self.ui.addTitleBtn.clicked.connect(self.add_title_to_database)
-        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
-                            QScrollBar:vertical {
-                                background-color: transparent;
-                                border: none;
-                                border-radius: 5px;
-                                width: 15px;
-                                margin-right: 5px; 
-                                margin-top: 2px;
-                                margin-bottom: 2px;
-                            }
 
-                            QScrollBar::handle:vertical {
-                                background-color: #FFFFFF;
-                                border-radius: 5px;
-                                min-height: 20px;
-                            }
+        edit_styles = """
+                     QScrollBar:vertical {
+                         background-color: transparent;
+                         border: none;
+                         border-radius: 5px;
+                         width: 15px;
+                         margin-right: 5px;
+                         margin-top: 2px;
+                         margin-bottom: 2px;
+                     }
 
-                            QScrollBar::add-line:vertical,
-                            QScrollBar::sub-line:vertical {
-                                background-color: #2E333A;
-                                height: 0px;
-                                subcontrol-position: bottom;
-                                subcontrol-origin: margin;
-                            }
+                     QScrollBar::handle:vertical {
+                         background-color: #FFFFFF;
+                         border-radius: 5px;
+                         min-height: 20px;
+                     }
 
-                            QScrollBar::add-page:vertical,
-                            QScrollBar::sub-page:vertical {
-                                background: none;
-                            }
-                        """)
-        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet("""
-                            QScrollBar:vertical {
-                                background-color: transparent;
-                                border: none;
-                                border-radius: 5px;
-                                width: 15px;
-                                margin-right: 5px;
-                                margin-top: 2px;
-                                margin-bottom: 2px;
-                            }
+                     QScrollBar::add-line:vertical,
+                     QScrollBar::sub-line:vertical {
+                         background-color: #2E333A;
+                         height: 0px;
+                         subcontrol-position: bottom;
+                         subcontrol-origin: margin;
+                     }
 
-                            QScrollBar::handle:vertical {
-                                background-color: #FFFFFF;
-                                border-radius: 5px;
-                                min-height: 20px;
-                            }
+                     QScrollBar::add-page:vertical,
+                     QScrollBar::sub-page:vertical {
+                         background: none;
+                     }
+                 """
+        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.textEditDesc.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.taskEditView.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.taskEditAdd.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.taskEditChange.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.postEdit.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.textEdit.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.textEdit_2.verticalScrollBar().setStyleSheet(edit_styles)
 
-                            QScrollBar::add-line:vertical,
-                            QScrollBar::sub-line:vertical {
-                                background-color: #2E333A;
-                                height: 0px;
-                                subcontrol-position: bottom;
-                                subcontrol-origin: margin;
-                            }
+        table_style = """
+            QScrollBar:vertical {
+                background-color: transparent;
+                border: none;
+                border-radius: 5px;
+                width: 15px;
+                margin-right: 5px;
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
 
-                            QScrollBar::add-page:vertical,
-                            QScrollBar::sub-page:vertical {
-                                background: none;
-                            }
-                        """)
+            QScrollBar::handle:vertical {
+                background-color: #FFFFFF;
+                border-radius: 5px;
+                min-height: 20px;
+            }
 
-        self.ui.textEditDesc.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {
+                background-color: #2E333A;
+                height: 0px;
+                subcontrol-position: bottom;
+                subcontrol-origin: margin;
+            }
 
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """
 
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
+        self.ui.tableTeamAcc.setStyleSheet(table_style)
+        self.ui.tableListTask.setStyleSheet(table_style)
+        self.ui.tableIncome.setStyleSheet(table_style)
 
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.taskEditView.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.taskEditAdd.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-
-        self.ui.taskEditChange.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.postEdit.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.textEdit.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.textEdit_2.verticalScrollBar().setStyleSheet("""
-                                         QScrollBar:vertical {
-                                             background-color: transparent;
-                                             border: none;
-                                             border-radius: 5px;
-                                             width: 15px;
-                                             margin-right: 5px;
-                                             margin-top: 2px;
-                                             margin-bottom: 2px;
-                                         }
-
-                                         QScrollBar::handle:vertical {
-                                             background-color: #FFFFFF;
-                                             border-radius: 5px;
-                                             min-height: 20px;
-                                         }
-
-                                         QScrollBar::add-line:vertical,
-                                         QScrollBar::sub-line:vertical {
-                                             background-color: #2E333A;
-                                             height: 0px;
-                                             subcontrol-position: bottom;
-                                             subcontrol-origin: margin;
-                                         }
-
-                                         QScrollBar::add-page:vertical,
-                                         QScrollBar::sub-page:vertical {
-                                             background: none;
-                                         }
-                                     """)
         self.ui.SearchBtn.clicked.connect(self.load_titles_by_team)
         self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
 
@@ -727,7 +523,6 @@ class MainWindow(QMainWindow):
         self.ui.publishBtn.clicked.connect(self.on_publishBtn_click)
         self.ui.imagePost.mouseDoubleClickEvent = self.file_add_double_click
 
-        self.generate_key()
         self.load_saved_credentials()
 
         self.load_team()
@@ -745,8 +540,53 @@ class MainWindow(QMainWindow):
         self.folder_id = None
 
         self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
-        self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
+        self.ui.sendFile.clicked.connect(self.upload_to_drive)
         self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+        self.ui.exitAppBtn.clicked.connect(self.exit_acc)
+        self.ui.exitAppBtn_2.clicked.connect(self.exit_acc)
+
+    def exit_acc(self):
+        self.ui.lineEdit.setText("")
+        self.ui.lineEdit_2.setText("")
+        os.remove('config.ini')
+        os.remove('secret.key')
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+    def load_category_from_config(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            try:
+                category = int(config['Account']['category'])
+            except (ValueError, KeyError):
+                category = 0
+
+            return category
+        else:
+            return 0
+
+    def hide_or_show_button(self):
+        category = self.load_category_from_config()
+
+        if category == 0:
+            self.ui.pushOpenAdd.hide()
+            self.ui.editTitleBtn.hide()
+            self.ui.deleteTitleBtn.hide()
+            self.ui.socialNetworksBtn_1.hide()
+            self.ui.socialNetworksBtn_2.hide()
+            self.ui.addLogo.hide()
+            self.ui.editLogo.hide()
+            self.ui.addTeamBtn.hide()
+            self.ui.deleteTeamBtn.hide()
+            self.ui.editListTask.hide()
+            self.ui.deleteListTask.hide()
+            self.ui.addListTask.hide()
+            self.ui.addListTask.hide()
+            self.ui.incomeEditBtn.hide()
+            self.ui.incomeDeleteBtn.hide()
+            self.ui.incomeAddBtn.hide()
 
     def all_clear(self):
         self.ui.taskEditAdd.clear()
@@ -770,10 +610,30 @@ class MainWindow(QMainWindow):
 
     def browse_file(self):
         desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path,
+                                                   "RAR Files (*.rar);;DOCX Files (*.docx)")
 
         if file_path:
-            self.ui.fileAdd.setText(file_path)
+            file_extension = os.path.splitext(file_path)[1].lower()
+
+            file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+
+            timer = QTimer(self)
+            if file_extension == '.rar' and file_size_mb > 100:
+                timer.singleShot(3000, self.reset_input_edit_fields)
+                self.ui.fileAdd.setPlaceholderText("Файл RAR должен быть не более 100 МБ")
+                self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
+                return
+            elif file_extension == '.docx' and file_size_mb > 50:
+                timer.singleShot(3000, self.reset_input_edit_fields)
+                self.ui.fileAdd.setPlaceholderText("Файл DOCX должен быть не более 50 МБ")
+                self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
+                return
+            else:
+                self.ui.fileAdd.setText(file_path)
+        else:
+            # Обработка, если файл не был выбран
+            pass
 
     def get_folders(self):
         self.ui.recipientFile.clear()
@@ -898,8 +758,8 @@ class MainWindow(QMainWindow):
         else:
             self.ui.editListTask.setEnabled(False)
 
-
     def login_button_clicked(self):
+        self.generate_key()
         login = self.ui.lineEdit.text()
         password = self.ui.lineEdit_2.text()
 
@@ -916,6 +776,18 @@ class MainWindow(QMainWindow):
             return
 
         if self.check_credentials(login, password):
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT category FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                           (login, login, password))
+            result = cursor.fetchone()
+            close_db_connect(connection, cursor)
+
+            if result is None:
+                category = 0
+            else:
+                category = result[0]
+
             self.ui.stackedWidget.setCurrentIndex(4)
         else:
             timer.singleShot(2000, self.reset_input_edit_fields)
@@ -926,7 +798,8 @@ class MainWindow(QMainWindow):
         encrypted_login = self.encrypt_data(login)
         encrypted_password = self.encrypt_data(password)
 
-        self.save_credentials(encrypted_login, encrypted_password)
+        self.save_credentials(encrypted_login, encrypted_password, category)
+        self.hide_or_show_button()
 
     def check_credentials(self, login, password):
         connection = connect()
@@ -949,13 +822,17 @@ class MainWindow(QMainWindow):
 
             if self.check_credentials(login, password):
                 self.ui.stackedWidget.setCurrentIndex(4)
+            self.hide_or_show_button()
 
-    def save_credentials(self, encrypted_login, encrypted_password):
+    def save_credentials(self, encrypted_login, encrypted_password, category):
         config = configparser.ConfigParser()
-        config['Account'] = {'username': encrypted_login, 'password': encrypted_password}
-
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
+        config['Account'] = {
+            'username': encrypted_login,
+            'password': encrypted_password,
+            'category': str(category)
+        }
+        with open('config.ini', 'w') as config_file:
+            config.write(config_file)
 
     def generate_key(self):
         key_file = 'secret.key'
@@ -1825,7 +1702,7 @@ class MainWindow(QMainWindow):
         self.ui.postEdit.setPlaceholderText('')
         self.ui.imagePost.setPlaceholderText('Нажмите два раза для добавления изображения')
         self.ui.imagePost.setStyleSheet("placeholder-text-color: #FFFFFF")
-        self.ui.fileAdd.setPlaceholderText('Файл ".rar" не должен превышать 4гб, ".docx" не должен превышать 100мб')
+        self.ui.fileAdd.setPlaceholderText('Файл ".rar" не должен превышать 100мб, ".docx" не должен превышать 50мб')
         self.ui.fileAdd.setStyleSheet("placeholder-text-color: #FFFFFF")
         self.ui.lineEdit.setPlaceholderText('')
         self.ui.lineEdit.setStyleSheet("placeholder-text-color: #FFFFFF")

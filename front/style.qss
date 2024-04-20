@@ -2,7 +2,7 @@
         background-color: #24282E;
     }
 
-    #aboutUs_2 {
+    #exitAppBtn_2 {
         margin-bottom: 5px;
     }
 
