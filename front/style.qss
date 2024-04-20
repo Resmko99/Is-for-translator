@@ -2,7 +2,7 @@
         background-color: #24282E;
     }
 
-    #aboutUs_2 {
+    #exitAppBtn_2 {
         margin-bottom: 5px;
     }
 
@@ -549,6 +549,7 @@
         border-radius: 10px;
         placeholder-text-color: #FFFFFF;
         font: 18px "Inter";
+        color: #FFFFFF;
     }
 
     #publishBtn {
@@ -707,12 +708,6 @@
     }
 
     #tableFiles {
-        background-color: #010409;
-        border: 1px solid #FFCC33;
-        border-radius: 10px;
-    }
-
-    #tableIncome {
         background-color: #010409;
         border: 1px solid #FFCC33;
         border-radius: 10px;
@@ -2162,4 +2157,125 @@
         border-radius: 10px;
         font: 18px "Inter";
         color: #FFFFFF;
+    }
+
+    #tableTeamAcc {
+        background-color: #010409;
+        color: #fff;
+        font: 18px "Inter";
+        border: 1px solid #FFCC33;
+        gridline-color: transparent;
+    }
+
+    #tableTeamAcc::item {
+        border: 1px solid #FFCC33;
+    }
+
+    #tableTeamAcc::item:selected {
+        background-color: #transparent;
+        color: #fff;
+    }
+
+    #tableTeamAcc::section {
+        color: white;
+        background-color: transparent;
+        font: 18px "Inter";
+    }
+
+    #tableTeamAcc QHeaderView{
+        background-color: transparent;
+    }
+
+    #tableTeamAcc QHeaderView::section {
+        color: white;
+        background-color: #24282E;
+        border-radius: 10px;
+        font: 18px "Inter";
+    }
+
+    #tableTeamAcc QTableCornerButton::section {
+         background: transparent;
+         border: 1px solid #FFCC33;
+         border-radius: 5px;
+         margin: 2px;
+    }
+
+    #pageAddTeams QLabel {
+        color: #fff;
+        font: 18px "Inter";
+    }
+
+    #pageAddTeams QComboBox QAbstractItemView {
+        background-color: #3D434B;
+        color: #FFFFFF;
+        font: 18px "Inter";
+    }
+
+    #pageAddTeams QComboBox QScrollBar:vertical {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        width: 15px;
+        margin-right: 5px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #pageAddTeams QComboBox QScrollBar::handle:vertical {
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+
+    #pageAddTeams QComboBox QScrollBar::add-line:vertical,
+    #pageAddTeams QComboBox QScrollBar::sub-line:vertical {
+        background-color: #2E333A;
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    #pageAddTeams QComboBox QScrollBar::add-page:vertical,
+    #pageAddTeams QComboBox QScrollBar::sub-page:vertical {
+        background: none;
+    }
+
+    #pageAddTeams QComboBox {
+        background-color: #010409;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        color: #FFFFFF;
+        font: 18px "Inter";
+        height: 25px;
+    }
+
+    #pageAddTeams QComboBox::down-arrow {
+        width: 20px;
+        image: url(./icon/down-arrow.png);
+    }
+
+    #pageAddTeams QComboBox::drop-down {
+        border: none;
+        background: none;
+        margin-right: 3px;
+    }
+
+    #pageAddTeams QPushButton {
+        background-color: #3D434B;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+    }
+
+    #pageAddTeams QPushButton:pressed {
+        background-color: #545c67;
+        border: 1px solid #FFCC33;
+        border-radius: 10px;
+        font: 18px "Inter";
+        color: #FFFFFF;
+    }
+
+    #backTeamsBtn {
+        margin-right: 10px;
     }

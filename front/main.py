@@ -1,34 +1,29 @@
 import configparser
 import sys
 import os
-from io import BytesIO
-
 import cv2
 import time
-
 import numpy as np
+import psycopg2
+
 from PIL import Image
+from io import BytesIO
 from PySide6.QtCore import (Qt, QPoint, QPropertyAnimation, QEasingCurve, QEvent, QDate,
                             QTimer, QRegularExpression, QStandardPaths)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout,
-                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox, QInputDialog)
+                               QGridLayout, QPushButton, QFileDialog, QHeaderView, QMessageBox)
 from PySide6.QtGui import QPixmap, QPainter, QCursor, QPalette, QColor, QStandardItemModel, QStandardItem, \
     QRegularExpressionValidator
 from cryptography.fernet import Fernet
 
-from google.auth.transport.requests import Request
+
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from google.oauth2.service_account import Credentials
-
-
 from googletrans import Translator
 from functools import partial
 from ui import Ui_MainWindow
 from database import connect, close_db_connect
-
-import psycopg2
 
 directory = os.path.abspath(os.curdir)
 
@@ -309,6 +304,9 @@ class MainWindow(QMainWindow):
         self.model_table_income = QStandardItemModel()
         self.ui.tableIncome.setModel(self.model_table_income)
 
+        self.model_table_teams = QStandardItemModel()
+        self.ui.tableTeamAcc.setModel(self.model_table_teams)
+
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(500)
         self.animation.setEasingCurve(QEasingCurve.OutCubic)
@@ -329,10 +327,11 @@ class MainWindow(QMainWindow):
         self.ui.fileSharingBtn_1.setToolTip("Обмен файлами")
         self.ui.accountBtn_1.setToolTip("Аккаунт")
         self.ui.translateBtn_1.setToolTip("Переводчик")
-        self.ui.aboutUs_1.setToolTip("О нас")
+        self.ui.exitAppBtn.setToolTip("Выход")
 
         validator = QRegularExpressionValidator(QRegularExpression("[0-9.]*"))
         self.ui.salaryAddIncome.setValidator(validator)
+        self.ui.salaryEditIncome.setValidator(validator)
 
         self.normal_geometry = None
 
@@ -343,7 +342,6 @@ class MainWindow(QMainWindow):
             (self.ui.socialNetworksBtn_1, self.ui.socialNetworksBtn_2, self.ui.pageSocialNetwork),
             (self.ui.fileSharingBtn_1, self.ui.fileSharingBtn_2, self.ui.pageFileSharing),
             (self.ui.accountBtn_1, self.ui.accountBtn_2, self.ui.pageAccount),
-            (self.ui.aboutUs_1, self.ui.aboutUs_2, self.ui.pageAboutUs),
             (self.ui.translateBtn_1, self.ui.translateBtn_2, self.ui.pageTranslator)
         ]
         for button, button_2, page in page_buttons:
@@ -361,7 +359,10 @@ class MainWindow(QMainWindow):
             (self.ui.backTaskViewBtn, self.ui.pageListTask),
             (self.ui.incomeAddBtn, self.ui.pageAddIncome),
             (self.ui.backAddIncome, self.ui.pageIncome),
-            (self.ui.backEditIncome, self.ui.pageIncome)
+            (self.ui.backEditIncome, self.ui.pageIncome),
+            (self.ui.addTeamBtn, self.ui.pageAddTeams),
+            (self.ui.backTeamsBtn, self.ui.pageAccount)
+
         ]
 
         for button, page in move_buttons:
@@ -371,9 +372,8 @@ class MainWindow(QMainWindow):
             self.ui.backTaskBtn, self.ui.backAddIncome, self.ui.titleBtn_1,
             self.ui.incomeBtn_1, self.ui.scheduleBtn_1, self.ui.socialNetworksBtn_1,
             self.ui.fileSharingBtn_1, self.ui.accountBtn_1, self.ui.translateBtn_1,
-            self.ui.aboutUs_1, self.ui.titleBtn_2, self.ui.incomeBtn_2,
-            self.ui.scheduleBtn_2, self.ui.socialNetworksBtn_2, self.ui.fileSharingBtn_2,
-            self.ui.accountBtn_2, self.ui.translateBtn_2, self.ui.aboutUs_2
+            self.ui.titleBtn_2, self.ui.incomeBtn_2,self.ui.scheduleBtn_2, self.ui.socialNetworksBtn_2,
+            self.ui.fileSharingBtn_2, self.ui.accountBtn_2, self.ui.translateBtn_2, self.ui.backAddTitleBtn
         ]
 
         for button in clear_buttons:
@@ -414,6 +414,8 @@ class MainWindow(QMainWindow):
         self.ui.tableListTask.clicked.connect(self.state_edit_button)
         self.ui.taskApplyBtn.clicked.connect(self.update_task)
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
+        self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.update_teams_combo_box)
+        self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.get_teams)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
@@ -427,278 +429,82 @@ class MainWindow(QMainWindow):
         self.ui.imageAreaEdit.mouseDoubleClickEvent = self.open_image_dialog
         self.ui.imageArea.mouseDoubleClickEvent = self.open_image_dialog_add_title
         self.ui.addTitleBtn.clicked.connect(self.add_title_to_database)
-        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet("""
-                            QScrollBar:vertical {
-                                background-color: transparent;
-                                border: none;
-                                border-radius: 5px;
-                                width: 15px;
-                                margin-right: 5px; 
-                                margin-top: 2px;
-                                margin-bottom: 2px;
-                            }
 
-                            QScrollBar::handle:vertical {
-                                background-color: #FFFFFF;
-                                border-radius: 5px;
-                                min-height: 20px;
-                            }
+        edit_styles = """
+                     QScrollBar:vertical {
+                         background-color: transparent;
+                         border: none;
+                         border-radius: 5px;
+                         width: 15px;
+                         margin-right: 5px;
+                         margin-top: 2px;
+                         margin-bottom: 2px;
+                     }
 
-                            QScrollBar::add-line:vertical,
-                            QScrollBar::sub-line:vertical {
-                                background-color: #2E333A;
-                                height: 0px;
-                                subcontrol-position: bottom;
-                                subcontrol-origin: margin;
-                            }
+                     QScrollBar::handle:vertical {
+                         background-color: #FFFFFF;
+                         border-radius: 5px;
+                         min-height: 20px;
+                     }
 
-                            QScrollBar::add-page:vertical,
-                            QScrollBar::sub-page:vertical {
-                                background: none;
-                            }
-                        """)
-        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet("""
-                            QScrollBar:vertical {
-                                background-color: transparent;
-                                border: none;
-                                border-radius: 5px;
-                                width: 15px;
-                                margin-right: 5px;
-                                margin-top: 2px;
-                                margin-bottom: 2px;
-                            }
+                     QScrollBar::add-line:vertical,
+                     QScrollBar::sub-line:vertical {
+                         background-color: #2E333A;
+                         height: 0px;
+                         subcontrol-position: bottom;
+                         subcontrol-origin: margin;
+                     }
 
-                            QScrollBar::handle:vertical {
-                                background-color: #FFFFFF;
-                                border-radius: 5px;
-                                min-height: 20px;
-                            }
+                     QScrollBar::add-page:vertical,
+                     QScrollBar::sub-page:vertical {
+                         background: none;
+                     }
+                 """
+        self.ui.descriptionEdit_2.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.descriptionEdit.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.textEditDesc.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.taskEditView.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.taskEditAdd.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.taskEditChange.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.postEdit.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.textEdit.verticalScrollBar().setStyleSheet(edit_styles)
+        self.ui.textEdit_2.verticalScrollBar().setStyleSheet(edit_styles)
 
-                            QScrollBar::add-line:vertical,
-                            QScrollBar::sub-line:vertical {
-                                background-color: #2E333A;
-                                height: 0px;
-                                subcontrol-position: bottom;
-                                subcontrol-origin: margin;
-                            }
+        table_style = """
+            QScrollBar:vertical {
+                background-color: transparent;
+                border: none;
+                border-radius: 5px;
+                width: 15px;
+                margin-right: 5px;
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
 
-                            QScrollBar::add-page:vertical,
-                            QScrollBar::sub-page:vertical {
-                                background: none;
-                            }
-                        """)
+            QScrollBar::handle:vertical {
+                background-color: #FFFFFF;
+                border-radius: 5px;
+                min-height: 20px;
+            }
 
-        self.ui.textEditDesc.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {
+                background-color: #2E333A;
+                height: 0px;
+                subcontrol-position: bottom;
+                subcontrol-origin: margin;
+            }
 
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """
 
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
+        self.ui.tableTeamAcc.setStyleSheet(table_style)
+        self.ui.tableListTask.setStyleSheet(table_style)
+        self.ui.tableIncome.setStyleSheet(table_style)
 
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.taskEditView.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.taskEditAdd.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-
-        self.ui.taskEditChange.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.postEdit.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.textEdit.verticalScrollBar().setStyleSheet("""
-                                 QScrollBar:vertical {
-                                     background-color: transparent;
-                                     border: none;
-                                     border-radius: 5px;
-                                     width: 15px;
-                                     margin-right: 5px;
-                                     margin-top: 2px;
-                                     margin-bottom: 2px;
-                                 }
-
-                                 QScrollBar::handle:vertical {
-                                     background-color: #FFFFFF;
-                                     border-radius: 5px;
-                                     min-height: 20px;
-                                 }
-
-                                 QScrollBar::add-line:vertical,
-                                 QScrollBar::sub-line:vertical {
-                                     background-color: #2E333A;
-                                     height: 0px;
-                                     subcontrol-position: bottom;
-                                     subcontrol-origin: margin;
-                                 }
-
-                                 QScrollBar::add-page:vertical,
-                                 QScrollBar::sub-page:vertical {
-                                     background: none;
-                                 }
-                             """)
-        self.ui.textEdit_2.verticalScrollBar().setStyleSheet("""
-                                         QScrollBar:vertical {
-                                             background-color: transparent;
-                                             border: none;
-                                             border-radius: 5px;
-                                             width: 15px;
-                                             margin-right: 5px;
-                                             margin-top: 2px;
-                                             margin-bottom: 2px;
-                                         }
-
-                                         QScrollBar::handle:vertical {
-                                             background-color: #FFFFFF;
-                                             border-radius: 5px;
-                                             min-height: 20px;
-                                         }
-
-                                         QScrollBar::add-line:vertical,
-                                         QScrollBar::sub-line:vertical {
-                                             background-color: #2E333A;
-                                             height: 0px;
-                                             subcontrol-position: bottom;
-                                             subcontrol-origin: margin;
-                                         }
-
-                                         QScrollBar::add-page:vertical,
-                                         QScrollBar::sub-page:vertical {
-                                             background: none;
-                                         }
-                                     """)
         self.ui.SearchBtn.clicked.connect(self.load_titles_by_team)
         self.ui.inLogBtn.clicked.connect(self.login_button_clicked)
 
@@ -706,6 +512,8 @@ class MainWindow(QMainWindow):
         self.ui.titleBtn_2.clicked.connect(self.load_titles_by_team)
         self.ui.incomeBtn_1.clicked.connect(self.get_income)
         self.ui.incomeBtn_2.clicked.connect(self.get_income)
+        self.ui.saveTeams.clicked.connect(self.apply_teams)
+        self.ui.deleteTeamBtn.clicked.connect(self.delete_selected_teams)
 
         self.autentificate = False
         self.ui.fileSharingBtn_1.clicked.connect(self.post_init)
@@ -715,10 +523,10 @@ class MainWindow(QMainWindow):
         self.ui.publishBtn.clicked.connect(self.on_publishBtn_click)
         self.ui.imagePost.mouseDoubleClickEvent = self.file_add_double_click
 
-        self.generate_key()
         self.load_saved_credentials()
 
         self.load_team()
+        self.get_teams()
         self.load_title_income()
         self.load_users()
         self.get_data()
@@ -729,12 +537,56 @@ class MainWindow(QMainWindow):
         # self.load_account_teams()
         self.load_edit_teams()
 
-        self.file_path = None
         self.folder_id = None
 
         self.ui.dateReleaseAddTitle.setDate(QDate.currentDate())
-        self.ui.sendFile.clicked.connect(self.upload_to_drive)  # Выбор папки
+        self.ui.sendFile.clicked.connect(self.upload_to_drive)
         self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
+
+        self.ui.exitAppBtn.clicked.connect(self.exit_acc)
+        self.ui.exitAppBtn_2.clicked.connect(self.exit_acc)
+
+    def exit_acc(self):
+        self.ui.lineEdit.setText("")
+        self.ui.lineEdit_2.setText("")
+        os.remove('config.ini')
+        os.remove('secret.key')
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+    def load_category_from_config(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if 'Account' in config:
+            try:
+                category = int(config['Account']['category'])
+            except (ValueError, KeyError):
+                category = 0
+
+            return category
+        else:
+            return 0
+
+    def hide_or_show_button(self):
+        category = self.load_category_from_config()
+
+        if category == 0:
+            self.ui.pushOpenAdd.hide()
+            self.ui.editTitleBtn.hide()
+            self.ui.deleteTitleBtn.hide()
+            self.ui.socialNetworksBtn_1.hide()
+            self.ui.socialNetworksBtn_2.hide()
+            self.ui.addLogo.hide()
+            self.ui.editLogo.hide()
+            self.ui.addTeamBtn.hide()
+            self.ui.deleteTeamBtn.hide()
+            self.ui.editListTask.hide()
+            self.ui.deleteListTask.hide()
+            self.ui.addListTask.hide()
+            self.ui.addListTask.hide()
+            self.ui.incomeEditBtn.hide()
+            self.ui.incomeDeleteBtn.hide()
+            self.ui.incomeAddBtn.hide()
 
     def all_clear(self):
         self.ui.taskEditAdd.clear()
@@ -758,10 +610,30 @@ class MainWindow(QMainWindow):
 
     def browse_file(self):
         desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
-        self.file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл", desktop_path,
+                                                   "RAR Files (*.rar);;DOCX Files (*.docx)")
 
-        if self.file_path:
-            self.ui.fileAdd.setText(f"Выбран файл: {self.file_path}")
+        if file_path:
+            file_extension = os.path.splitext(file_path)[1].lower()
+
+            file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+
+            timer = QTimer(self)
+            if file_extension == '.rar' and file_size_mb > 100:
+                timer.singleShot(3000, self.reset_input_edit_fields)
+                self.ui.fileAdd.setPlaceholderText("Файл RAR должен быть не более 100 МБ")
+                self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
+                return
+            elif file_extension == '.docx' and file_size_mb > 50:
+                timer.singleShot(3000, self.reset_input_edit_fields)
+                self.ui.fileAdd.setPlaceholderText("Файл DOCX должен быть не более 50 МБ")
+                self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
+                return
+            else:
+                self.ui.fileAdd.setText(file_path)
+        else:
+            # Обработка, если файл не был выбран
+            pass
 
     def get_folders(self):
         self.ui.recipientFile.clear()
@@ -791,34 +663,30 @@ class MainWindow(QMainWindow):
                 self.ui.recipientFile.addItem(item['name'], item['id'])
 
     def upload_to_drive(self):
-        add_file = self.ui.fileAdd.toPlainText()
-
+        file_add = self.ui.fileAdd.toPlainText()
         if not self.drive_service:
             self.drive_service = self.authenticate()
+
+        folder_id = self.ui.recipientFile.currentData()
 
         timer = QTimer(self)
         timer.singleShot(2000, self.reset_input_edit_fields)
 
-        if not add_file:
-            self.ui.fileAdd.setPlaceholderText("Вы не выбрали изображение.")
+        if not file_add:
+            self.ui.fileAdd.setPlaceholderText("Вы не выбрали файл для загрузки.")
             self.ui.fileAdd.setStyleSheet("placeholder-text-color: red;")
             return
 
-        folder_id = self.ui.recipientFile.currentData()
-        if not folder_id:
-            QMessageBox.warning(self, 'Внимание', 'Вы не выбрали папку')
-            return
-
-        media = MediaFileUpload(self.file_path)
+        media = MediaFileUpload(file_add)
         request = self.drive_service.files().create(
             media_body=media,
             body={
-                'name': os.path.basename(self.file_path),  # Используйте имя файла, а не статическое имя
+                'name': os.path.basename(file_add),  # Используйте имя файла, а не статическое имя
                 'parents': [folder_id]
             }
         )
         request.execute()
-        print(f"Файл успешно загружен в папку: {self.ui.recipientFile.currentText()}")
+
         self.ui.fileAdd.clear()
 
     def authenticate(self):
@@ -835,9 +703,33 @@ class MainWindow(QMainWindow):
 
         return build('drive', 'v3', credentials=creds)
 
+    def file_add_image_post(self, event):
+        # Получаем путь к рабочему столу
+        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+
+        # Открываем диалог выбора файла, начиная с рабочего стола
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
+                                                   "Images (*.png *.jpg *.jpeg)", options=options)
+        if file_path:
+            self.ui.imagePost.setText(file_path)
+
     def on_publishBtn_click(self):
         postEdit = self.ui.postEdit.toPlainText()
-        imagePost = self.file_path
+        imagePost = self.ui.imagePost.toPlainText()
+
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (postEdit and imagePost):
+            if not postEdit:
+                self.ui.postEdit.setPlaceholderText("Вы не написали текст поста.")
+                self.ui.postEdit.setStyleSheet("placeholder-text-color: red;")
+            if not imagePost:
+                self.ui.imagePost.setPlaceholderText("Вы не добавили изображение.")
+                self.ui.imagePost.setStyleSheet("placeholder-text-color: red;")
+            return
+
         print(imagePost, postEdit)
 
         with open(self.path_to_publish_file, 'w') as file:
@@ -866,20 +758,48 @@ class MainWindow(QMainWindow):
         else:
             self.ui.editListTask.setEnabled(False)
 
-
     def login_button_clicked(self):
+        self.generate_key()
         login = self.ui.lineEdit.text()
         password = self.ui.lineEdit_2.text()
+
+        timer = QTimer(self)
+        timer.singleShot(2000, self.reset_input_edit_fields)
+
+        if not (login and password):
+            if not login:
+                self.ui.lineEdit.setPlaceholderText("Вы не написали логин/почту")
+                self.ui.lineEdit.setStyleSheet("placeholder-text-color: red;")
+            if not password:
+                self.ui.lineEdit_2.setPlaceholderText("Вы не написали пароль.")
+                self.ui.lineEdit_2.setStyleSheet("placeholder-text-color: red;")
+            return
+
+        if self.check_credentials(login, password):
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute('SELECT category FROM "User" WHERE (login = %s OR email = %s) AND password = %s',
+                           (login, login, password))
+            result = cursor.fetchone()
+            close_db_connect(connection, cursor)
+
+            if result is None:
+                category = 0
+            else:
+                category = result[0]
+
+            self.ui.stackedWidget.setCurrentIndex(4)
+        else:
+            timer.singleShot(2000, self.reset_input_edit_fields)
+            self.ui.errorLabel.setText("Неправильный логин/email или пароль")
+            self.ui.errorLabel.setStyleSheet("color: red;")
+            return
 
         encrypted_login = self.encrypt_data(login)
         encrypted_password = self.encrypt_data(password)
 
-        self.save_credentials(encrypted_login, encrypted_password)
-
-        if self.check_credentials(login, password):
-            self.ui.stackedWidget.setCurrentIndex(4)
-        else:
-            self.show_error_message("Неправильный логин/email или пароль")
+        self.save_credentials(encrypted_login, encrypted_password, category)
+        self.hide_or_show_button()
 
     def check_credentials(self, login, password):
         connection = connect()
@@ -902,13 +822,17 @@ class MainWindow(QMainWindow):
 
             if self.check_credentials(login, password):
                 self.ui.stackedWidget.setCurrentIndex(4)
+            self.hide_or_show_button()
 
-    def save_credentials(self, encrypted_login, encrypted_password):
+    def save_credentials(self, encrypted_login, encrypted_password, category):
         config = configparser.ConfigParser()
-        config['Account'] = {'username': encrypted_login, 'password': encrypted_password}
-
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
+        config['Account'] = {
+            'username': encrypted_login,
+            'password': encrypted_password,
+            'category': str(category)
+        }
+        with open('config.ini', 'w') as config_file:
+            config.write(config_file)
 
     def generate_key(self):
         key_file = 'secret.key'
@@ -969,6 +893,7 @@ class MainWindow(QMainWindow):
     def load_users(self):
         self.ui.employeeAddTask.clear()
         self.ui.userAddComboBox.clear()
+        self.ui.usersComboBoxTeam.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT user_id, login, password FROM "User"')
@@ -976,6 +901,7 @@ class MainWindow(QMainWindow):
         for user in users:
             self.ui.userAddComboBox.addItem(f"{user[1]}", userData=user[0])
             self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
+            self.ui.usersComboBoxTeam.addItem(f"{user[1]}", userData=user[0])
 
     def load_edit_users(self):
         self.ui.employeeEditTask.clear()
@@ -1183,6 +1109,7 @@ class MainWindow(QMainWindow):
         self.ui.crewAddComboBox.clear()
         self.ui.crewComboBox.clear()
         self.ui.nameCrewTranslatorAddTitle.clear()
+        self.ui.nameCrewAccComboBox.clear()
         connection = connect()
         cursor = connection.cursor()
         cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
@@ -1191,7 +1118,7 @@ class MainWindow(QMainWindow):
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.nameCrewTranslatorAddTitle.addItem(f"{team[1]}", userData=team[0])
-
+            self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
 
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
@@ -1204,6 +1131,7 @@ class MainWindow(QMainWindow):
 
     def load_edit_team_income(self):
         self.ui.crewEditComboBox.clear()
+        self.ui.teamsComboBoxTeam.clear()
         try:
             connection = connect()
             cursor = connection.cursor()
@@ -1211,11 +1139,15 @@ class MainWindow(QMainWindow):
             teams = cursor.fetchall()
             for team in teams:
                 self.ui.crewEditComboBox.addItem(f"{team[1]}", userData=team[0])
+                self.ui.teamsComboBoxTeam.addItem(f"{team[1]}", userData=team[0])
             if teams:
                 first_team_id = teams[0][0]
                 index = self.ui.crewEditComboBox.findData(first_team_id)
                 if index != -1:
                     self.ui.crewEditComboBox.setCurrentIndex(index)
+                new_index = self.ui.teamsComboBoxTeam.findData(first_team_id)
+                if index != -1:
+                    self.ui.teamsComboBoxTeam.setCurrentIndex(new_index)
 
         except Exception as e:
             print(f'Ошибка при загрузке команд для редактирования: {e}')
@@ -1318,7 +1250,6 @@ class MainWindow(QMainWindow):
         selected_index = self.ui.tableIncome.currentIndex()
         if not selected_index.isValid():
             return
-
 
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageEditIncome)
         income_id = int(self.model_table_income.item(selected_index.row(), 5).data(Qt.UserRole))
@@ -1531,6 +1462,79 @@ class MainWindow(QMainWindow):
                 self.ui.nameCrewTranslatorEditTitle.setCurrentIndex(index)
 
 
+    def apply_teams(self):
+        team_id = self.ui.teamsComboBoxTeam.currentData()
+        user_id = self.ui.usersComboBoxTeam.currentData()
+
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO "User_teams" (user_id, team_id) VALUES (%s, %s) '
+                       'RETURNING user_teams_id', (user_id, team_id))
+        user_teams_id = cursor.fetchone()[0]
+        connection.commit()
+
+        self.get_teams()
+        self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageAccount)
+
+    def get_teams(self):
+        try:
+            selected_teams = self.ui.nameCrewAccComboBox.currentData()
+            connection = connect()
+            with self.connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT u.login, t.name_team, ut.user_teams_id
+                    FROM "User_teams" ut
+                    INNER JOIN "User" u ON ut.user_id = u.user_id
+                    INNER JOIN "Teams" t ON ut.team_id = t.team_id
+                    WHERE ut.team_id = %s
+                    ORDER BY ut.user_teams_id;
+                ''', (selected_teams,))
+                records = cursor.fetchall()
+
+                self.model_table_teams.clear()
+                self.model_table_teams.setColumnCount(3)
+                self.model_table_teams.setHorizontalHeaderLabels(['Пользователь', 'Команда'])
+
+                for record in records:
+                    row = [QStandardItem(str(value)) for value in record[:2]]
+                    task_id_item = QStandardItem()
+                    task_id_item.setData(record[2], Qt.UserRole)
+                    row.append(task_id_item)
+
+                    self.model_table_teams.appendRow(row)
+                self.ui.tableTeamAcc.resizeColumnsToContents()
+
+                header = self.ui.tableTeamAcc.horizontalHeader()
+                header.setSectionResizeMode(QHeaderView.Stretch)
+
+                self.ui.tableTeamAcc.setColumnHidden(2, True)
+
+        except Exception as e:
+            print(f'Ошибка при выводе: {e}')
+
+    def delete_selected_teams(self):
+        selected_index = self.ui.tableTeamAcc.currentIndex()
+        if not selected_index.isValid():
+            return
+        try:
+            user_teams_id = int(self.model_table_teams.item(selected_index.row(), 2).data(Qt.UserRole))
+            connection = connect()
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM "User_teams" WHERE user_teams_id = %s', (user_teams_id,))
+            connection.commit()
+            self.get_teams()
+        except Exception as e:
+            print(f'Ошибка при удалении: {e}')
+
+
+
+    def update_teams_combo_box(self, index):
+        selected_team_id = self.ui.nameCrewAccComboBox.itemData(index, Qt.UserRole)
+        if selected_team_id is not None:
+            team_index = self.ui.teamsComboBoxTeam.findData(selected_team_id, Qt.UserRole)
+            if team_index != -1:
+                self.ui.teamsComboBoxTeam.setCurrentIndex(team_index)
+
     def switch_to_page_desc(self):
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageDesc)
 
@@ -1695,10 +1699,16 @@ class MainWindow(QMainWindow):
         self.ui.salaryEditIncome.setPlaceholderText('')
         self.ui.taskEditAdd.setPlaceholderText('')
         self.ui.taskEditChange.setPlaceholderText('')
-        self.ui.imagePost.setPlaceholderText('')
         self.ui.postEdit.setPlaceholderText('')
-        self.ui.fileAdd.setPlaceholderText('Нажмите два раза для добавления изображения')
+        self.ui.imagePost.setPlaceholderText('Нажмите два раза для добавления изображения')
+        self.ui.imagePost.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.fileAdd.setPlaceholderText('Файл ".rar" не должен превышать 100мб, ".docx" не должен превышать 50мб')
         self.ui.fileAdd.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.lineEdit.setPlaceholderText('')
+        self.ui.lineEdit.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.lineEdit_2.setPlaceholderText('')
+        self.ui.lineEdit_2.setStyleSheet("placeholder-text-color: #FFFFFF")
+        self.ui.errorLabel.setText("")
 
     def open_image_dialog(self, event):
         # Получаем путь к рабочему столу
@@ -1721,7 +1731,6 @@ class MainWindow(QMainWindow):
                                                    "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imageArea.setText(file_path)
-
 
     def open_file_explorer(self):
         # Получаем путь к рабочему столу

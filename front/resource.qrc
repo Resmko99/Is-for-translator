@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icon">
+    <file>icon/exit.png</file>
     <file>icon/free-icon-loupe-216463.png</file>
     <file>icon/YQR.png</file>
     <file>icon/icons8-discord-100.png</file>
@@ -31,6 +32,14 @@
     <file>icon/education.png</file>
   </qresource>
   <qresource prefix="Photo">
-    <file>Photo/EyX_7safWuU.jpg</file>
+    <file>Photo/0a1a1fd8-f38f-4ce2-84a8-74a83c63203c.jpg</file>
+    <file>Photo/1bbb92772c6c2826a41f6f43dddb515d.jpg</file>
+    <file>Photo/3G3tOpNoHPQ.jpg</file>
+    <file>Photo/AA1kTdiJ.jpg</file>
+    <file>Photo/e1d2c368-d1eb-43f3-9dd6-c33c8ac680d2.jpg</file>
+    <file>Photo/ee855f4a-8d70-4c03-b56e-f7a5059bbbec.jpg</file>
+    <file>Photo/free-icon-cursor-5340828.png</file>
+    <file>Photo/X.jpg</file>
+    <file>Photo/x_89c4262c.jpg</file>
   </qresource>
 </RCC>
