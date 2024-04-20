@@ -1859,33 +1859,17 @@ class Ui_MainWindow(object):
         self.widget_20.setObjectName(u"widget_20")
         self.gridLayout_27 = QGridLayout(self.widget_20)
         self.gridLayout_27.setObjectName(u"gridLayout_27")
-        self.lineEdit_6 = QLineEdit(self.widget_20)
-        self.lineEdit_6.setObjectName(u"lineEdit_6")
-        self.lineEdit_6.setMinimumSize(QSize(340, 0))
-        self.lineEdit_6.setMaximumSize(QSize(540, 16777215))
-
-        self.gridLayout_27.addWidget(self.lineEdit_6, 6, 0, 1, 1)
-
-        self.label_91 = QLabel(self.widget_20)
-        self.label_91.setObjectName(u"label_91")
-
-        self.gridLayout_27.addWidget(self.label_91, 1, 0, 1, 1)
-
-        self.label_3 = QLabel(self.widget_20)
-        self.label_3.setObjectName(u"label_3")
-
-        self.gridLayout_27.addWidget(self.label_3, 5, 0, 1, 1)
-
-        self.horizontalSpacer_31 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_27.addItem(self.horizontalSpacer_31, 2, 1, 1, 1)
-
         self.label_92 = QLabel(self.widget_20)
         self.label_92.setObjectName(u"label_92")
         sizePolicy.setHeightForWidth(self.label_92.sizePolicy().hasHeightForWidth())
         self.label_92.setSizePolicy(sizePolicy)
 
-        self.gridLayout_27.addWidget(self.label_92, 7, 0, 1, 1)
+        self.gridLayout_27.addWidget(self.label_92, 5, 0, 1, 1)
+
+        self.label_91 = QLabel(self.widget_20)
+        self.label_91.setObjectName(u"label_91")
+
+        self.gridLayout_27.addWidget(self.label_91, 1, 0, 1, 1)
 
         self.nameCrewAccComboBox = QComboBox(self.widget_20)
         self.nameCrewAccComboBox.setObjectName(u"nameCrewAccComboBox")
@@ -1895,6 +1879,10 @@ class Ui_MainWindow(object):
         self.nameCrewAccComboBox.setMaximumSize(QSize(540, 16777215))
 
         self.gridLayout_27.addWidget(self.nameCrewAccComboBox, 2, 0, 1, 1)
+
+        self.horizontalSpacer_31 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_27.addItem(self.horizontalSpacer_31, 2, 1, 1, 1)
 
 
         self.gridLayout_6.addWidget(self.widget_20, 0, 1, 1, 1)
@@ -2347,7 +2335,7 @@ class Ui_MainWindow(object):
         self.titleBtn_2.toggled.connect(self.titleBtn_1.setChecked)
 
         self.stackedWidget.setCurrentIndex(4)
-        self.stackedWidget_2.setCurrentIndex(11)
+        self.stackedWidget_2.setCurrentIndex(12)
         self.editLogo.setDefault(False)
 
 
@@ -2491,9 +2479,8 @@ class Ui_MainWindow(object):
         self.editLogo.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
         self.addLogo.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.label_37.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0431\u043b\u0430\u0441\u0442\u044c \u0434\u043b\u044f \u043b\u043e\u0433\u043e\u0442\u0438\u043f\u0430 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_91.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Token \u0432\u0430\u0448\u0435\u0433\u043e \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c \u0431\u043e\u0442\u0430", None))
         self.label_92.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
+        self.label_91.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0432\u0430\u0448\u0435\u0439 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0441\u0442\u0430\u0432 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", None))
         self.addTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
         self.deleteTeamBtn.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
