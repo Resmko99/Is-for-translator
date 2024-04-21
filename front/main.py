@@ -416,6 +416,7 @@ class MainWindow(QMainWindow):
         self.ui.crewComboBox.currentIndexChanged.connect(self.get_income)
         self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.update_teams_combo_box)
         self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.get_teams)
+        self.ui.nameCrewAccComboBox.currentIndexChanged.connect(self.load_logo)
         self.ui.incomeEditBtn.clicked.connect(self.edit_income)
         self.ui.editIncomeBtn.clicked.connect(self.update_income)
         self.ui.incomeDeleteBtn.clicked.connect(self.delete_selected_income)
@@ -543,8 +544,12 @@ class MainWindow(QMainWindow):
         self.ui.sendFile.clicked.connect(self.upload_to_drive)
         self.ui.fileAdd.mouseDoubleClickEvent = self.file_add_double_click
 
+        self.ui.editLogo.clicked.connect(self.delete_logo)
+
         self.ui.exitAppBtn.clicked.connect(self.exit_acc)
         self.ui.exitAppBtn_2.clicked.connect(self.exit_acc)
+        self.ui.accountBtn_1.clicked.connect(self.load_logo)
+        self.ui.accountBtn_2.clicked.connect(self.load_logo)
 
     def exit_acc(self):
         self.ui.lineEdit.setText("")
@@ -741,7 +746,7 @@ class MainWindow(QMainWindow):
         self.ui.comboboxTitle.clear()
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT team_id, name_team FROM "Teams"')
+        cursor.execute('SELECT team_id, name_team FROM "Teams" ORDER BY team_id ASC')
         teams = cursor.fetchall()
         for team in teams:
             self.ui.comboboxTitle.addItem(f"{team[1]}", userData=team[0])
@@ -1112,7 +1117,7 @@ class MainWindow(QMainWindow):
         self.ui.nameCrewAccComboBox.clear()
         connection = connect()
         cursor = connection.cursor()
-        cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
+        cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams" ORDER BY team_id ASC')
         teams = cursor.fetchall()
         for team in teams:
             self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
@@ -1732,17 +1737,88 @@ class MainWindow(QMainWindow):
         if file_path:
             self.ui.imageArea.setText(file_path)
 
-    def open_file_explorer(self):
-        # Получаем путь к рабочему столу
-        desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+    def add_logo_button_clicked(self):
+        file_dialog = QFileDialog()
+        file_dialog.setNameFilters(["Images (*.png *.jpg *.bmp)"])
+        file_dialog.setWindowTitle("Выберите изображение")
+        if file_dialog.exec():
+            selected_file = file_dialog.selectedFiles()[0]
 
-        # Открываем диалог выбора файла, начиная с рабочего стола
-        options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Выберите изображение", desktop_path,
-                                                   "Images (*.png *.jpg *.jpeg)", options=options)
-        if file_path:
-            self.ui.imageAreaEdit.setText(file_path)
-            self.set_image_to_label(file_path)
+            original_image = self.load_image(selected_file)
+
+            if original_image is not None:
+
+                compressed_image, _ = self.fractal_compress(original_image)
+
+                buffer = BytesIO()
+                buffer.write(cv2.imencode('.jpg', compressed_image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1])
+                image_data = buffer.getvalue()
+            else:
+                print("Ошибка загрузки изображения.")
+                return
+
+            selected_index = self.ui.nameCrewAccComboBox.currentIndex()
+            team_id = self.ui.nameCrewAccComboBox.itemData(selected_index)
+
+            if team_id is None:
+                print("Выберите команду в nameCrewAccComboBox")
+                return
+
+            try:
+                connection = connect()
+                cursor = connection.cursor()
+
+                cursor.execute(
+                    'UPDATE "Teams" SET icon_team = %s WHERE team_id = %s',
+                    (psycopg2.Binary(image_data), team_id)
+                )
+                connection.commit()
+
+                print("Изображение успешно добавлено в таблицу Teams")
+
+            except (Exception, psycopg2.Error) as error:
+                print("Ошибка при работе с базой данных:", error)
+
+            finally:
+                if connection:
+                    close_db_connect(connection, cursor)
+                    self.load_logo()
+
+    def load_logo(self):
+        selected_index = self.ui.nameCrewAccComboBox.currentIndex()
+        team_id = self.ui.nameCrewAccComboBox.itemData(selected_index)
+
+        if team_id is None:
+            print("Выберите команду в nameCrewAccComboBox")
+            return
+
+        try:
+            conn = connect()
+            cursor = conn.cursor()
+
+            cursor.execute('SELECT icon_team FROM "Teams" WHERE team_id = %s', (team_id,))
+            result = cursor.fetchone()
+
+            if result:
+                image_binary = result[0]
+
+                if image_binary:
+                    image_stream = BytesIO(image_binary)
+                    pixmap = QPixmap()
+                    pixmap.loadFromData(image_stream.getvalue())
+
+                    rounded_pixmap = self.rounded_pixmap(pixmap)
+
+                    self.rounded_logo(rounded_pixmap)
+                else:
+                    self.ui.label_37.setText("Область для логотипа команды")
+            else:
+                print("Изображение команды не найдено")
+
+            close_db_connect(conn, cursor)
+
+        except (Exception, psycopg2.Error) as error:
+            print("Ошибка при работе с базой данных:", error)
 
     def rounded_pixmap(self, pixmap):
         rounded_pixmap = QPixmap(pixmap.size())
@@ -1757,21 +1833,44 @@ class MainWindow(QMainWindow):
         painter.end()
         return rounded_pixmap
 
-    def set_image_to_label(self, image_path):
-        # Загрузка изображения
-        pixmap = QPixmap(image_path)
+    def rounded_logo(self, rounded_pixmap):
+        self.ui.label_37.setContentsMargins(10, 10, 10, 10)
 
-        # Применение стилей к QLabel (self.ui.label_37)
-        self.ui.label_37.setContentsMargins(10, 10, 10, 10)  # Установка отступов
-
-        # Установка изображения с закругленными углами
-        rounded_pixmap = self.rounded_pixmap(pixmap)
         self.ui.label_37.setPixmap(rounded_pixmap)
-        self.ui.label_37.setScaledContents(True)  # Разрешение масштабирования содержимого QLabel
+        self.ui.label_37.setScaledContents(True)
 
-    def add_logo_button_clicked(self):
-        self.open_file_explorer()
+    def delete_logo(self):
+        selected_index = self.ui.nameCrewAccComboBox.currentIndex()
+        team_id = self.ui.nameCrewAccComboBox.itemData(selected_index)
 
+        if team_id is None:
+            print("Выберите команду в nameCrewAccComboBox")
+            return
+
+        try:
+            conn = connect()
+            cursor = conn.cursor()
+
+            cursor.execute('SELECT icon_team FROM "Teams" WHERE team_id = %s', (team_id,))
+            result = cursor.fetchone()
+
+            if not result or not result[0]:
+                print("Логотип для данной команды не найден")
+                return
+
+            cursor.execute('UPDATE "Teams" SET icon_team = NULL WHERE team_id = %s', (team_id,))
+            conn.commit()
+
+            print("Логотип успешно удален из базы данных")
+
+        except (Exception, psycopg2.Error) as error:
+            print("Ошибка при удалении логотипа из базы данных:", error)
+
+        finally:
+            # Закрываем соединение с базой данных
+            if conn:
+                close_db_connect(conn, cursor)
+                self.load_logo()
 
     def reset_input_fields(self):
         # Сброс стилей и текстовых подсказок полей ввода
