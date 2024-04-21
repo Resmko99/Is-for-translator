@@ -12,7 +12,7 @@ import asyncio
 from telebot import TeleBot
 from telebot import types
 from typing import Dict, Any
-
+import re
 
 
 # Создаем объект configparser
@@ -91,27 +91,32 @@ async def process_next_step(message):
             user_info['step'] = 'Восстановить email'
             await bot.send_message(user_chat_id, 'Введите адрес электронной почты, связанный с этим аккаунтом:')
 
+
     elif user_step == 'Восстановить email':
         user_email = message.text
-        user_info['email'] = user_email
         cursor.execute("SELECT * FROM \"User\" WHERE \"login\" = %s AND \"email\" = %s AND \"chat_id\" = %s",
                        (user_info['login'], user_email, user_chat_id,))
         result = cursor.fetchone()
         if not result:
             await bot.reply_to(message, 'Вы не являетесь владельцем данного аккаунта.')
         else:
-            password = get_unique_password()
-            try:
-                cursor.execute("UPDATE \"User\" SET password = %s WHERE login = %s AND chat_id = %s AND email = %s",
-                               (password, user_info['login'], user_chat_id, user_email,))
-                conn.commit()
-                del user_steps[user_chat_id]
-                await bot.send_message(user_chat_id, f"Ваш новый пароль: {password}")
-            except (Exception, psycopg2.Error) as error:
-                print("Ошибка при работе с PostgreSQL:", error)
-                await bot.send_message(user_chat_id,
-                                       "Произошла внутренняя ошибка при попытке обновить пароль. Повторите попытку.")
-                conn.rollback()
+            # Новый шаг - пользователь вводит новый пароль
+            user_info['step'] = 'Ввести новый пароль'
+            await bot.send_message(user_chat_id, 'Введите новый пароль:')
+
+    elif user_step == 'Ввести новый пароль':
+        new_password = message.text
+        try:
+            cursor.execute("UPDATE \"User\" SET \"password\" = %s WHERE \"login\" = %s AND \"chat_id\" = %s",
+                           (new_password, user_info['login'], user_chat_id,))
+            conn.commit()
+            del user_steps[user_chat_id]
+            await bot.send_message(user_chat_id, "Ваш пароль был успешно изменен.")
+        except (Exception, psycopg2.Error) as error:
+            print("Ошибка во время работы с PostgreSQL:", error)
+            await bot.send_message(user_chat_id,
+                                   "Возникла внутренняя ошибка во время попытки обновить пароль. Пожалуйста, попробуйте еще раз.")
+            conn.rollback()
 
     elif user_step == 'Регистрация логин':
         user_login = message.text
@@ -130,8 +135,14 @@ async def process_next_step(message):
         user_info['step'] = 'Регистрация email'
         await bot.send_message(user_chat_id, 'Введите адрес вашей электронной почты:')
 
+
     elif user_step == 'Регистрация email':
         user_email = message.text
+        # Проверяем, что введенный текст соответствует формату email
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", user_email):
+            await bot.send_message(user_chat_id,
+                                   'Введен неверный формат email. Пожалуйста, введите email в правильном формате.')
+            return
         cursor.execute("SELECT * FROM \"User\" WHERE email = %s", (user_email,))
         result = cursor.fetchone()
         if result:
@@ -170,12 +181,12 @@ async def process_next_step(message):
             await bot.send_message(user_chat_id,
                                    "Произошла ошибка при попытке создать команду. Попробуйте еще раз.")
 
-def get_unique_password():
-    while True:
-        password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
-        cursor.execute("SELECT * FROM \"User\" WHERE password = %s", (password,))
-        if not cursor.fetchone():
-            return password
+# def get_unique_password():
+#     while True:
+#         password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+#         cursor.execute("SELECT * FROM \"User\" WHERE password = %s", (password,))
+#         if not cursor.fetchone():
+#             return password
 
 
 
