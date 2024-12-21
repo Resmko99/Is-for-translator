@@ -694,6 +694,10 @@ class MainWindow(QMainWindow):
 
         self.ui.fileAdd.clear()
 
+    '''
+    Короче, вот эту функцию нужно перенести в backend, используем dtfки, настраиваем на admin, loader и worker (общее
+    значение работников, которые будут заливать)
+    '''
     def authenticate(self):
         SCOPES = ['https://www.googleapis.com/auth/drive']
 
@@ -708,6 +712,10 @@ class MainWindow(QMainWindow):
 
         return build('drive', 'v3', credentials=creds)
 
+    '''
+    Типичный пост запрос, предлагаю скидывать без сжатия, добавить полоску загрузки в версии 1.1
+    Пост запрос будет на вторйо сервак с большим количеством жёсткого диска, настраиваем radis и kafka
+    '''
     def file_add_image_post(self, event):
         # Получаем путь к рабочему столу
         desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
@@ -718,6 +726,7 @@ class MainWindow(QMainWindow):
                                                    "Images (*.png *.jpg *.jpeg)", options=options)
         if file_path:
             self.ui.imagePost.setText(file_path)
+
 
     def on_publishBtn_click(self):
         postEdit = self.ui.postEdit.toPlainText()
@@ -742,6 +751,10 @@ class MainWindow(QMainWindow):
         print(f"Публикация успешно записана в файл: {self.path_to_publish_file}")
         self.ui.postEdit.clear()
 
+    '''
+    Перенос в back, используем настройку .env и prismaconfig для общего обозначения подключения к бд.
+    Одна функция на частые запросы. Селекты записываем в запросы, защиту настроить в таком случше будет лучше
+    '''
     def load_title_teams(self):
         self.ui.comboboxTitle.clear()
         connection = connect()
@@ -751,11 +764,13 @@ class MainWindow(QMainWindow):
         for team in teams:
             self.ui.comboboxTitle.addItem(f"{team[1]}", userData=team[0])
 
+    '''Перенос в backend, переписать функцию с нуля'''
     def load_titles_by_team(self):
         team_id = self.ui.comboboxTitle.currentData()
         search_text = self.ui.SearchEdit.text().strip()
         self.setup_scroll_area(team_id, search_text)
 
+    '''Перенос в backend, переписать функцию с нуля'''
     def state_edit_button(self):
         selected_index = self.ui.tableListTask.currentIndex()
         if selected_index.isValid():
@@ -763,6 +778,7 @@ class MainWindow(QMainWindow):
         else:
             self.ui.editListTask.setEnabled(False)
 
+    '''Перенос в backend, переписать функцию с нуля'''
     def login_button_clicked(self):
         self.generate_key()
         login = self.ui.lineEdit.text()
@@ -806,6 +822,7 @@ class MainWindow(QMainWindow):
         self.save_credentials(encrypted_login, encrypted_password, category)
         self.hide_or_show_button()
 
+    '''Перенос в backend, переписать sql Запрос'''
     def check_credentials(self, login, password):
         connection = connect()
         cursor = connection.cursor()
@@ -815,6 +832,7 @@ class MainWindow(QMainWindow):
         close_db_connect(connection, cursor)
         return user_exists
 
+    '''Перенос в backend, переписать функцию с нуля'''
     def load_saved_credentials(self):
         config = configparser.ConfigParser()
         config.read('config.ini')
@@ -828,7 +846,7 @@ class MainWindow(QMainWindow):
             if self.check_credentials(login, password):
                 self.ui.stackedWidget.setCurrentIndex(4)
             self.hide_or_show_button()
-
+    '''Перенос в backend, переписать функцию с нуля'''
     def save_credentials(self, encrypted_login, encrypted_password, category):
         config = configparser.ConfigParser()
         config['Account'] = {
@@ -838,14 +856,14 @@ class MainWindow(QMainWindow):
         }
         with open('config.ini', 'w') as config_file:
             config.write(config_file)
-
+    '''Изменим способ генерации ключа на JWToken, всё что идёт до следующего комита переписывать с нуля в новом варианте'''
     def generate_key(self):
         key_file = 'secret.key'
         if not os.path.exists(key_file):
             key = Fernet.generate_key()
             with open(key_file, 'wb') as keyfile:
                 keyfile.write(key)
-
+   
     def encrypt_data(self, data):
         with open('secret.key', 'rb') as keyfile:
             key = keyfile.read()
@@ -860,6 +878,7 @@ class MainWindow(QMainWindow):
         decrypted_data = fernet.decrypt(encrypted_data.encode())
         return decrypted_data.decode()
 
+    '''Перенос в backend. Коннект исправляем, хуйня способ, проверку тоже изменяем, слишком долгий чекед'''
     def load_edit_teams(self):
         self.ui.nameCrewTranslatorEditTitle.clear()
         try:
@@ -877,24 +896,13 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f'Ошибка при загрузке пользователей для редактирования: {e}')
 
-    # def load_account_teams(self):
-    #     self.ui.nameCrewAccComboBox.clear()
-    #     self.ui.nameCrewAccComboBox.clear()
-    #     connection = connect()
-    #     cursor = connection.cursor()
-    #     cursor.execute('SELECT team_id, name_team, bot_id, icon_team FROM "Teams"')
-    #     teams = cursor.fetchall()
-    #     for team in teams:
-    #         self.ui.crewAddComboBox.addItem(f"{team[1]}", userData=team[0])
-    #         self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
-
     def show_error_message(self, message):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setText(message)
         msg.setWindowTitle("Сообщение об ошибке")
         msg.exec()
-
+    '''Перенос в backend, переписать функцию с нуля'''
     def load_users(self):
         self.ui.employeeAddTask.clear()
         self.ui.userAddComboBox.clear()
@@ -907,7 +915,7 @@ class MainWindow(QMainWindow):
             self.ui.userAddComboBox.addItem(f"{user[1]}", userData=user[0])
             self.ui.employeeAddTask.addItem(f"{user[1]}", userData=user[0])
             self.ui.usersComboBoxTeam.addItem(f"{user[1]}", userData=user[0])
-
+    '''Перенос в backend, переписать функцию с нуля'''
     def load_edit_users(self):
         self.ui.employeeEditTask.clear()
         self.ui.userEditComboBox.clear()
@@ -930,7 +938,7 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f'Ошибка при загрузке пользователей для редактирования: {e}')
-
+    '''Перенос в backend. Используем возможности запросов даты сразу в nest, не ломаем мозгу, все запросы изменить'''
     def apply_task(self):
         user_id = self.ui.employeeAddTask.currentData()
         task_text = self.ui.taskEditAdd.toPlainText()
@@ -1124,7 +1132,7 @@ class MainWindow(QMainWindow):
             self.ui.crewComboBox.addItem(f"{team[1]}", userData=team[0])
             self.ui.nameCrewTranslatorAddTitle.addItem(f"{team[1]}", userData=team[0])
             self.ui.nameCrewAccComboBox.addItem(f"{team[1]}", userData=team[0])
-
+    '''Весь *..income..* идёт в мусорку и запись по новому'''
     def load_title_income(self):
         self.ui.titleAddComboBox.clear()
         connection = connect()
@@ -1371,7 +1379,7 @@ class MainWindow(QMainWindow):
     def start_timer(self):
         self.translation_timer.stop()
         self.translation_timer.start(self.translation_delay)
-
+    '''Сносим, переписываем под запрос ChatGPT'''
     def translate_text(self):
         text_to_translate = self.ui.textEdit.toPlainText().strip()
         selected_src_lang = self.ui.comboBox.currentText()
@@ -1480,7 +1488,7 @@ class MainWindow(QMainWindow):
 
         self.get_teams()
         self.ui.stackedWidget_2.setCurrentWidget(self.ui.pageAccount)
-
+    '''Переделать запрос'''
     def get_teams(self):
         try:
             selected_teams = self.ui.nameCrewAccComboBox.currentData()
@@ -1516,7 +1524,7 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f'Ошибка при выводе: {e}')
-
+    '''Перенос в backend, переписать функцию с нуля'''
     def delete_selected_teams(self):
         selected_index = self.ui.tableTeamAcc.currentIndex()
         if not selected_index.isValid():
@@ -1563,7 +1571,7 @@ class MainWindow(QMainWindow):
         compression_time = end_time - start_time  # Вычисляем время сжатия
 
         return compressed_image, compression_time
-
+    '''Перенос в backend, нужна ли нам такая функция? Может лучше проще?'''
     def load_image(self, path):
         try:
             with Image.open(path) as img:
@@ -1576,7 +1584,7 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"Error loading image from '{path}': {e}")
             return None
-
+    '''Перенос в backend'''
     def apply_title_changes(self):
         team_id = self.ui.nameCrewTranslatorEditTitle.currentData()
         new_title_name = self.ui.nameEditTitle.text()
@@ -2043,3 +2051,8 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
+
+
+'''
+Общие изменения - общие пути к файлам бэка, к assets, к http. Минимизировать main по максимому, в нём лучше оставить исключительно старт. Весь UX/UI уходит в srs/ui.
+'''

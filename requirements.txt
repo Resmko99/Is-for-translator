@@ -13,3 +13,7 @@ google-auth-oauthlib
 google-auth-oauthlib
 PILLOW
 opencv-python
+
+'''
+Дополнить все необходимые пакеты.
+'''
